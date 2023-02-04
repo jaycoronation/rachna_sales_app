@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pretty_http_logger/pretty_http_logger.dart';
 import 'package:salesapp/screens/add_customer_page.dart';
+import 'package:salesapp/screens/customer_detail_page.dart';
 
 import '../../Model/common_response_model.dart';
 import '../../Model/customer_list_response_model.dart';
@@ -28,6 +29,7 @@ class CustomerListPage extends StatefulWidget {
 
 class _CustomerListPageState extends BaseState<CustomerListPage> {
   bool _isLoading = false;
+  bool _isSearchLoading = false;
 
   bool _isLoadingMore = false;
   int _pageIndex = 0;
@@ -44,6 +46,9 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
   String dateEndSelectionChanged = "";
 
   TextEditingController textEditingController = TextEditingController();
+  TextEditingController searchController = TextEditingController();
+
+  String searchText = "";
 
   @override
   void initState() {
@@ -84,13 +89,13 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
     return Scaffold(
       backgroundColor: appBG,
       resizeToAvoidBottomInset: true,
-      appBar:AppBar(
+      appBar: AppBar(
         systemOverlayStyle: SystemUiOverlayStyle.dark,
         toolbarHeight: 61,
         automaticallyImplyLeading: false,
         title: const Text(""),
         actions: [
-          GestureDetector(
+         /* GestureDetector(
             onTap: () {
             },
             child: Container(
@@ -99,7 +104,7 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
               alignment: Alignment.center,
               child: const Icon(Icons.search, color: white, size: 28,),
             ),
-          ),
+          ),*/
           Container(
             margin: const EdgeInsets.only(top: 14, bottom: 14),
             child: GestureDetector(
@@ -200,7 +205,7 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
                   Stack(
                     children: [
                       SizedBox(
-                        height: 150,
+                        height: 215,
                         child: Column(
                           children: [
                             Container(
@@ -208,11 +213,75 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
                               color: kBlue,
                             ),
                             Container(
-                              height: 30,
+                              height: 95,
                               color: kLightestPurple,
-                            )
+                            ),
                           ],
                         ),
+                      ),
+                      Container(
+                          decoration: BoxDecoration(
+                              color: white,
+                              border: Border.all(width: 1, color: kLightPurple),
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(8.0),
+                              ),
+                              shape: BoxShape.rectangle
+                          ),
+                          margin: const EdgeInsets.only(left: 15, right: 15, top: 150),
+                          child: TextField(
+                            keyboardType: TextInputType.text,
+                            textAlign: TextAlign.start,
+                            controller: searchController,
+                            cursorColor: black,
+                            style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 15, color: black,),
+                            decoration: InputDecoration(
+                                hintText: "Search product",
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(color: kLightPurple, width: 0),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(color: kLightPurple, width: 0),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                hintStyle: const TextStyle(fontWeight: FontWeight.w400, color: kBlue, fontSize: 14),
+                                prefixIcon: const Icon(Icons.search, size: 26, color: kBlue,),
+                                suffixIcon: InkWell(
+                                  child: const Icon(
+                                    Icons.close,
+                                    size: 26,
+                                    color: black,
+                                  ),
+                                  onTap: () {
+                                    setState(() {
+                                      isCustomerListReload = false;
+                                      searchController.text = "";
+                                      searchText = "";
+                                    });
+
+                                    _getCustomerListData(true);
+                                  },
+                                )
+                            ),
+                            onChanged: (text) {
+                              searchController.text = text;
+                              searchController.selection = TextSelection.fromPosition(TextPosition(offset: searchController.text.length));
+                              if (text.isEmpty) {
+                                setState(() {
+                                  searchText = "";
+                                });
+
+                                _getCustomerListData(true);
+                              }
+                              else if (text.length > 3) {
+                                setState(() {
+                                  searchText = searchController.text.toString().trim();
+                                });
+                                _getCustomerListData(true);
+                              }
+                            },
+                          )
                       ),
                       SizedBox(
                         height: 135,
@@ -334,6 +403,10 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
                 ],
               ),
             ),
+            _isSearchLoading
+                ? const Center(
+              child: LoadingWidget(),
+            ) :
             ListView.builder(
                 scrollDirection: Axis.vertical,
                 physics: const NeverScrollableScrollPhysics(),
@@ -352,7 +425,8 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
                         behavior: HitTestBehavior.opaque,
                         onTap: () {
                           CustomerList getSet = listCustomer[index];
-                          _redirectToAddCustomer(context, getSet, true);
+                          _redirectToCustomerDetail(context, getSet, true);
+                          // _redirectToAddCustomer(context, getSet, true);
                         },
                         child: Column(
                           children: [
@@ -377,23 +451,23 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
                                               ),
                                             ),
                                           ),
-                                          Container(
+                                          /*Container(
                                             margin: const EdgeInsets.only(right: 10),
                                             alignment: Alignment.bottomLeft,
                                             child: RichText(
                                               textAlign: TextAlign.center,
                                               text: TextSpan(
                                                 text: '₹ ',
-                                                style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: Colors.red),
+                                                style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: black),
                                                 children: <TextSpan>[
-                                                  TextSpan(text: checkValidString(listCustomer[index].creditLimit.toString()),
-                                                      style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: Colors.red),
+                                                  TextSpan(text: checkValidString(listCustomer[index].customerTotalSale.toString()),
+                                                      style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: black),
                                                       recognizer: TapGestureRecognizer()..onTap = () => {
                                                       }),
                                                 ],
                                               ),
                                             ),
-                                          ),
+                                          ),*/
                                         ],
                                       ),
                                       const Gap(5),
@@ -406,9 +480,9 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
                                               textAlign: TextAlign.center,
                                               text: TextSpan(
                                                 text: 'Total Sale : ',
-                                                style:  TextStyle(fontSize: 13, fontWeight: FontWeight.w400, color: kGray),
+                                                style:  const TextStyle(fontSize: 13, fontWeight: FontWeight.w400, color: kGray),
                                                 children: <TextSpan>[
-                                                  TextSpan(text: listCustomer[index].customerTotalSale.toString(),
+                                                  TextSpan(text:checkValidString(getPrice(listCustomer[index].customerTotalSale.toString())),
                                                       style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: black),
                                                       recognizer: TapGestureRecognizer()..onTap = () => {
                                                       }),
@@ -473,9 +547,23 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
     }
   }
 
+  Future<void> _redirectToCustomerDetail(BuildContext context, CustomerList getSet, bool isFromList) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => CustomerDetailPage(getSet, isFromList)),
+    );
+
+    print("result ===== $result");
+
+    if (result == "success") {
+      _getCustomerListData(true);
+      setState(() {
+        isCustomerListReload = true;
+      });
+    }
+  }
+
   Future<void> _redirectToAddCustomer(BuildContext context, CustomerList getSet, bool isFromList) async {
-    // Navigator.push returns a Future that completes after calling
-    // Navigator.pop on the Selection Screen.
     final result = await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => AddCustomerPage(getSet, isFromList)),
@@ -576,12 +664,22 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
 
   void _getCustomerListData([bool isFirstTime = false]) async {
     if (isFirstTime) {
-      setState(() {
-        _isLoading = true;
-        _isLoadingMore = false;
-        _pageIndex = 0;
-        _isLastPage = false;
-      });
+      if (searchText.isNotEmpty) {
+        setState(() {
+          _isLoading = false;
+          _isSearchLoading = true;
+          _isLoadingMore = false;
+          _pageIndex = 0;
+          _isLastPage = false;
+        });
+      }else {
+        setState(() {
+          _isLoading = true;
+          _isLoadingMore = false;
+          _pageIndex = 0;
+          _isLastPage = false;
+        });
+      }
     }
 
     HttpWithMiddleware http = HttpWithMiddleware.build(middlewares: [
@@ -593,7 +691,7 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
       'from_app': FROM_APP,
       'limit': _pageResult.toString(),
       'page': _pageIndex.toString(),
-      'search' : '',
+      'search' : searchText,
       'fromDate' : dateStartSelectionChanged,
       'toDate': dateEndSelectionChanged
     };
@@ -634,6 +732,8 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
       setState(() {
         _isLoading = false;
         _isLoadingMore = false;
+        _isSearchLoading = false;
+
         // isAddedOrRemovedProduct = true;
       });
 
@@ -641,6 +741,8 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
       setState(() {
         _isLoading = false;
         _isLoadingMore = false;
+        _isSearchLoading = false;
+
       });
     }
   }

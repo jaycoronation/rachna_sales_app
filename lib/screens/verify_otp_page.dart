@@ -258,7 +258,7 @@ class _VerifyOTPPageState extends BaseState<VerifyOTPPage> {
 
     Map<String, String> jsonBody = {
       'phone': contactNum.toString().trim(),
-      'from_app' : FROM_APP
+      'from_app': FROM_APP
     };
 
     final response = await http.post(url, body: jsonBody);

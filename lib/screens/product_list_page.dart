@@ -2,12 +2,16 @@ import 'dart:convert';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:lottie/lottie.dart';
 import 'package:pretty_http_logger/pretty_http_logger.dart';
 
-import '../Model/Product_item_list_response_model.dart';
 import '../Model/common_response_model.dart';
 import '../constant/color.dart';
+import '../model/ProductCategoryList.dart';
+import '../model/category_response_model.dart';
+import '../model/product_item_data_response_model.dart';
 import '../network/api_end_point.dart';
 import '../utils/app_utils.dart';
 import '../utils/base_class.dart';
@@ -21,26 +25,77 @@ class ProductListPage extends StatefulWidget {
   _ProductListPageState createState() => _ProductListPageState();
 }
 
-class _ProductListPageState extends BaseState<ProductListPage> {
+class _ProductListPageState extends BaseState<ProductListPage> with TickerProviderStateMixin  {
   bool _isLoading = false;
   TextEditingController searchController = TextEditingController();
   var searchText = "";
-  var listCategory = List<ItemData>.empty(growable: true);
-  var listProduct = List<Products>.empty(growable: true);
-  List<Products> _templistProduct = [];
+
+  var listCategory = List<CategoryDetails>.empty(growable: true);
+  var listProduct = List<ItemData>.empty(growable: true);
+  List<ItemData> _templistProduct = [];
 
   var selectedCategoryName = "";
   var selectedCategoryProductCount = "";
+
+  bool _isLoadingMore = false;
+  int _pageIndex = 0;
+  final int _pageResult = 20;
+  bool _isLastPage = false;
+
+  List<Tab> _tabs = [];
+  String tabTitle = "";
+  List<String> tabTitles = [];
+
+  late ScrollController _scrollViewController;
+  bool isScrollingDown = false;
+  late TabController _tabController;
+
+  List<ProductCategoryList> listProductTemp = [];
 
   @override
   void initState() {
     super.initState();
 
+    _tabController = TabController(length: listCategory.length, vsync: this);
+
+    _scrollViewController = ScrollController();
+    _scrollViewController.addListener(() {
+
+      if (_scrollViewController.position.userScrollDirection == ScrollDirection.reverse) {
+        if (!isScrollingDown) {
+          isScrollingDown = true;
+          setState(() {});
+        }
+      }
+      if (_scrollViewController.position.userScrollDirection == ScrollDirection.forward) {
+        if (isScrollingDown) {
+          isScrollingDown = false;
+          setState(() {});
+        }
+      }
+
+      pagination();
+
+    });
+
     if(isInternetConnected) {
-      _getItemListData();
+      _makeCategoryListProduct();
+
     }else {
       noInterNet(context);
     }
+  }
+
+  void pagination() {
+    if(!_isLastPage && !_isLoadingMore)
+      {
+        if ((_scrollViewController.position.pixels == _scrollViewController.position.maxScrollExtent)) {
+          setState(() {
+            _isLoadingMore = true;
+            _getItemListData(false);
+          });
+        }
+      }
   }
 
   @override
@@ -76,11 +131,12 @@ class _ProductListPageState extends BaseState<ProductListPage> {
           actions: [
             GestureDetector(
               onTap: () {
-                _redirectToAddProduct(context, Products(), false);
+                _redirectToAddProduct(context, ItemData(), false);
               },
               child: Container(
-                height: 33,
-                width: 34,
+                margin: const EdgeInsets.only(top: 12, bottom: 12, right: 10),
+                height: 34,
+                width: 36,
                 decoration: BoxDecoration(
                     border: Border.all(width: 1, color: kLightestPurple),
                     borderRadius: const BorderRadius.all(Radius.circular(14.0),),
@@ -117,224 +173,265 @@ class _ProductListPageState extends BaseState<ProductListPage> {
           elevation: 0,
           backgroundColor: kBlue,
         ),
-        body: _isLoading ? const LoadingWidget()
+        body: _isLoading
+            ? const LoadingWidget()
             : Column(
-          children: [
-            Container(
-              color: kBlue,
-              alignment: Alignment.topLeft,
-              padding: const EdgeInsets.only(left: 22, top: 10, bottom: 20),
-              child: const Text("Product List", style: TextStyle(fontWeight: FontWeight.w700, color: white,fontSize: 20)),
-            ),
-            Stack(
               children: [
                 Container(
-                  height: 145,
+                  color: kBlue,
+                  alignment: Alignment.topLeft,
+                  padding: const EdgeInsets.only(left: 22, top: 10, bottom: 20),
+                  child: const Text("Product List", style: TextStyle(fontWeight: FontWeight.w700, color: white,fontSize: 20)),
+                ),
+                Container(
                   color: kLightestPurple,
-                ),
-                Container(height: 36, width: double.infinity,
-                  margin: const EdgeInsets.only(left: 12, right: 12, top: 20),
-                  child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      shrinkWrap: false,
-                      itemCount: listCategory.length,
-                      itemBuilder: (ctx, index) =>
-                      (Container(
-                        margin: const EdgeInsets.only(left: 5, right: 5),
-                        height: 36,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            primary: listCategory[index].isSelected ?? false ? kBlue : white,
-                            onPrimary: kBlue,
-                            elevation: 0.0,
-                            padding: const EdgeInsets.only(left: 15, right: 15, top: 10, bottom: 10),
-                            side: const BorderSide(color: kLightPurple, width: 0.5, style: BorderStyle.solid),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(kTextFieldCornerRadius),),
-                            tapTargetSize: MaterialTapTargetSize.padded,
-                            animationDuration: const Duration(milliseconds: 100),
-                            enableFeedback: true,
-                            alignment: Alignment.center,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              for (var j = 0; j < listCategory.length; j++) {
-                                if (index == j) {
-                                  listCategory[j].isSelected = true;
-                                  listProduct = listCategory[index].products!;
-                                  selectedCategoryName =  checkValidString(listCategory[index].categoryName);
-                                  selectedCategoryProductCount = checkValidString(listCategory[index].products!.length.toString());
-                                } else {
-                                  listCategory[j].isSelected = false;
-                                }
-                              }
-                            });
-                          },
-                          child: Text(checkValidString(listCategory[index].categoryName),
-                            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w400, color: listCategory[index].isSelected ?? false ? white : kBlue),),
-                        ),
-                      ))
-                  ),),
-                Container(
-                    decoration: BoxDecoration(
-                        color: white,
-                        border: Border.all(width: 1, color: kLightPurple),
-                        borderRadius: const BorderRadius.all(
-                          Radius.circular(8.0),
-                        ),
-                        shape: BoxShape.rectangle
-                    ),
-                    margin: const EdgeInsets.only(left: 15, right: 15, top: 75),
-                    child: TextField(
-                      keyboardType: TextInputType.text,
-                      textCapitalization: TextCapitalization.sentences,
-                      textAlign: TextAlign.start,
-                      controller: searchController,
-                      cursorColor: black,
-                      style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 15, color: black,),
-                      decoration: InputDecoration(
-                          hintText: "Search product",
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(color: kLightPurple, width: 0),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(color: kLightPurple, width: 0),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          hintStyle: const TextStyle(fontWeight: FontWeight.w400, color: kBlue, fontSize: 14),
-                          prefixIcon: const Icon(Icons.search, size: 26, color: kBlue,)
-                      ),
-                      onChanged: (text) {
-
-                        /* searchController.text = text;
-                        searchController.selection = TextSelection.fromPosition(TextPosition(offset: searchController.text.length));
-                        if(text.isEmpty) {
-                          searchText = "";
-                          _getItemListData();
-                        }else if(text.length > 3) {
-                          searchText = searchController.text.toString().trim();
-                          // _getItemListData();
-                        }*/
-
-                        if(text.isNotEmpty) {
-                          setState(() {
-                            _templistProduct = _buildSearchListForProducts(text);
-                          });
-                        } else {
-                          setState(() {
-                            searchController.clear();
-                            _templistProduct.clear();
-                          });
-                        }
-                      },
-                    )
-                ),
-              ],
-            ),
-            Container(
-              color: white,
-              alignment: Alignment.topLeft,
-              padding: const EdgeInsets.only(left: 20, top: 10, bottom: 15),
-              child:RichText(
-                textAlign: TextAlign.center,
-                text: TextSpan(
-                  text: selectedCategoryName,
-                  style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w800, color: kBlue),
-                  children: <TextSpan>[
-                    TextSpan(text: "  ($selectedCategoryProductCount products)",
-                        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: kGray),
-                        recognizer: TapGestureRecognizer()..onTap = () => {
-                        }),
-                  ],
-                ),
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                    alignment: Alignment.center,
-                    margin: const EdgeInsets.only(left: 20,),
-                    child: const Text("Product Name", style: TextStyle(fontWeight: FontWeight.w600, color: black, fontSize: 15))),
-                Expanded(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                  child: Column(
                     children: [
-                      RichText(
-                        textAlign: TextAlign.center,
-                        text: TextSpan(
-                          text: 'In stock\n',
-                          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: black),
-                          children: <TextSpan>[
-                            TextSpan(text: "(In pack)",
-                                style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: black),
-                                recognizer: TapGestureRecognizer()..onTap = () => {
-                                }),
-                          ],
+                      Container(height: 36, width: double.infinity,
+                        margin: const EdgeInsets.only(left: 12, right: 12, top: 20),
+                        child: TabBar(
+                          controller: _tabController,
+                          isScrollable: true,
+                          indicatorColor: kBlue,
+                          labelColor: kBlue,
+                          unselectedLabelColor: kBlue,
+                          tabs: _tabs,
                         ),
                       ),
                       Container(
-                          margin: const EdgeInsets.only(right: 70,left: 20),
-                          child: const Text("Order", style: TextStyle(fontWeight: FontWeight.w600, color: black, fontSize: 15))),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            Expanded(
-                child: ListView.builder(
-                    scrollDirection: Axis.vertical,
-                    physics: const ScrollPhysics(),
-                    primary: false,
-                    shrinkWrap: true,
-                    itemCount:(_templistProduct.isNotEmpty) ? _templistProduct.length : listProduct.length,
-                    itemBuilder: (ctx, index) => InkWell(
-                      hoverColor: Colors.white.withOpacity(0.0),
-                      onTap: () async {
-                        _redirectToAddProduct(context, _templistProduct.isNotEmpty ? _templistProduct[index] : listProduct[index], true);
-                      },
-                      child: Container(
-                        color: white,
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 15, right: 15, top: 8, bottom: 5),
-                          child: GestureDetector(
-                            onTap: () {
-                              if(_templistProduct != null && _templistProduct.length > 0) {
+                          decoration: BoxDecoration(
+                              color: white,
+                              border: Border.all(width: 1, color: kLightPurple),
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(8.0),
+                              ),
+                              shape: BoxShape.rectangle
+                          ),
+                          margin: const EdgeInsets.only(left: 15, right: 15,),
+                          child: TextField(
+                            keyboardType: TextInputType.text,
+                            textCapitalization: TextCapitalization.sentences,
+                            textAlign: TextAlign.start,
+                            controller: searchController,
+                            cursorColor: black,
+                            style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 15, color: black,),
+                            decoration: InputDecoration(
+                                hintText: "Search product",
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(color: kLightPurple, width: 0),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(color: kLightPurple, width: 0),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                hintStyle: const TextStyle(fontWeight: FontWeight.w400, color: kBlue, fontSize: 14),
+                                prefixIcon: const Icon(Icons.search, size: 26, color: kBlue,)
+                            ),
+                            onChanged: (text) {
+
+                              /* searchController.text = text;
+                              searchController.selection = TextSelection.fromPosition(TextPosition(offset: searchController.text.length));
+                              if(text.isEmpty) {
+                                searchText = "";
+                                _getItemListData();
+                              }else if(text.length > 3) {
+                                searchText = searchController.text.toString().trim();
+                                // _getItemListData();
+                              }*/
+
+                              if(text.isNotEmpty) {
                                 setState(() {
-                                  if(_templistProduct[index].isProductSelected ?? false) {
-                                    _templistProduct[index].isProductSelected = false;
-                                  }else {
-                                    _templistProduct[index].isProductSelected = true;
-                                  }
+                                  _templistProduct = _buildSearchListForProducts(text);
                                 });
                               } else {
                                 setState(() {
-                                  if(listProduct[index].isProductSelected ?? false) {
-                                    listProduct[index].isProductSelected = false;
-                                  }else {
-                                    listProduct[index].isProductSelected = true;
-                                  }
+                                  searchController.clear();
+                                  _templistProduct.clear();
                                 });
                               }
                             },
-                            child: (_templistProduct.isNotEmpty)
-                                ? _showBottomSheetForProductsList(
-                                index, _templistProduct)
-                                : _showBottomSheetForProductsList(
-                                index, listProduct),
-                          ),
-                        ),
+                          )
                       ),
-                    ))),
-          ],
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    physics: BouncingScrollPhysics(),
+                    itemCount: _tabs.length,
+                    itemBuilder: (context, index) {
+                      return Column(
+                        children: [
+                          Container(
+                            color: white,
+                            alignment: Alignment.topLeft,
+                            padding: const EdgeInsets.only(left: 20, top: 10, bottom: 15),
+                            child:RichText(
+                              textAlign: TextAlign.center,
+                              text: TextSpan(
+                                text: listProductTemp[_tabController.index].message,
+                                style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w800, color: kBlue),
+                                children: <TextSpan>[
+                                  TextSpan(text: "  ($selectedCategoryProductCount products)",
+                                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: kGray),
+                                      recognizer: TapGestureRecognizer()..onTap = () => {
+                                      }),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Container(
+                                  alignment: Alignment.center,
+                                  margin: const EdgeInsets.only(left: 20,),
+                                  child: const Text("Product Name", style: TextStyle(fontWeight: FontWeight.w600, color: black, fontSize: 15))),
+                              Expanded(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    RichText(
+                                      textAlign: TextAlign.center,
+                                      text: TextSpan(
+                                        text: 'In stock\n',
+                                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: black),
+                                        children: <TextSpan>[
+                                          TextSpan(text: "(In pack)",
+                                              style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: black),
+                                              recognizer: TapGestureRecognizer()..onTap = () => {
+                                              }),
+                                        ],
+                                      ),
+                                    ),
+                                    Container(
+                                        margin: const EdgeInsets.only(right: 70,left: 20),
+                                        child: const Text("Order", style: TextStyle(fontWeight: FontWeight.w600, color: black, fontSize: 15))),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                          Expanded(
+                              child: ListView.builder(
+                                  scrollDirection: Axis.vertical,
+                                  physics: const ScrollPhysics(),
+                                  primary: false,
+                                  shrinkWrap: true,
+                                  itemCount:(_templistProduct.isNotEmpty)
+                                      ? _templistProduct.length : listProduct.length,
+                                  itemBuilder: (ctx, index) => InkWell(
+                                    hoverColor: Colors.white.withOpacity(0.0),
+                                    onTap: () async {
+                                      _redirectToAddProduct(context, _templistProduct.isNotEmpty ? _templistProduct[index] : listProduct[index], true);
+                                    },
+                                    child: Container(
+                                      color: white,
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(left: 15, right: 15, top: 8, bottom: 5),
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            if(_templistProduct != null && _templistProduct.length > 0)
+                                            {
+                                              setState(() {
+                                                if(_templistProduct[index].isSelected ?? false) {
+                                                  _templistProduct[index].isSelected = false;
+                                                }else {
+                                                  _templistProduct[index].isSelected = true;
+                                                }
+                                              });
+                                            }
+                                            else
+                                            {
+                                              setState(() {
+                                                if(listProduct[index].isSelected ?? false) {
+                                                  listProduct[index].isSelected = false;
+                                                }else {
+                                                  listProduct[index].isSelected = true;
+                                                }
+                                              });
+                                            }
+                                          },
+                                          child: _showBottomSheetForProductsList(index,_templistProduct.isNotEmpty ? _templistProduct : listProduct),
+                                        ),
+                                      ),
+                                    ),
+                                  ))
+                          ),
+                          if (_isLoadingMore == true)
+                            Container(
+                              padding: const EdgeInsets.only(top: 10, bottom: 10),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SizedBox(
+                                      width: 30,
+                                      height: 30,
+                                      child: Lottie.asset('assets/images/loader_new.json', repeat: true, animate: true, frameRate: FrameRate.max)),
+                                  const Text(' Loading more...',
+                                      style: TextStyle(color: black, fontWeight: FontWeight.w400, fontSize: 16)
+                                  )
+                                ],
+                              ),
+                            ),
+                        ],
+                      );
+                    },
+                  ),
+                ),
+
+
+              ],
         ),
       ),
     );
   }
 
+  List<Tab> getTabs(List<String> count) {
+    _tabs.clear();
 
-  List<Products> _buildSearchListForProducts(String productSearchTerm) {
-    List<Products> _searchList = [];
+    for (int i = 0; i < count.length; i++) {
+      _tabs.add(getTab(toDisplayCase(count[i].toString())));
+    }
+    print("SIZE ==== ${_tabs.length}");
+    _tabController = getTabController();
+    getTabListener();
+    return _tabs;
+  }
+
+  Tab getTab(String tabTitle) {
+    return Tab(
+      child: Text(tabTitle, style: const TextStyle(color: black,fontSize: 14,fontWeight: FontWeight.w600),),
+    );
+  }
+
+  TabController getTabController() {
+    return TabController(length: _tabs.length, vsync: this);
+  }
+
+  getTabListener() {
+    _tabController.addListener(() {
+      if (_tabController.indexIsChanging)
+      {
+        if (_tabController.index == 0)
+        {
+          setState(() {
+          });
+        }
+        else
+        {
+          setState(() {
+          });
+        }
+      }
+    });
+  }
+
+  List<ItemData> _buildSearchListForProducts(String productSearchTerm) {
+    List<ItemData> _searchList = [];
     for (int i = 0; i < listProduct.length; i++) {
       String name = listProduct[i].stockName.toString().trim();
       if (name.toLowerCase().contains(productSearchTerm.toLowerCase())) {
@@ -344,7 +441,7 @@ class _ProductListPageState extends BaseState<ProductListPage> {
     return _searchList;
   }
 
-  Widget _showBottomSheetForProductsList(int index, List<Products> listData) {
+  Widget _showBottomSheetForProductsList(int index, List<ItemData> listData) {
     return Column(
       children: [
         Row(
@@ -361,7 +458,7 @@ class _ProductListPageState extends BaseState<ProductListPage> {
                       children: [
                         Container(
                           margin: const EdgeInsets.only(left: 6, right: 6, bottom: 6),
-                          child: Text(checkValidString(listData[index].stockName.toString().trim()),
+                          child: Text(listData[index].stockName.toString(),
                               maxLines: 2,
                               overflow: TextOverflow.clip,
                               textAlign: TextAlign.start,
@@ -444,11 +541,10 @@ class _ProductListPageState extends BaseState<ProductListPage> {
 
   @override
   void castStatefulWidget() {
-    // TODO: implement castStatefulWidget
     widget is ProductListPage;
   }
 
-  Future<void> _redirectToAddProduct(BuildContext context, Products getSet, bool isFromList) async {
+  Future<void> _redirectToAddProduct(BuildContext context, ItemData getSet, bool isFromList) async {
     final result = await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => AddProductPage(getSet, isFromList)),
@@ -464,7 +560,7 @@ class _ProductListPageState extends BaseState<ProductListPage> {
   }
 
 
-  void _deleteProduct(Products product, int index) {
+  void _deleteProduct(ItemData product, int index) {
     showModalBottomSheet<void>(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -548,10 +644,15 @@ class _ProductListPageState extends BaseState<ProductListPage> {
   }
 
   //API call function...
-  _getItemListData() async {
-    setState(() {
-      _isLoading = true;
-    });
+  _getItemListData([bool isFirstTime = false]) async {
+    if (isFirstTime) {
+      setState(() {
+        _isLoading = true;
+        _isLoadingMore = false;
+        _pageIndex = 0;
+        _isLastPage = false;
+      });
+    }
 
     HttpWithMiddleware http = HttpWithMiddleware.build(middlewares: [
       HttpLogger(logLevel: LogLevel.BODY),
@@ -560,7 +661,11 @@ class _ProductListPageState extends BaseState<ProductListPage> {
     final url = Uri.parse(BASE_URL + itemList);
 
     Map<String, String> jsonBody = {
-      'from_app' : FROM_APP
+      'from_app' : FROM_APP,
+      'limit': _pageResult.toString(),
+      'page': _pageIndex.toString(),
+      'category_id' : '2',
+      'search' : '',
     };
 
     final response = await http.post(url, body: jsonBody);
@@ -568,29 +673,126 @@ class _ProductListPageState extends BaseState<ProductListPage> {
 
     final body = response.body;
     Map<String, dynamic> itemData = jsonDecode(body);
-    var dataResponse = ProductItemListResponseModel.fromJson(itemData);
+    var dataResponse = ProductItemDataResponseModel.fromJson(itemData);
 
-    if (statusCode == 200 && dataResponse.success == 1) {
-      var itemListResponse = ProductItemListResponseModel.fromJson(itemData);
-      listCategory = itemListResponse.itemData!;
-      listCategory[0].isSelected = true;
-      listProduct = listCategory[0].products!;
-      selectedCategoryName = checkValidString(listCategory[0].categoryName);
-      selectedCategoryProductCount = checkValidString(listCategory[0].products!.length.toString());
+    if (isFirstTime) {
+      if (listProduct.isNotEmpty) {
+        listProduct = [];
+      }
+    }
+
+    if (statusCode == 200 && dataResponse.success == 1)
+    {
+      if (dataResponse.itemData != null)
+      {
+        List<ItemData>? _tempList = [];
+        _tempList = dataResponse.itemData;
+
+        listProduct.addAll(_tempList!);
+        /*for (var i=0; i < dataResponse.itemData!.length; i++)
+          {
+            print(dataResponse.itemData![i].stockName);
+            listProduct.add(dataResponse.itemData![i]);
+          }*/
+
+        print(listProduct.length);
+
+        if (_tempList.isNotEmpty)
+        {
+          _pageIndex += 1;
+          if (_tempList.isEmpty || _tempList.length % _pageResult != 0)
+          {
+            _isLastPage = true;
+          }
+        }
+      }
+
+      for (var i=0; i < listProduct.length; i++)
+        {
+          for (var j=0; j < listCategory.length; j++)
+            {
+              if (listProduct[i].categoryId == listCategory[j].categoryId)
+              {
+                ProductCategoryList getSet = ProductCategoryList();
+                getSet.message = listCategory[j].categoryName ?? "";
+                getSet.itemData?.add(listProduct[i]);
+                listProductTemp.add(getSet);
+              }
+            }
+        }
+
 
       setState(() {
         _isLoading = false;
+        _isLoadingMore = false;
       });
 
-    }else {
+    }
+    else
+    {
       showSnackBar(dataResponse.message, context);
       setState(() {
         _isLoading = false;
+        _isLoadingMore = false;
+
       });
     }
   }
 
-  void _makeDeleteCustomerRequest(Products product, int index) async {
+  _makeCategoryListProduct() async {
+    setState(() {
+      _isLoading = true;
+    });
+    HttpWithMiddleware http = HttpWithMiddleware.build(middlewares: [
+      HttpLogger(logLevel: LogLevel.BODY),
+    ]);
+
+    final url = Uri.parse(BASE_URL + categoryList);
+
+    Map<String, String> jsonBody = {
+      'from_app':FROM_APP,
+      'page':'',
+      'limit':''
+    };
+
+    final response = await http.post(url, body: jsonBody);
+    final statusCode = response.statusCode;
+
+    final body = response.body;
+    Map<String, dynamic> user = jsonDecode(body);
+    var dataResponse = CategoryResponseModel.fromJson(user);
+
+    if (statusCode == 200 && dataResponse.success == 1) {
+      listCategory = [];
+      if(dataResponse.categoryDetails != null) {
+        if(dataResponse.categoryDetails!.isNotEmpty) {
+          listCategory = dataResponse.categoryDetails ?? [];
+
+          for (var i=0; i < listCategory.length; i++)
+          {
+            tabTitles.add(listCategory[i].categoryName.toString());
+          }
+
+
+
+          print("${tabTitles.length} ==== TOTAL LENGHT FOR TABS");
+
+          setState(() {
+            _tabs = getTabs(tabTitles);
+          });
+
+        }
+      }
+
+    } else {
+
+    }
+
+    _getItemListData(true);
+  }
+
+
+  void _makeDeleteCustomerRequest(ItemData product, int index) async {
     HttpWithMiddleware http = HttpWithMiddleware.build(middlewares: [
       HttpLogger(logLevel: LogLevel.BODY),
     ]);

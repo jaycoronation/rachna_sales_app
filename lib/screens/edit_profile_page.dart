@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart';
 import 'package:pretty_http_logger/pretty_http_logger.dart';
-import 'package:salesapp/Model/Product_item_list_response_model.dart';
 import 'package:salesapp/Model/designation_response_model.dart';
 import 'package:salesapp/Model/order_list_response_model.dart';
 import 'package:salesapp/model/profile_detail_response_model.dart';

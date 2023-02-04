@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:lottie/lottie.dart';
 import 'package:pretty_http_logger/pretty_http_logger.dart';
 import 'package:salesapp/screens/add_customer_page.dart';
 
@@ -219,6 +220,23 @@ class _SelectCustomerListPageState extends BaseState<SelectCustomerListPage> {
                     ),
                   )),
             ),
+            if (_isLoadingMore == true)
+              Container(
+                padding: const EdgeInsets.only(top: 10, bottom: 10),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                        width: 30,
+                        height: 30,
+                        child: Lottie.asset('assets/images/loader_new.json', repeat: true, animate: true, frameRate: FrameRate.max)),
+                    const Text(' Loading more...',
+                        style: TextStyle(color: black, fontWeight: FontWeight.w400, fontSize: 16)
+                    )
+                  ],
+                ),
+              ),
           ],
         ),
       ),
@@ -248,24 +266,20 @@ class _SelectCustomerListPageState extends BaseState<SelectCustomerListPage> {
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Stack(
+            Container(
               alignment: Alignment.center,
-              children: [
-                Container(
-                  margin: const EdgeInsets.only(top: 15, bottom: 15),
-                  decoration: BoxDecoration(
-                      color: kLightestPurple,
-                      borderRadius: BorderRadius.circular(22)
-                  ),
-                  width: 40,
-                  height: 40,
-                ),
-                Text(listCustomer[index].customerName.toString().isNotEmpty ? getInitials(listCustomer[index].customerName.toString()) : "",
-                  maxLines: 1,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 11, color: kBlue, fontWeight: FontWeight.w400),
-                ),
-              ],
+              margin: const EdgeInsets.only(top: 15, bottom: 15),
+              decoration: BoxDecoration(
+                  color: kLightestPurple,
+                  borderRadius: BorderRadius.circular(22)
+              ),
+              width: 40,
+              height: 40,
+              child: Text(listCustomer[index].customerName.toString().isNotEmpty ? getInitials(listCustomer[index].customerName.toString()) : "",
+                maxLines: 1,
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 11, color: kBlue, fontWeight: FontWeight.w400),
+              ),
             ),
             Column(
               mainAxisAlignment: MainAxisAlignment.start,

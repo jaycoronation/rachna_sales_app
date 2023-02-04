@@ -1,13 +1,21 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:pretty_http_logger/pretty_http_logger.dart';
+import 'package:salesapp/Model/common_response_model.dart';
+import 'package:salesapp/model/customer_detail_response_model.dart';
 
 import '../constant/color.dart';
+import '../model/order_detail_response_model.dart';
+import '../network/api_end_point.dart';
 import '../utils/app_utils.dart';
 import '../utils/base_class.dart';
 import '../widget/loading.dart';
 
 class AddPaymentDetailPage extends StatefulWidget {
-  const AddPaymentDetailPage({Key? key}) : super(key: key);
+  final Order dataGetSet;
+  const AddPaymentDetailPage(this.dataGetSet, {Key? key}) : super(key: key);
 
   @override
   _AddPaymentDetailPageState createState() => _AddPaymentDetailPageState();
@@ -17,14 +25,17 @@ class _AddPaymentDetailPageState extends BaseState<AddPaymentDetailPage> {
   bool _isLoading = false;
 
   TextEditingController _transactionController = TextEditingController();
-  TextEditingController _customerNameController = TextEditingController();
+  TextEditingController _transactionModeController = TextEditingController();
   TextEditingController _paymentTypeController = TextEditingController();
   TextEditingController _amountController = TextEditingController();
   FocusNode inputNode = FocusNode();
-  bool _passwordVisible = true;
+  Order? dataGetSet;
 
   @override
   void initState() {
+
+    dataGetSet = (widget as AddPaymentDetailPage).dataGetSet;
+
     super.initState();
   }
 
@@ -71,7 +82,7 @@ class _AddPaymentDetailPageState extends BaseState<AddPaymentDetailPage> {
                         child: const Text("Add Payment Details",
                             style: TextStyle(fontWeight: FontWeight.w700, color: white, fontSize: 20)),
                       ),
-                      Container(
+                      /*Container(
                         margin: const EdgeInsets.only(top:20, left: 20, right: 20),
                         child: TextField(
                           cursorColor: black,
@@ -83,16 +94,16 @@ class _AddPaymentDetailPageState extends BaseState<AddPaymentDetailPage> {
                               prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16)
                           ),
                         ),
-                      ),
+                      ),*/
                       Container(
                         margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
                         child: TextField(
                           cursorColor: black,
-                          controller: _customerNameController,
+                          controller: _transactionModeController,
                           keyboardType: TextInputType.name,
                           style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
                           decoration: const InputDecoration(
-                              labelText: 'Customer Name',
+                              labelText: 'Transaction Mode',
                               prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16)
                           ),
                         ),
@@ -138,22 +149,23 @@ class _AddPaymentDetailPageState extends BaseState<AddPaymentDetailPage> {
                         child: TextButton(
                           onPressed: () {
                             FocusScope.of(context).requestFocus(FocusNode());
-                            String transaction = _transactionController.text.toString();
-                            String customerName = _customerNameController.text.toString();
+                            // String transaction = _transactionController.text.toString();
+                            String transactionMode = _transactionModeController.text.toString();
                             String paymentType = _paymentTypeController.text.toString();
                             String amount = _amountController.text.toString();
 
-                            if (transaction.trim().isEmpty) {
+                            /*if (transaction.trim().isEmpty) {
                               showSnackBar("Please enter a transaction id", context);
-                            } else if (customerName.trim().isEmpty) {
-                              showSnackBar("Please enter a customer Name", context);
+                            } else*/
+                              if (transactionMode.trim().isEmpty) {
+                              showSnackBar("Please enter a transaction mode", context);
                             } else if(paymentType.isEmpty) {
                               showSnackBar('Please enter payment type',context);
                             } else if (amount.trim().isEmpty) {
                               showToast("Please enter amount");
                             } else {
                               if(isInternetConnected) {
-                                Navigator.pop(context);
+                                _saveTransaction();
                               }else{
                                 noInterNet(context);
                               }
@@ -178,6 +190,50 @@ class _AddPaymentDetailPageState extends BaseState<AddPaymentDetailPage> {
   void castStatefulWidget() {
     // TODO: implement castStatefulWidget
     widget is AddPaymentDetailPage;
+  }
+
+  void _saveTransaction() async {
+    setState(() {
+      _isLoading = true;
+    });
+    HttpWithMiddleware http = HttpWithMiddleware.build(middlewares: [
+      HttpLogger(logLevel: LogLevel.BODY),
+    ]);
+
+    final url = Uri.parse(BASE_URL + saveTransaction);
+
+    Map<String, String> jsonBody = {
+      'order_id': dataGetSet!.orderId!.toString(),
+      'emp_id': sessionManager.getEmpId().toString().trim(),
+      'customer_id': dataGetSet!.customerId!.toString(),
+      'transection_amount':_amountController.value.text.trim(),
+      'transection_mode': _transactionModeController.value.text.trim(),
+      'transection_type':_paymentTypeController.value.text.trim(),
+      'transection_status': '',
+      'transection_date':'',
+      "from_app": FROM_APP,
+    };
+
+    final response = await http.post(url, body: jsonBody);
+    final statusCode = response.statusCode;
+
+    final body = response.body;
+    Map<String, dynamic> user = jsonDecode(body);
+    var dataResponse = CommonResponseModel.fromJson(user);
+
+    if (statusCode == 200 && dataResponse.success == 1) {
+      setState(() {
+        _isLoading = false;
+      });
+
+      Navigator.pop(context, "success");
+
+    }else {
+      setState(() {
+        _isLoading = false;
+      });
+      showSnackBar(dataResponse.message, context);
+    }
   }
 
 }

@@ -5,19 +5,22 @@ import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import 'package:pretty_http_logger/pretty_http_logger.dart';
 import 'package:salesapp/Model/customer_list_response_model.dart';
+import 'package:salesapp/model/order_detail_response_model.dart';
 import 'package:salesapp/screens/select_customer_list_page.dart';
 import 'package:salesapp/screens/select_product_page.dart';
 
-import '../Model/Product_item_list_response_model.dart';
 import '../Model/common_response_model.dart';
 import '../constant/color.dart';
+import '../model/product_item_data_response_model.dart';
 import '../network/api_end_point.dart';
 import '../utils/app_utils.dart';
 import '../utils/base_class.dart';
 import '../widget/loading.dart';
 
 class AddOrderPage extends StatefulWidget {
-  const AddOrderPage({Key? key}) : super(key: key);
+  final Order getSet;
+  final bool isFromList;
+  const AddOrderPage(this.getSet, this.isFromList, {Key? key}) : super(key: key);
 
   @override
   _AddOrderPageState createState() => _AddOrderPageState();
@@ -38,12 +41,12 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
   var searchText = "";
   FocusNode inputNode = FocusNode();
 
-  var listProduct = List<Products>.empty(growable: true);
+  var listProduct = List<ItemData>.empty(growable: true);
   var customerDetail = CustomerList();
 
   var subTotal = 0.0;
 
-  var mainListProduct = List<Products>.empty(growable: true);
+  var mainListProduct = List<ItemData>.empty(growable: true);
 
   @override
   void initState() {
@@ -156,29 +159,26 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
                 ),
               ],
             ),
+            Gap(15),
             Visibility(
               visible: customerDetail.customerName?.isNotEmpty ?? false,
               child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Stack(
+                Container(
                   alignment: Alignment.center,
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.only(top: 15, bottom: 15, left: 15),
-                      decoration: BoxDecoration(
-                          color: kLightestPurple,
-                          borderRadius: BorderRadius.circular(22)
-                      ),
-                      width: 40,
-                      height: 40,
-                    ),
-                    Text(customerDetail.customerName.toString().isNotEmpty ? getInitials(customerDetail.customerName.toString().trim()) : "",
-                      maxLines: 1,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(fontSize: 11, color: kBlue, fontWeight: FontWeight.w400),
-                    ),
-                  ],
+                  margin: const EdgeInsets.only(left:15,top: 15, bottom: 15),
+                  decoration: BoxDecoration(
+                      color: kLightestPurple,
+                      borderRadius: BorderRadius.circular(22)
+                  ),
+                  width: 40,
+                  height: 40,
+                  child: Text(customerDetail.customerName.toString().isNotEmpty ? getInitials(customerDetail.customerName.toString().trim()) : "",
+                    maxLines: 1,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 11, color: kBlue, fontWeight: FontWeight.w400),
+                  ),
                 ),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -570,50 +570,36 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
           var total = double.parse(listProduct[i].stockPrice.toString()) * listProduct[i].quantity;
           subTotal = subTotal + total;
         }
-
-        if (discountController.value.text.isNotEmpty) {
-          var value = discountController.value.text;
-          subTotal = subTotal - double.parse(value.isNotEmpty ? value : "0");
         }
+      if (discountController.value.text.isNotEmpty) {
+        var value = discountController.value.text;
+        subTotal = subTotal - double.parse(value.isNotEmpty ? value : "0");
+      }
 
-        if (adjustmentController.value.text.isNotEmpty)
-          {
-            var value = adjustmentController.value.text;
-            // subTotal = subTotal + (double.parse(value.isNotEmpty ? value : "0.0"));
+      if (adjustmentController.value.text.isNotEmpty)
+      {
+        var value = adjustmentController.value.text;
+        // subTotal = subTotal + (double.parse(value.isNotEmpty ? value : "0.0"));
 
-             if (isAdjPlus)
-            {
-              subTotal = subTotal + (double.parse(value.isNotEmpty ? value : "0.0"));
-            }
-            else
-            {
-              subTotal = subTotal - (double.parse(value.isNotEmpty ? value : "0.0"));
-            }
-          }
+        print("value ==== $value");
+        print("subTotal ==== $subTotal");
 
-          /*if (subTotal == 0.0)
-            {
-              print(listProduct[i].quantity);
-              if (listProduct[i].quantity == 1)
-              {
-                subTotal = double.parse(listProduct[i].stockPrice.toString());
-              }
-              else
-              {
-                var total = double.parse(listProduct[i].stockPrice.toString()) * listProduct[i].quantity;;
-                subTotal = total;
-              }
-              subTotal = double.parse(listProduct[i].stockPrice.toString());
-            }
-          else
-            {
-
-            }*/
+        if (isAdjPlus)
+        {
+          var total = subTotal + (double.parse(value.isNotEmpty ? value : "0.0"));
+          subTotal = total;
         }
+        else
+        {
+          var total = subTotal - (double.parse(value.isNotEmpty ? value : "0.0"));
+          subTotal = total;
+        }
+      }
+
     });
   }
 
-  Future<void> _redirectToAddItem(BuildContext context, List<Products> listProductData) async {
+  Future<void> _redirectToAddItem(BuildContext context, List<ItemData> listProductData) async {
     final result = await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => SelectProductPage(listProductData)),
@@ -666,7 +652,7 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
 
   void _makeJsonData() async {
 
-    List<Products> listProductsTemp = List<Products>.empty(growable: true);
+    List<ItemData> listProductsTemp = List<ItemData>.empty(growable: true);
     for (int i = 0; i < listProduct.length; i++) {
         listProductsTemp.add(listProduct[i]);
     }
@@ -675,7 +661,6 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
       listProduct.clear();
       listProduct.addAll(listProductsTemp);
     }
-
 
     print("<><> Json Product ${jsonEncode(listProduct).toString().trim()} END<><>");
 
@@ -730,7 +715,7 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
       });
       showSnackBar(dataResponse.message, context);
 
-      Navigator.pop(context);
+      Navigator.pop(context, "success");
 
     }else {
       setState(() {

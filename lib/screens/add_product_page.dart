@@ -3,18 +3,18 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pretty_http_logger/pretty_http_logger.dart';
-import 'package:salesapp/Model/Product_item_list_response_model.dart';
 import 'package:salesapp/model/category_response_model.dart';
 
 import '../Model/common_response_model.dart';
 import '../constant/color.dart';
+import '../model/product_item_data_response_model.dart';
 import '../network/api_end_point.dart';
 import '../utils/app_utils.dart';
 import '../utils/base_class.dart';
 import '../widget/loading.dart';
 
 class AddProductPage extends StatefulWidget {
-  final Products getSet;
+  final ItemData getSet;
   final bool isFromList;
   const AddProductPage(this.getSet, this.isFromList, {Key? key}) : super(key: key);
 

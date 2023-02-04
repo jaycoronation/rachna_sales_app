@@ -8,7 +8,9 @@ const loginWithOTP = "login/login_with_otp";
 const verifyOTP = "login/verify_otp";
 
 const dashboardData = "dashboardData";
+
 const customerList = "manageCustomer/list";
+const customerDetails = "manageCustomer/details";
 
 const employeeList = "manageEmployee/list";
 const deleteCustomerList = "manageCustomer/delete";
@@ -18,7 +20,7 @@ const addEmployee = "manageEmployee/save";
 const manageDesignation = "manageDesignation/list";
 const deleteEmployee = "manageEmployee/delete";
 
-const itemList = "ItemList";
+const itemList = "ItemListNew";
 const addStock = "manageStock/save";
 const deleteStock = "manageStock/delete";
 
@@ -31,3 +33,6 @@ const orderSave = "order";
 const orderDetails = "orderMasterList/details";
 
 const categoryList = "manageCategory/list";
+
+const saveTransaction = "manageTransection/save";
+const transactionList = "manageTransection/list";

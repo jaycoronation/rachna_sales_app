@@ -4,10 +4,10 @@ import 'package:dot_navigation_bar/dot_navigation_bar.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:pretty_http_logger/pretty_http_logger.dart';
-import 'package:salesapp/Model/Product_item_list_response_model.dart';
 import 'package:salesapp/Model/customer_list_response_model.dart';
 import 'package:salesapp/Model/dash_board_data_response_model.dart';
 import 'package:salesapp/Model/employee_list_response_model.dart';
+import 'package:salesapp/model/order_detail_response_model.dart';
 import 'package:salesapp/screens/add_customer_page.dart';
 import 'package:salesapp/screens/add_employee_page.dart';
 import 'package:salesapp/screens/add_order_page.dart';
@@ -22,6 +22,7 @@ import 'package:salesapp/screens/transaction_list_page.dart';
 import 'package:salesapp/utils/app_utils.dart';
 
 import '../../constant/color.dart';
+import '../../model/product_item_data_response_model.dart';
 import '../../network/api_end_point.dart';
 import '../../utils/base_class.dart';
 import '../../utils/session_manager_methods.dart';
@@ -116,7 +117,7 @@ class _DashboardPageState extends BaseState<DashboardPage> {
             padding: const EdgeInsets.only(right: 8, top: 9, bottom: 9),
             child: GestureDetector(
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const AddOrderPage()));
+                _redirectToAddOrder(context, Order(), false);
               },
               child: Container(
                 height: 36,
@@ -321,9 +322,9 @@ class _DashboardPageState extends BaseState<DashboardPage> {
                           },
                           child: Container(
                             decoration: BoxDecoration(
-                                border: Border.all(width: 1, color: kLightestGray),
+                                border: Border.all(width: 1, color: kLightestPurple),
                                 borderRadius: const BorderRadius.all(Radius.circular(6.0),),
-                                color: kLightestGray,
+                                color: kLightestPurple,
                                 shape: BoxShape.rectangle
                             ),
                             alignment: Alignment.topLeft,
@@ -603,7 +604,7 @@ class _DashboardPageState extends BaseState<DashboardPage> {
                   Flexible(
                     child: GestureDetector(
                       onTap: () {
-                        _redirectToAddProduct(context, Products(), false);
+                        _redirectToAddProduct(context, ItemData(), false);
                       },
                       child: Container(
                         decoration: BoxDecoration(
@@ -737,10 +738,26 @@ class _DashboardPageState extends BaseState<DashboardPage> {
     }
   }
 
-  Future<void> _redirectToAddProduct(BuildContext context, Products getSet, bool isFromList) async {
+  Future<void> _redirectToAddProduct(BuildContext context, ItemData getSet, bool isFromList) async {
     final result = await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => AddProductPage(getSet, isFromList)),
+    );
+
+    print("result ===== $result");
+
+    if (result == "success") {
+      _makeCallDashboardData();
+      setState(() {
+        isHomeLoad = true;
+      });
+    }
+  }
+
+  Future<void> _redirectToAddOrder(BuildContext context, Order getSet, bool isFromList) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => AddOrderPage(getSet, isFromList)),
     );
 
     print("result ===== $result");
@@ -848,7 +865,7 @@ class _DashboardPageState extends BaseState<DashboardPage> {
     final url = Uri.parse(BASE_URL + dashboardData);
     Map<String, String> jsonBody = {
       'from_app': FROM_APP,
-      'customer_id': sessionManager.getEmpId().toString(),
+      'customer_id': sessionManager.getEmpId().toString().trim(),
     };
 
     final response = await http.post(url, body: jsonBody);

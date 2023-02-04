@@ -1,13 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import 'package:pretty_http_logger/pretty_http_logger.dart';
 import 'package:salesapp/screens/edit_profile_page.dart';
 import 'package:salesapp/screens/login_page.dart';
 
-import '../Model/login_with_otp_response_model.dart';
 import '../constant/color.dart';
 import '../model/profile_detail_response_model.dart';
 import '../network/api_end_point.dart';

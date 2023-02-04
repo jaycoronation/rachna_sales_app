@@ -72,36 +72,52 @@ class CategoryDetails {
       String? categoryId, 
       String? categoryName, 
       String? status, 
-      String? createdAt,}){
+      String? createdAt,
+    bool? isSelected = false,}){
     _categoryId = categoryId;
     _categoryName = categoryName;
     _status = status;
     _createdAt = createdAt;
+    _isSelected = isSelected;
 }
+
+  set isSelected(bool? value) {
+    _isSelected = value;
+  }
 
   CategoryDetails.fromJson(dynamic json) {
     _categoryId = json['category_id'];
     _categoryName = json['category_name'];
     _status = json['status'];
     _createdAt = json['created_at'];
+    _isSelected = json['isSelected'];
+
   }
   String? _categoryId;
   String? _categoryName;
   String? _status;
   String? _createdAt;
-CategoryDetails copyWith({  String? categoryId,
+  bool? _isSelected;
+
+  CategoryDetails copyWith({  String? categoryId,
   String? categoryName,
   String? status,
   String? createdAt,
-}) => CategoryDetails(  categoryId: categoryId ?? _categoryId,
+    bool? isSelected,
+
+  }) => CategoryDetails(  categoryId: categoryId ?? _categoryId,
   categoryName: categoryName ?? _categoryName,
   status: status ?? _status,
   createdAt: createdAt ?? _createdAt,
-);
+    isSelected: isSelected ?? _isSelected,
+
+  );
   String? get categoryId => _categoryId;
   String? get categoryName => _categoryName;
   String? get status => _status;
   String? get createdAt => _createdAt;
+  bool? get isSelected => _isSelected;
+
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -109,6 +125,8 @@ CategoryDetails copyWith({  String? categoryId,
     map['category_name'] = _categoryName;
     map['status'] = _status;
     map['created_at'] = _createdAt;
+    map['isSelected'] = _isSelected;
+
     return map;
   }
 

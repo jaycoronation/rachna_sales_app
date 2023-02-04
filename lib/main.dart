@@ -61,7 +61,7 @@ class MyApp extends StatelessWidget {
         fontFamily: 'Rubik',
       ),
       navigatorKey: NavigationService.navigatorKey,
-      home: const MyHomePage(title: 'Rachna Sales App',),
+      home: const MyHomePage(title: 'Rachna Sales App'),
     );
   }
 }

@@ -57,7 +57,6 @@ class _TabNavigationPageState extends State<TabNavigation> {
         _pages.removeAt(2);
         _pages.insert(2, CustomerListPage(key: UniqueKey()));
       });
-
     }
     /*else if(value == 3 && isEmployeeListReload) {
       setState(() {
@@ -89,9 +88,10 @@ class _TabNavigationPageState extends State<TabNavigation> {
       bottomNavigationBar: Stack(
         children: [
           DotNavigationBar(
+            backgroundColor: kLightestPurple,
             boxShadow: const [
               BoxShadow(
-                  color: kLightestGray,
+                  color: kBlue,
                   spreadRadius:0,
                   blurRadius: 1,
                   offset: Offset(0, 0), // changes position of shadow
@@ -100,7 +100,7 @@ class _TabNavigationPageState extends State<TabNavigation> {
             key: bottomWidgetKey1,
             // margin: const EdgeInsets.only(left: 10, right: 10),
             currentIndex: _pages.indexOf(_selectedTab),
-            dotIndicatorColor: white,
+            dotIndicatorColor: kLightestPurple,
             unselectedItemColor: kBlue,
             marginR: const EdgeInsets.symmetric(horizontal: 35, vertical: 12),
             onTap: onTap,
@@ -136,22 +136,22 @@ class _TabNavigationPageState extends State<TabNavigation> {
                 children: [
                   Expanded(child:
                   Container(
-                    margin: const EdgeInsets.only(right: 10),
+                    margin: const EdgeInsets.only(right: 20),
                     color: Colors.transparent,
                     height: 10, width: 2,
-                    child: Image.asset("assets/images/ic_view_pager_bottom.png", height: 10, width: 2, color: _currentIndex == 0 ? kBlue : white,),
+                    child: Image.asset("assets/images/ic_view_pager_bottom.png", height: 10, width: 2, color: _currentIndex == 0 ? kBlue : kLightestPurple,),
                   )),
                   Expanded(child: Container(
-                    margin: const EdgeInsets.only(right: 10),
+                    margin: const EdgeInsets.only(right:30),
                     color: Colors.transparent,
                     height: 10, width: 10,
-                    child: Image.asset("assets/images/ic_view_pager_bottom.png",height: 10, width: 10, color: _currentIndex == 1 ? kBlue : white,),
+                    child: Image.asset("assets/images/ic_view_pager_bottom.png",height: 10, width: 10, color: _currentIndex == 1 ? kBlue : kLightestPurple,),
                   )),
                   Expanded(child: Container(
-                    margin: const EdgeInsets.only(left: 10),
+                    margin: const EdgeInsets.only(right: 30),
                     color: Colors.transparent,
                     height: 10, width: 10,
-                    child: Image.asset("assets/images/ic_view_pager_bottom.png", height: 10, width: 10, color: _currentIndex == 2 ? kBlue : white,),
+                    child: Image.asset("assets/images/ic_view_pager_bottom.png", height: 10, width: 10, color: _currentIndex == 2 ? kBlue : kLightestPurple,),
                   )),
                   /*Expanded(child: Container(
                     margin: const EdgeInsets.only(left: 5),

@@ -10,6 +10,7 @@ import '../network/api_end_point.dart';
 import '../utils/app_utils.dart';
 import '../utils/base_class.dart';
 import '../widget/loading.dart';
+import 'add_payement_detail_page.dart';
 
 class OrderDetailPage extends StatefulWidget {
   final customerId;
@@ -26,6 +27,7 @@ class _OrderDetailPageState extends BaseState<OrderDetailPage> {
   List<OrderItems> listOrderItems = List<OrderItems>.empty();
   OrderDetailResponseModel orderDetailResponseModel = OrderDetailResponseModel();
   late ScrollController _scrollViewController;
+
 
   @override
   void initState() {
@@ -369,7 +371,15 @@ class _OrderDetailPageState extends BaseState<OrderDetailPage> {
                 ],
               ),
             ),
+          floatingActionButton: FloatingActionButton(
+            onPressed: (){
+              _redirectToTransaction(context, orderDetailResponseModel.order!);
+            },
+            backgroundColor: kBlue,
+            child: const Icon(Icons.add, color: white,),
+          )
       ),
+
     );
   }
 
@@ -379,6 +389,19 @@ class _OrderDetailPageState extends BaseState<OrderDetailPage> {
     widget is OrderDetailPage;
   }
 
+  Future<void> _redirectToTransaction(BuildContext context, Order getSet) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => AddPaymentDetailPage(getSet)),
+    );
+
+    print("result ===== $result");
+
+    if (result == "success") {
+      setState(() {
+      });
+    }
+  }
   //API call function...
   _makeCallOrderDetail() async {
     setState(() {
@@ -406,9 +429,9 @@ class _OrderDetailPageState extends BaseState<OrderDetailPage> {
     if (statusCode == 200 && dataResponse.success == 1) {
       orderDetailResponseModel = dataResponse;
 
-      print("orderId====>" + orderDetailResponseModel.order!.orderId.toString());
-
-      print("orderItems?.length====>" + orderDetailResponseModel.order!.orderItems!.length.toString());
+      // print("orderId====>" + orderDetailResponseModel.order!.orderId.toString());
+      //
+      // print("orderItems?.length====>" + orderDetailResponseModel.order!.orderItems!.length.toString());
 
 
       listOrderItems = [];

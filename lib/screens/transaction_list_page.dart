@@ -2,11 +2,15 @@ import 'dart:convert';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:lottie/lottie.dart';
 import 'package:pretty_http_logger/pretty_http_logger.dart';
+import 'package:salesapp/model/transaction_list_response_model.dart';
+import 'package:salesapp/screens/add_payement_detail_page.dart';
 
-import '../Model/login_with_otp_response_model.dart';
 import '../constant/color.dart';
+import '../model/order_detail_response_model.dart';
 import '../network/api_end_point.dart';
 import '../utils/app_utils.dart';
 import '../utils/base_class.dart';
@@ -21,19 +25,69 @@ class TransactionListPage extends StatefulWidget {
 
 class _TransactionListPageState extends BaseState<TransactionListPage> {
   bool _isLoading = false;
+  bool _isSearchLoading = false;
+
   TextEditingController searchController = TextEditingController();
   var searchText = "";
+
+  bool _isLoadingMore = false;
+  int _pageIndex = 0;
+  final int _pageResult = 10;
+  bool _isLastPage = false;
+
+  late ScrollController _scrollViewController;
+  bool isScrollingDown = false;
+
+  String dateStartSelectionChanged = "";
+  String dateEndSelectionChanged = "";
+
+  var listTransactions = List<TransectionDetails>.empty(growable: true);
 
   @override
   void initState() {
     super.initState();
 
+    _scrollViewController = ScrollController();
+    _scrollViewController.addListener(() {
+
+      if (_scrollViewController.position.userScrollDirection == ScrollDirection.reverse) {
+        if (!isScrollingDown) {
+          isScrollingDown = true;
+          setState(() {});
+        }
+      }
+      if (_scrollViewController.position.userScrollDirection == ScrollDirection.forward) {
+        if (isScrollingDown) {
+          isScrollingDown = false;
+          setState(() {});
+        }
+      }
+
+      pagination();
+
+    });
+
     if(isInternetConnected) {
-      // _makeCallRequestOtp();
+      _getTransactionListData(true);
     }else {
       noInterNet(context);
     }
+    isOrderListLoad = false;
 
+    super.initState();
+
+  }
+
+  void pagination() {
+    if(!_isLastPage && !_isLoadingMore)
+    {
+      if ((_scrollViewController.position.pixels == _scrollViewController.position.maxScrollExtent)) {
+        setState(() {
+          _isLoadingMore = true;
+          _getTransactionListData(false);
+        });
+      }
+    }
   }
 
   @override
@@ -67,16 +121,6 @@ class _TransactionListPageState extends BaseState<TransactionListPage> {
               )
           ),
           actions: [
-            GestureDetector(
-              onTap: () {
-              },
-              child: Container(
-                height: 45,
-                width: 45,
-                alignment: Alignment.center,
-                child: const Icon(Icons.search, color: white, size: 28,),
-              ),
-            ),
             GestureDetector(
               onTap: () {
 
@@ -194,7 +238,6 @@ class _TransactionListPageState extends BaseState<TransactionListPage> {
                       margin: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 10),
                       child: TextField(
                         keyboardType: TextInputType.text,
-                        textCapitalization: TextCapitalization.sentences,
                         textAlign: TextAlign.start,
                         controller: searchController,
                         cursorColor: black,
@@ -210,34 +253,39 @@ class _TransactionListPageState extends BaseState<TransactionListPage> {
                               const BorderSide(color: kLightPurple, width: 0),
                               borderRadius: BorderRadius.circular(8),
                             ),
-                            hintStyle: const TextStyle(
-                                fontWeight: FontWeight.w400,
-                                color: kBlue,
-                                fontSize: 14
-                            ),
-                            prefixIcon: const Icon(
-                              Icons.search,
-                              size: 26,
-                              color: kBlue,
+                            hintStyle: const TextStyle(fontWeight: FontWeight.w400, color: kBlue, fontSize: 14),
+                            prefixIcon: const Icon(Icons.search, size: 26, color: kBlue),
+                            suffixIcon: InkWell(
+                              child: const Icon(
+                                Icons.close,
+                                size: 26,
+                                color: black,
+                              ),
+                              onTap: () {
+                                setState(() {
+                                  isCustomerListReload = false;
+                                  searchController.text = "";
+                                  searchText = "";
+                                });
+
+                                _getTransactionListData(true);
+                              },
                             )
                         ),
                         onChanged: (text) {
                           searchController.text = text;
                           searchController.selection = TextSelection.fromPosition(TextPosition(offset: searchController.text.length));
-                          if(text.isEmpty)
-                          {
+                          if(text.isEmpty) {
                             searchText = "";
-                            //_getAllProduct(false,true);
-                          }
-                          else if(text.length > 3)
-                          {
+                            _getTransactionListData(true);
+                          } else if(text.length > 3) {
                             searchText = searchController.text.toString().trim();
-                            //_getAllProduct(false,true);
+                            _getTransactionListData(true);
                           }
                         },
                       )
                   ),
-                  Row(
+                  /*Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Container(
@@ -267,11 +315,14 @@ class _TransactionListPageState extends BaseState<TransactionListPage> {
                         ),
                       ),
                     ],
-                  )
+                  )*/
                 ],
               ),
             ),
-            Expanded(
+            _isSearchLoading
+                ? const Center(
+              child: LoadingWidget(),
+            ) : Expanded(
               child: ListView.builder(
                   scrollDirection: Axis.vertical,
                   physics: const ScrollPhysics(),
@@ -298,14 +349,15 @@ class _TransactionListPageState extends BaseState<TransactionListPage> {
                                   Container(
                                     margin: const EdgeInsets.only(left: 8, top: 6),
                                     alignment: Alignment.center,
-                                    child: const Text("Ramada Hotel",
+                                    child: Text(checkValidString(listTransactions[index].customerDetails!.customerName!.toString()),
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
                                       textAlign: TextAlign.center,
-                                      style: TextStyle(fontSize: 15, color: black, fontWeight: FontWeight.w700),
+                                      style: const TextStyle(fontSize: 15, color: black, fontWeight: FontWeight.w700),
                                     ),
                                   ),
-                                  Container(
+                                  listTransactions[index].orderDetails!.subTotal!.toString().isNotEmpty
+                                  ? Container(
                                     margin: const EdgeInsets.only(right: 8, top: 6),
                                     child: RichText(
                                       textAlign: TextAlign.center,
@@ -313,27 +365,28 @@ class _TransactionListPageState extends BaseState<TransactionListPage> {
                                         text: '₹ ',
                                         style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: black),
                                         children: <TextSpan>[
-                                          TextSpan(text: "2000",
+                                          TextSpan(text: checkValidString(listTransactions[index].orderDetails!.subTotal!.toString()),
                                               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: black),
                                               recognizer: TapGestureRecognizer()..onTap = () => {
                                               }),
                                         ],
                                       ),
                                     ),
-                                  ),
+                                  )
+                                  : Container(),
                                 ],
                               ),
                               Container(
                                 alignment: Alignment.bottomLeft,
                                 margin: const EdgeInsets.only(left: 10, top: 6),
-                                child: const Text("07:15 pm, 14 May 2022",
+                                child: const Text("-",
                                   textAlign: TextAlign.start,
                                   style: TextStyle(fontSize: 13, color: kGray, fontWeight: FontWeight.w400),
                                 ),
                               ),
                               Container(
                                   margin: const EdgeInsets.only(top: 20, left: 10, right: 10),
-                                  height: index == 8-1 ? 0 : 0.8, color: kLightPurple),
+                                  height: index == listTransactions.length-1 ? 0 : 0.8, color: kLightPurple),
                             ],
                           ),
                         ),
@@ -341,6 +394,22 @@ class _TransactionListPageState extends BaseState<TransactionListPage> {
                     ),
                   )),
             ),
+            if (_isLoadingMore == true)
+              Container(
+                padding: const EdgeInsets.only(top: 10, bottom: 10),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(width: 30,
+                        height: 30, child: Lottie.asset('assets/images/loader_new.json', repeat: true, animate: true, frameRate: FrameRate.max)),
+                    const Text(
+                        ' Loading more...',
+                        style: TextStyle(color: black, fontWeight: FontWeight.w400, fontSize: 16)
+                    )
+                  ],
+                ),
+              ),
           ],
         ),
       ),
@@ -353,33 +422,101 @@ class _TransactionListPageState extends BaseState<TransactionListPage> {
     widget is TransactionListPage;
   }
 
-  //API call function...
-  _makeCallRequestOtp(String contactNum) async {
+  Future<void> _redirectToAddPayement(BuildContext context) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => AddPaymentDetailPage(Order())),
+    );
+
+    print("result ===== $result");
+
+    if (result == "success") {
+      _getTransactionListData(true);
+      setState(() {
+        isOrderListLoad = true;
+      });
+    }
+  }
+
+  void _getTransactionListData([bool isFirstTime = false]) async {
+    if (isFirstTime) {
+      if (searchText.isNotEmpty) {
+        setState(() {
+          _isLoading = false;
+          _isSearchLoading = true;
+          _isLoadingMore = false;
+          _pageIndex = 0;
+          _isLastPage = false;
+        });
+      }else {
+        setState(() {
+          _isLoading = true;
+          _isLoadingMore = false;
+          _pageIndex = 0;
+          _isLastPage = false;
+        });
+      }
+    }
+
+
     HttpWithMiddleware http = HttpWithMiddleware.build(middlewares: [
       HttpLogger(logLevel: LogLevel.BODY),
     ]);
 
-    final url = Uri.parse(BASE_URL + loginWithOTP);
-
+    final url = Uri.parse(BASE_URL + transactionList);
     Map<String, String> jsonBody = {
-      'phone': contactNum.toString().trim(),
-      'from_app' : FROM_APP
+      'from_app': FROM_APP,
+      'page': _pageIndex.toString(),
+      'limit': _pageResult.toString(),
+      'search' : searchText,
+      'fromDate' : dateStartSelectionChanged,
+      'toDate': dateEndSelectionChanged
     };
 
     final response = await http.post(url, body: jsonBody);
     final statusCode = response.statusCode;
 
     final body = response.body;
-    Map<String, dynamic> user = jsonDecode(body);
-    var dataResponse = LoginWithOtpResponseModel.fromJson(user);
+    Map<String, dynamic> order = jsonDecode(body);
+    var dataResponse = TransactionListResponseModel.fromJson(order);
 
-    if (statusCode == 200 && dataResponse.success == 1) {
-      showSnackBar(dataResponse.message, context);
-
-    }else {
-      showSnackBar(dataResponse.message, context);
+    if (isFirstTime) {
+      if (listTransactions.isNotEmpty) {
+        listTransactions = [];
+      }
     }
 
+    if (statusCode == 200 && dataResponse.success == 1) {
+      var transactionListResponse = TransactionListResponseModel.fromJson(order);
+
+      if (transactionListResponse.transectionDetails != null) {
+        List<TransectionDetails>? _tempList = [];
+        _tempList = transactionListResponse.transectionDetails;
+        listTransactions.addAll(_tempList!);
+
+        if (_tempList.isNotEmpty) {
+          _pageIndex += 1;
+          if (_tempList.isEmpty || _tempList.length % _pageResult != 0) {
+            _isLastPage = true;
+          }
+        }
+      }
+
+      setState(() {
+        _isLoading = false;
+        _isLoadingMore = false;
+        _isSearchLoading = false;
+
+      });
+
+    }else {
+      setState(() {
+        _isLoading = false;
+        _isLoadingMore = false;
+        _isSearchLoading = false;
+
+      });
+    }
   }
 
 }
