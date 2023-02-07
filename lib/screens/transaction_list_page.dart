@@ -104,7 +104,6 @@ class _TransactionListPageState extends BaseState<TransactionListPage> {
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
           systemOverlayStyle: SystemUiOverlayStyle.dark,
-          toolbarHeight: 61,
           automaticallyImplyLeading: false,
           title: const Text(""),
           leading: GestureDetector(
@@ -213,7 +212,6 @@ class _TransactionListPageState extends BaseState<TransactionListPage> {
                               ],
                             ),
                           ),
-
                         ],
                       ),
                     ],
@@ -328,67 +326,63 @@ class _TransactionListPageState extends BaseState<TransactionListPage> {
                   physics: const ScrollPhysics(),
                   primary: false,
                   shrinkWrap: true,
-                  itemCount: 4,
-                  itemBuilder: (ctx, index) => InkWell(
-                    hoverColor: Colors.white.withOpacity(0.0),
-                    onTap: () async {},
-                    child: Container(
-                      color: white,
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 3),
-                        child: GestureDetector(
-                          onTap: () {
-                          },
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Container(
-                                    margin: const EdgeInsets.only(left: 8, top: 6),
-                                    alignment: Alignment.center,
-                                    child: Text(checkValidString(listTransactions[index].customerDetails!.customerName!.toString()),
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                      textAlign: TextAlign.center,
-                                      style: const TextStyle(fontSize: 15, color: black, fontWeight: FontWeight.w700),
+                  itemCount: listTransactions.length,
+                  itemBuilder: (ctx, index) => Container(
+                    color: white,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 3),
+                      child: GestureDetector(
+                        onTap: () {
+                        },
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  margin: const EdgeInsets.only(left: 8, top: 6),
+                                  alignment: Alignment.center,
+                                  child: Text(checkValidString(listTransactions[index].transectionMode.toString()),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(fontSize: 15, color: black, fontWeight: FontWeight.w700),
+                                  ),
+                                ),
+                                listTransactions[index].orderDetails!.subTotal!.toString().isNotEmpty
+                                ? Container(
+                                  margin: const EdgeInsets.only(right: 8, top: 6),
+                                  child: RichText(
+                                    textAlign: TextAlign.center,
+                                    text: TextSpan(
+                                      text: '₹ ',
+                                      style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: black),
+                                      children: <TextSpan>[
+                                        TextSpan(text: checkValidString(listTransactions[index].transectionAmount.toString()),
+                                            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: black),
+                                            recognizer: TapGestureRecognizer()..onTap = () => {
+                                            }),
+                                      ],
                                     ),
                                   ),
-                                  listTransactions[index].orderDetails!.subTotal!.toString().isNotEmpty
-                                  ? Container(
-                                    margin: const EdgeInsets.only(right: 8, top: 6),
-                                    child: RichText(
-                                      textAlign: TextAlign.center,
-                                      text: TextSpan(
-                                        text: '₹ ',
-                                        style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: black),
-                                        children: <TextSpan>[
-                                          TextSpan(text: checkValidString(listTransactions[index].orderDetails!.subTotal!.toString()),
-                                              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: black),
-                                              recognizer: TapGestureRecognizer()..onTap = () => {
-                                              }),
-                                        ],
-                                      ),
-                                    ),
-                                  )
-                                  : Container(),
-                                ],
+                                )
+                                : Container(),
+                              ],
+                            ),
+                            Container(
+                              alignment: Alignment.bottomLeft,
+                              margin: const EdgeInsets.only(left: 10, top: 6),
+                              child: const Text("-",
+                                textAlign: TextAlign.start,
+                                style: TextStyle(fontSize: 13, color: kGray, fontWeight: FontWeight.w400),
                               ),
-                              Container(
-                                alignment: Alignment.bottomLeft,
-                                margin: const EdgeInsets.only(left: 10, top: 6),
-                                child: const Text("-",
-                                  textAlign: TextAlign.start,
-                                  style: TextStyle(fontSize: 13, color: kGray, fontWeight: FontWeight.w400),
-                                ),
-                              ),
-                              Container(
-                                  margin: const EdgeInsets.only(top: 20, left: 10, right: 10),
-                                  height: index == listTransactions.length-1 ? 0 : 0.8, color: kLightPurple),
-                            ],
-                          ),
+                            ),
+                            Container(
+                                margin: const EdgeInsets.only(top: 20, left: 10, right: 10),
+                                height: index == listTransactions.length-1 ? 0 : 0.8, color: kLightPurple),
+                          ],
                         ),
                       ),
                     ),
@@ -425,7 +419,7 @@ class _TransactionListPageState extends BaseState<TransactionListPage> {
   Future<void> _redirectToAddPayement(BuildContext context) async {
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => AddPaymentDetailPage(Order())),
+      MaterialPageRoute(builder: (context) => AddPaymentDetailPage(Order(), "", "")),
     );
 
     print("result ===== $result");
@@ -457,7 +451,6 @@ class _TransactionListPageState extends BaseState<TransactionListPage> {
         });
       }
     }
-
 
     HttpWithMiddleware http = HttpWithMiddleware.build(middlewares: [
       HttpLogger(logLevel: LogLevel.BODY),

@@ -8,13 +8,18 @@ import 'package:salesapp/model/category_response_model.dart';
 import '../Model/common_response_model.dart';
 import '../constant/color.dart';
 import '../model/product_item_data_response_model.dart';
+import '../model/product_item_list_response_model_old.dart';
 import '../network/api_end_point.dart';
 import '../utils/app_utils.dart';
 import '../utils/base_class.dart';
 import '../widget/loading.dart';
 
 class AddProductPage extends StatefulWidget {
-  final ItemData getSet;
+  // final ItemData getSet;
+  // final ItemDataOld getSet;
+  final Products getSet;
+
+
   final bool isFromList;
   const AddProductPage(this.getSet, this.isFromList, {Key? key}) : super(key: key);
 

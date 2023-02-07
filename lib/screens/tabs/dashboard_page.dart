@@ -22,13 +22,16 @@ import 'package:salesapp/screens/transaction_list_page.dart';
 import 'package:salesapp/utils/app_utils.dart';
 
 import '../../constant/color.dart';
+import '../../model/customer_detail_response_model.dart';
 import '../../model/product_item_data_response_model.dart';
+import '../../model/product_item_list_response_model_old.dart';
 import '../../network/api_end_point.dart';
 import '../../utils/base_class.dart';
 import '../../utils/session_manager_methods.dart';
 import '../../widget/loading.dart';
 import '../../widget/no_internet.dart';
 import '../add_product_page.dart';
+import '../product_list_page_old.dart';
 
 
 class DashboardPage extends StatefulWidget {
@@ -114,7 +117,7 @@ class _DashboardPageState extends BaseState<DashboardPage> {
             ),
           ),*/
           Container(
-            padding: const EdgeInsets.only(right: 8, top: 9, bottom: 9),
+            padding: const EdgeInsets.only(right: 12, top: 9, bottom: 9),
             child: GestureDetector(
               onTap: () {
                 _redirectToAddOrder(context, Order(), false);
@@ -322,7 +325,7 @@ class _DashboardPageState extends BaseState<DashboardPage> {
                           },
                           child: Container(
                             decoration: BoxDecoration(
-                                border: Border.all(width: 1, color: kLightestPurple),
+                                border: Border.all(width: 1, color: kLightPurple),
                                 borderRadius: const BorderRadius.all(Radius.circular(6.0),),
                                 color: kLightestPurple,
                                 shape: BoxShape.rectangle
@@ -421,7 +424,9 @@ class _DashboardPageState extends BaseState<DashboardPage> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => ProductListPage()));
+                            // Navigator.push(context, MaterialPageRoute(builder: (context) => ProductListPage()));
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => ProductListPageOld()));
+
                           },
                           child: Container(
                             decoration: BoxDecoration(
@@ -487,7 +492,7 @@ class _DashboardPageState extends BaseState<DashboardPage> {
                 ],
               ),
               Container(
-                margin: const EdgeInsets.only(left: 5, right: 5, top: 20, bottom: 40),
+                margin: const EdgeInsets.only(left: 5, right: 5, top: 20, bottom: 30),
                 child: SizedBox(
                     height: 110,
                     child: ListView.builder(
@@ -584,7 +589,7 @@ class _DashboardPageState extends BaseState<DashboardPage> {
                             shape: BoxShape.rectangle
                         ),
                         alignment: Alignment.topLeft,
-                        margin: const EdgeInsets.only(top:5, bottom: 5, left: 10, right: 10),
+                        margin: const EdgeInsets.only(bottom: 5, left: 10, right: 10),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -604,7 +609,8 @@ class _DashboardPageState extends BaseState<DashboardPage> {
                   Flexible(
                     child: GestureDetector(
                       onTap: () {
-                        _redirectToAddProduct(context, ItemData(), false);
+                        // _redirectToAddProduct(context, ItemData(), false); //ItemData()
+                        _redirectToAddProduct(context, Products(), false);
                       },
                       child: Container(
                         decoration: BoxDecoration(
@@ -614,7 +620,7 @@ class _DashboardPageState extends BaseState<DashboardPage> {
                             shape: BoxShape.rectangle
                         ),
                         alignment: Alignment.topLeft,
-                        margin: const EdgeInsets.only(top:5, bottom: 5, right: 5),
+                        margin: const EdgeInsets.only(bottom: 5, right: 10),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -738,7 +744,23 @@ class _DashboardPageState extends BaseState<DashboardPage> {
     }
   }
 
-  Future<void> _redirectToAddProduct(BuildContext context, ItemData getSet, bool isFromList) async {
+ /* Future<void> _redirectToAddProduct(BuildContext context, ItemData getSet, bool isFromList) async { //ItemData getSet,
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => AddProductPage(getSet, isFromList)),
+    );
+
+    print("result ===== $result");
+
+    if (result == "success") {
+      _makeCallDashboardData();
+      setState(() {
+        isHomeLoad = true;
+      });
+    }
+  }*/
+
+  Future<void> _redirectToAddProduct(BuildContext context, Products getSet, bool isFromList) async { //ItemData getSet,
     final result = await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => AddProductPage(getSet, isFromList)),
@@ -755,9 +777,11 @@ class _DashboardPageState extends BaseState<DashboardPage> {
   }
 
   Future<void> _redirectToAddOrder(BuildContext context, Order getSet, bool isFromList) async {
+    var customerData = CustomerList();
+
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => AddOrderPage(getSet, isFromList)),
+      MaterialPageRoute(builder: (context) => AddOrderPage(getSet, isFromList, customerData, false)),
     );
 
     print("result ===== $result");

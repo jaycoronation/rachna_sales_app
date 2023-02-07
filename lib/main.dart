@@ -96,11 +96,11 @@ class _MyHomePageState extends State<MyHomePage> {
       print(isLoggedIn);
 
       if(isLoggedIn == true) {
-          Timer(const Duration(seconds: 3), () =>
+          Timer(const Duration(seconds: 1), () =>
               Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => TabNavigation(0)), (Route<dynamic> route) => false)
           );
       }else {
-        Timer(const Duration(seconds: 3), () =>
+        Timer(const Duration(seconds: 1), () =>
             Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const LoginPage()), (Route<dynamic> route) => false)
         );
       }

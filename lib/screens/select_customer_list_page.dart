@@ -99,12 +99,11 @@ class _SelectCustomerListPageState extends BaseState<SelectCustomerListPage> {
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
           systemOverlayStyle: SystemUiOverlayStyle.dark,
-          toolbarHeight: 61,
           automaticallyImplyLeading: false,
           title: const Text(""),
           leading: GestureDetector(
               onTap:() {
-                Navigator.pop(context);
+                Navigator.pop(context, CustomerList());
               },
               child: Container(
                 decoration: const BoxDecoration(

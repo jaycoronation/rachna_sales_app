@@ -91,7 +91,6 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
         systemOverlayStyle: SystemUiOverlayStyle.dark,
-        toolbarHeight: 61,
         automaticallyImplyLeading: false,
         title: const Text(""),
         actions: [
@@ -105,15 +104,17 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
               child: const Icon(Icons.search, color: white, size: 28,),
             ),
           ),*/
+
           Container(
-            margin: const EdgeInsets.only(top: 14, bottom: 14),
+            margin: const EdgeInsets.only(top: 11, bottom: 11, right: 3),
             child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
               onTap: () {
                 _redirectToAddCustomer(context, CustomerList(), false);
               },
               child: Container(
                 height: 33,
-                width: 34,
+                width: 36,
                 decoration: BoxDecoration(
                     border: Border.all(width: 1, color: kLightestPurple),
                     borderRadius: const BorderRadius.all(Radius.circular(14.0),),
@@ -125,55 +126,58 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
               ),
             ),
           ),
-          GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: () async {
-              DateTimeRange? result = await showDateRangePicker(
-                  context: context,
-                  firstDate: DateTime(2022, 1, 1), // the earliest allowable
-                  lastDate: DateTime.now(), // the latest allowable
-                  currentDate: DateTime.now(),
-                  saveText: 'Done',
-                  builder: (context, Widget? child) => Theme(
-                    data: Theme.of(context).copyWith(
-                        appBarTheme: Theme.of(context).appBarTheme.copyWith(
-                            backgroundColor: kBlue,
-                            iconTheme: Theme.of(context).appBarTheme.iconTheme?.copyWith(color: Colors.white)),
-                        scaffoldBackgroundColor: white,
-                        colorScheme: const ColorScheme.light(
-                            onPrimary: Colors.white,
-                            primary: kBlue
-                        )),
-                    child: child!,
-                  )
-              );
+          Container(
+            margin: const EdgeInsets.only(right: 3),
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () async {
+                DateTimeRange? result = await showDateRangePicker(
+                    context: context,
+                    firstDate: DateTime(2022, 1, 1), // the earliest allowable
+                    lastDate: DateTime.now(), // the latest allowable
+                    currentDate: DateTime.now(),
+                    saveText: 'Done',
+                    builder: (context, Widget? child) => Theme(
+                      data: Theme.of(context).copyWith(
+                          appBarTheme: Theme.of(context).appBarTheme.copyWith(
+                              backgroundColor: kBlue,
+                              iconTheme: Theme.of(context).appBarTheme.iconTheme?.copyWith(color: Colors.white)),
+                          scaffoldBackgroundColor: white,
+                          colorScheme: const ColorScheme.light(
+                              onPrimary: Colors.white,
+                              primary: kBlue
+                          )),
+                      child: child!,
+                    )
+                );
 
-              if(result !=null)
-              {
-                DateTime? startDate = result.start;
-                DateTime? endDate = result.end;
-                print(startDate);
-                print(endDate);
-                String startDateFormat = DateFormat('dd-MM-yyyy').format(startDate);
-                String endDateFormat = DateFormat('dd-MM-yyyy').format(endDate);
-                print("==============");
-                print(startDateFormat);
-                print(endDateFormat);
-                dateStartSelectionChanged = startDateFormat;
-                dateEndSelectionChanged = endDateFormat;
+                if(result !=null)
+                {
+                  DateTime? startDate = result.start;
+                  DateTime? endDate = result.end;
+                  print(startDate);
+                  print(endDate);
+                  String startDateFormat = DateFormat('dd-MM-yyyy').format(startDate);
+                  String endDateFormat = DateFormat('dd-MM-yyyy').format(endDate);
+                  print("==============");
+                  print(startDateFormat);
+                  print(endDateFormat);
+                  dateStartSelectionChanged = startDateFormat;
+                  dateEndSelectionChanged = endDateFormat;
 
-                if(isInternetConnected) {
-                  _getCustomerListData(true);
-                }else {
-                  noInterNet(context);
+                  if(isInternetConnected) {
+                    _getCustomerListData(true);
+                  }else {
+                    noInterNet(context);
+                  }
                 }
-              }
-            },
-            child: Container(
-              height: 45,
-              width: 45,
-              alignment: Alignment.center,
-              child: const Icon(Icons.calendar_today_outlined, color: white, size: 22,),
+              },
+              child: Container(
+                height: 45,
+                width: 45,
+                alignment: Alignment.center,
+                child: const Icon(Icons.calendar_today_outlined, color: white, size: 26,),
+              ),
             ),
           ),
         ],
@@ -236,7 +240,7 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
                             cursorColor: black,
                             style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 15, color: black,),
                             decoration: InputDecoration(
-                                hintText: "Search product",
+                                hintText: "Search customer",
                                 focusedBorder: OutlineInputBorder(
                                   borderSide: const BorderSide(color: kLightPurple, width: 0),
                                   borderRadius: BorderRadius.circular(8),
@@ -414,102 +418,98 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
                 primary: false,
                 shrinkWrap: true,
                 itemCount: listCustomer.length,
-                itemBuilder: (ctx, index) => InkWell(
-                  hoverColor: Colors.white.withOpacity(0.0),
-                  onTap: () async {},
-                  child: Container(
-                    color: white,
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 10, right: 10, top: 8, bottom: 5),
-                      child: GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onTap: () {
-                          CustomerList getSet = listCustomer[index];
-                          _redirectToCustomerDetail(context, getSet, true);
-                          // _redirectToAddCustomer(context, getSet, true);
-                        },
-                        child: Column(
-                          children: [
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Expanded(
-                                            child: Container(
-                                              margin: const EdgeInsets.only(left: 10,right: 5),
-                                              child: Text(checkValidString(listCustomer[index].customerName.toString().trim()),
-                                                overflow: TextOverflow.ellipsis,
-                                                maxLines: 3,
-                                                textAlign: TextAlign.start,
-                                                style: const TextStyle(fontSize: 15, color: black, fontWeight: FontWeight.w700),
-                                              ),
+                itemBuilder: (ctx, index) => Container(
+                  color: white,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 10, right: 10, top: 8, bottom: 5),
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () {
+                        CustomerList getSet = listCustomer[index];
+                        _redirectToCustomerDetail(context, getSet, true);
+                        // _redirectToAddCustomer(context, getSet, true);
+                      },
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          child: Container(
+                                            margin: const EdgeInsets.only(left: 10,right: 5),
+                                            child: Text(checkValidString(listCustomer[index].customerName.toString().trim()),
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 3,
+                                              textAlign: TextAlign.start,
+                                              style: const TextStyle(fontSize: 15, color: black, fontWeight: FontWeight.w700),
                                             ),
                                           ),
-                                          /*Container(
-                                            margin: const EdgeInsets.only(right: 10),
-                                            alignment: Alignment.bottomLeft,
-                                            child: RichText(
-                                              textAlign: TextAlign.center,
-                                              text: TextSpan(
-                                                text: '₹ ',
-                                                style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: black),
-                                                children: <TextSpan>[
-                                                  TextSpan(text: checkValidString(listCustomer[index].customerTotalSale.toString()),
-                                                      style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: black),
-                                                      recognizer: TapGestureRecognizer()..onTap = () => {
-                                                      }),
-                                                ],
-                                              ),
-                                            ),
-                                          ),*/
-                                        ],
-                                      ),
-                                      const Gap(5),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Container(
-                                            margin: const EdgeInsets.only(left: 10, bottom: 5),
-                                            child: RichText(
-                                              textAlign: TextAlign.center,
-                                              text: TextSpan(
-                                                text: 'Total Sale : ',
-                                                style:  const TextStyle(fontSize: 13, fontWeight: FontWeight.w400, color: kGray),
-                                                children: <TextSpan>[
-                                                  TextSpan(text:checkValidString(getPrice(listCustomer[index].customerTotalSale.toString())),
-                                                      style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: black),
-                                                      recognizer: TapGestureRecognizer()..onTap = () => {
-                                                      }),
-                                                ],
-                                              ),
+                                        ),
+                                        /*Container(
+                                          margin: const EdgeInsets.only(right: 10),
+                                          alignment: Alignment.bottomLeft,
+                                          child: RichText(
+                                            textAlign: TextAlign.center,
+                                            text: TextSpan(
+                                              text: '₹ ',
+                                              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: black),
+                                              children: <TextSpan>[
+                                                TextSpan(text: checkValidString(listCustomer[index].customerTotalSale.toString()),
+                                                    style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: black),
+                                                    recognizer: TapGestureRecognizer()..onTap = () => {
+                                                    }),
+                                              ],
                                             ),
                                           ),
-                                          IconButton(
-                                            icon: const Icon(Icons.delete_outline_outlined, color: black, size: 24,),
-                                            iconSize: 24,
-                                            alignment: Alignment.center,
-                                            onPressed: () async {
-                                              _deleteCustomer(listCustomer[index], index);
-                                            },
+                                        ),*/
+                                      ],
+                                    ),
+                                    const Gap(5),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Container(
+                                          margin: const EdgeInsets.only(left: 10, bottom: 5),
+                                          child: RichText(
+                                            textAlign: TextAlign.center,
+                                            text: TextSpan(
+                                              text: 'Total Sale : ',
+                                              style:  const TextStyle(fontSize: 13, fontWeight: FontWeight.w400, color: kGray),
+                                              children: <TextSpan>[
+                                                TextSpan(text:checkValidString(getPrice(listCustomer[index].customerTotalSale.toString())),
+                                                    style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: black),
+                                                    recognizer: TapGestureRecognizer()..onTap = () => {
+                                                    }),
+                                              ],
+                                            ),
                                           ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
+                                        ),
+                                        IconButton(
+                                          icon: const Icon(Icons.delete_outline_outlined, color: black, size: 24,),
+                                          iconSize: 24,
+                                          alignment: Alignment.center,
+                                          onPressed: () async {
+                                            _deleteCustomer(listCustomer[index], index);
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                            Container(
-                                margin: const EdgeInsets.only(top: 10, left: 10, right: 10),
-                                height: index == listCustomer.length-1 ? 0 : 0.8, color: kLightPurple),
-                          ],
-                        ),
+                              ),
+                            ],
+                          ),
+                          Container(
+                              margin: const EdgeInsets.only(top: 10, left: 10, right: 10),
+                              height: index == listCustomer.length-1 ? 0 : 0.8, color: kLightPurple),
+                        ],
                       ),
                     ),
                   ),

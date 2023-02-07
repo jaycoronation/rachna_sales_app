@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pretty_http_logger/pretty_http_logger.dart';
 import 'package:salesapp/Model/common_response_model.dart';
-import 'package:salesapp/model/customer_detail_response_model.dart';
 
 import '../constant/color.dart';
 import '../model/order_detail_response_model.dart';
@@ -15,7 +14,10 @@ import '../widget/loading.dart';
 
 class AddPaymentDetailPage extends StatefulWidget {
   final Order dataGetSet;
-  const AddPaymentDetailPage(this.dataGetSet, {Key? key}) : super(key: key);
+  final String orderId;
+  final String customerId;
+
+  const AddPaymentDetailPage(this.dataGetSet, this.orderId, this.customerId, {Key? key}) : super(key: key);
 
   @override
   _AddPaymentDetailPageState createState() => _AddPaymentDetailPageState();
@@ -31,10 +33,19 @@ class _AddPaymentDetailPageState extends BaseState<AddPaymentDetailPage> {
   FocusNode inputNode = FocusNode();
   Order? dataGetSet;
 
+  String orderId = "";
+  String customerId = "";
+
+  var listPaymentModes = ["Cash", "NEFT", "Net Banking", "UPI", "Cheque", "Debit Card", "Credit Card", "Google Pay", "Paytm"];
+
   @override
   void initState() {
 
     dataGetSet = (widget as AddPaymentDetailPage).dataGetSet;
+    orderId = checkValidString((widget as AddPaymentDetailPage).orderId).toString();
+    // print("orderId--->" + orderId);
+    customerId = checkValidString((widget as AddPaymentDetailPage).customerId).toString();
+    // print("customerId--->" + customerId);
 
     super.initState();
   }
@@ -46,7 +57,6 @@ class _AddPaymentDetailPageState extends BaseState<AddPaymentDetailPage> {
       resizeToAvoidBottomInset: true,
       appBar:AppBar(
         systemOverlayStyle: SystemUiOverlayStyle.dark,
-        toolbarHeight: 55,
         automaticallyImplyLeading: false,
         title: const Text(""),
         leading: GestureDetector(
@@ -100,8 +110,12 @@ class _AddPaymentDetailPageState extends BaseState<AddPaymentDetailPage> {
                         child: TextField(
                           cursorColor: black,
                           controller: _transactionModeController,
-                          keyboardType: TextInputType.name,
+                          keyboardType: TextInputType.text,
+                          readOnly: true,
                           style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
+                          onTap: () {
+                            _showTransactionModeDialog();
+                          },
                           decoration: const InputDecoration(
                               labelText: 'Transaction Mode',
                               prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16)
@@ -113,12 +127,16 @@ class _AddPaymentDetailPageState extends BaseState<AddPaymentDetailPage> {
                         child: TextField(
                           cursorColor: black,
                           controller: _paymentTypeController,
-                          keyboardType: TextInputType.name,
+                          keyboardType: TextInputType.text,
+                          readOnly: true,
                           style: const TextStyle(fontWeight: FontWeight.w600, color: black, fontSize: 16),
                           decoration: const InputDecoration(
                               labelText: 'Payment Type',
                               prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16)
                           ),
+                          onTap: () {
+                            showPayementTypeActionDialog();
+                          },
                         ),
                       ),
                       Container(
@@ -158,9 +176,9 @@ class _AddPaymentDetailPageState extends BaseState<AddPaymentDetailPage> {
                               showSnackBar("Please enter a transaction id", context);
                             } else*/
                               if (transactionMode.trim().isEmpty) {
-                              showSnackBar("Please enter a transaction mode", context);
+                              showSnackBar("Please select a transaction mode", context);
                             } else if(paymentType.isEmpty) {
-                              showSnackBar('Please enter payment type',context);
+                              showSnackBar('Please select payment type',context);
                             } else if (amount.trim().isEmpty) {
                               showToast("Please enter amount");
                             } else {
@@ -186,6 +204,156 @@ class _AddPaymentDetailPageState extends BaseState<AddPaymentDetailPage> {
     );
   }
 
+  void _showTransactionModeDialog() {
+    showModalBottomSheet(
+        isScrollControlled: true,
+        backgroundColor: white,
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(12), topRight: Radius.circular(12))),
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+                return SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.6,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 12,right: 12,top: 15),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Container(
+                            width: 60,
+                            margin: const EdgeInsets.only(top: 12),
+                            child: const Divider(
+                              height: 1.5,
+                              thickness: 1.5,
+                              color: kBlue,
+                            )),
+                        Container(
+                          margin: const EdgeInsets.only(top: 12),
+                          padding: const EdgeInsets.fromLTRB(14, 8, 14, 8),
+                          child: const Text("Payment Type", style: TextStyle(color: black, fontWeight: FontWeight.bold, fontSize: 15)),
+                        ),
+                        Container(height: 6),
+                        Expanded(child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              ListView.builder(
+                                  itemCount: listPaymentModes.length,
+                                  shrinkWrap: true,
+                                  physics: const AlwaysScrollableScrollPhysics(),
+                                  scrollDirection: Axis.vertical,
+                                  itemBuilder: (context, index) {
+                                    return Column(
+                                      children: [
+                                        InkWell(
+                                          onTap: () {
+                                            setState(() {
+                                              _transactionModeController.text = checkValidString(listPaymentModes[index]);
+                                            });
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: Container(
+                                            padding: const EdgeInsets.only(left: 20.0, right: 20, top: 8, bottom: 8),
+                                            alignment: Alignment.centerLeft,
+                                            child: listPaymentModes[index] == _transactionModeController.text.toString()
+                                                ? Text(
+                                              checkValidString(listPaymentModes[index]),
+                                              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: kBlue),
+                                            )
+                                                : Text(
+                                              checkValidString(listPaymentModes[index]),
+                                              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: black),
+                                            ),
+                                          ),
+                                        ),
+                                        const Divider(
+                                          thickness: 0.5,
+                                          color: kTextLightGray,
+                                          endIndent: 16,
+                                          indent: 16,
+                                        ),
+                                      ],
+                                    );
+                                  })
+                            ],
+                          ),
+                        ))
+                      ],
+                    ),
+                  ),
+                );
+              });
+        });
+
+  }
+
+  void showPayementTypeActionDialog() {
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: white,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))),
+      elevation: 5,
+      isDismissible: true,
+      builder: (BuildContext context) {
+        return Wrap(
+          children: [
+            Padding(
+                padding: const EdgeInsets.all(14),
+                child: Column(
+                  children: [
+                    Container(height: 2, width: 40, color: kBlue, margin: const EdgeInsets.only(bottom: 12)),
+                    const Text("Payment Type",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: black, fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                    Container(height: 12),
+                    InkWell(
+                      onTap: () async {
+                        Navigator.pop(context);
+                        _paymentTypeController.text = "Credit";
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.only(left: 18, right: 18, top: 15, bottom: 15),
+                        alignment: Alignment.topLeft,
+                        child: const Text(
+                          "Credit",
+                          textAlign: TextAlign.start,
+                          style: TextStyle(fontSize: 15, color: black, fontWeight: FontWeight.normal),
+                        ),
+                      ),
+                    ),
+                    const Divider(
+                      color: kLightestGray,
+                      height: 1,
+                    ),
+                    InkWell(
+                      onTap: () async {
+                        Navigator.pop(context);
+                        _paymentTypeController.text = "Debit";
+
+                      },
+                      child: Container(
+                        alignment: Alignment.topLeft,
+                        padding: const EdgeInsets.only(left: 18, right: 18, top: 15, bottom: 15),
+                        child: const Text(
+                          "Debit",
+                          textAlign: TextAlign.start,
+                          style: TextStyle(fontSize: 15, color: black, fontWeight: FontWeight.normal),
+                        ),
+                      ),
+                    ),
+                    Container(height: 12)
+                  ],
+                ))
+          ],
+        );
+      },
+    );
+  }
+
+
   @override
   void castStatefulWidget() {
     // TODO: implement castStatefulWidget
@@ -203,9 +371,9 @@ class _AddPaymentDetailPageState extends BaseState<AddPaymentDetailPage> {
     final url = Uri.parse(BASE_URL + saveTransaction);
 
     Map<String, String> jsonBody = {
-      'order_id': dataGetSet!.orderId!.toString(),
+      'order_id': orderId.isNotEmpty ? orderId : checkValidString(dataGetSet?.orderId).toString(),
       'emp_id': sessionManager.getEmpId().toString().trim(),
-      'customer_id': dataGetSet!.customerId!.toString(),
+      'customer_id': customerId.isNotEmpty ? customerId : checkValidString(dataGetSet?.customerId).toString(),
       'transection_amount':_amountController.value.text.trim(),
       'transection_mode': _transactionModeController.value.text.trim(),
       'transection_type':_paymentTypeController.value.text.trim(),

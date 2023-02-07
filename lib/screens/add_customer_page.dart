@@ -616,9 +616,9 @@ class _AddCustomerPageState extends BaseState<AddCustomerPage> {
                             else if (gstNo.isNotEmpty && !isValidGSTNo(gstNo.trim())) {
                               showSnackBar('Please enter valid GST number',context);
                             }
-                            else if (creditDays.trim().isNotEmpty && int.parse(creditDays.trim()) > 365) {
-                              showSnackBar('Please enter valid credit days',context);
-                            }
+                            // else if (creditDays.trim().isNotEmpty && int.parse(creditDays.trim()) > 365) {
+                            //   showSnackBar('Please enter valid credit days',context);
+                            // }
 
                           /*  else if (addressLine1.trim().isEmpty) {
                               showSnackBar("Please enter a addressLine1", context);
@@ -850,7 +850,8 @@ class _AddCustomerPageState extends BaseState<AddCustomerPage> {
       'AreaName': _areaNameController.value.text.trim(),
       'State': _stateController.value.text.trim(),
       'GSTType' : _GSTTypeController.value.text.trim(),
-      'GSTINNo' : _GSTINNoController.value.text.trim()
+      'GSTINNo' : _GSTINNoController.value.text.trim(),
+      'customer_id' : '',
     };
 
     final response = await http.post(url, body: jsonBody);

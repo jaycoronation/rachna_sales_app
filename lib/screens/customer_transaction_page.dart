@@ -44,69 +44,64 @@ class _CustomerTransactionListPageState extends BaseState<CustomerTransactionLis
               primary: false,
               shrinkWrap: true,
               itemCount: dataGetSet?.customerTransection!.length,
-              itemBuilder: (ctx, index) => InkWell(
-                hoverColor: Colors.white.withOpacity(0.0),
-                onTap: () async {},
-                child: Container(
-                  color: white,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 10, right: 10, top: 8, bottom: 5),
-                    child: GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      onTap: () {
+              itemBuilder: (ctx, index) => Container(
+                color: white,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 10, right: 10, top: 8, bottom: 5),
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () {
 
-                      },
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Expanded(
-                                          child: Container(
-                                            margin: const EdgeInsets.only(left: 10,right: 5, bottom: 5, top: 10),
-                                            child: Text(checkValidString(dataGetSet?.customerName.toString().trim()),
-                                              overflow: TextOverflow.ellipsis,
-                                              maxLines: 3,
-                                              textAlign: TextAlign.start,
-                                              style: const TextStyle(fontSize: 15, color: black, fontWeight: FontWeight.w700),
-                                            ),
-                                          ),
-                                        ),
-                                        Container(
-                                          margin: const EdgeInsets.only(right: 10, bottom: 5, left: 10, top: 10),
-                                          child: Text(checkValidString(getPrice(dataGetSet!.customerTransection![index].transectionAmount.toString())),
+                    },
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        child: Container(
+                                          margin: const EdgeInsets.only(left: 10,right: 5, bottom: 5, top: 10),
+                                          child: Text(checkValidString(dataGetSet?.customerTransection![index].transectionMode.toString().trim()),
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 3,
                                             textAlign: TextAlign.start,
-                                            style:const TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: kGreen),
+                                            style: const TextStyle(fontSize: 15, color: black, fontWeight: FontWeight.w700),
                                           ),
                                         ),
-                                      ],
-                                    ),
-                                    const Gap(5),
-                                    Container(
-                                      margin: const EdgeInsets.only(left: 10, bottom: 5),
-                                      child: Text(checkValidString(dataGetSet?.customerTransection![index].transectionDate.toString()),
-                                        textAlign: TextAlign.start,
-                                        style: const TextStyle(fontSize: 13, color: kGray, fontWeight: FontWeight.w400),
                                       ),
+                                      Container(
+                                        margin: const EdgeInsets.only(right: 10, bottom: 5, left: 10, top: 10),
+                                        child: Text(checkValidString(getPrice(dataGetSet!.customerTransection![index].transectionAmount.toString())),
+                                          textAlign: TextAlign.start,
+                                          style:const TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: kGreen),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const Gap(5),
+                                  Container(
+                                    margin: const EdgeInsets.only(left: 10, bottom: 5),
+                                    child: Text(checkValidString(dataGetSet?.customerTransection![index].transectionDate.toString()),
+                                      textAlign: TextAlign.start,
+                                      style: const TextStyle(fontSize: 13, color: kGray, fontWeight: FontWeight.w400),
                                     ),
-
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                          Container(
-                              margin: const EdgeInsets.only(top: 10, left: 10, right: 10),
-                              height: index == dataGetSet!.customerTransection!.length - 1 ? 0 : 0.8, color: kLightPurple),
-                        ],
-                      ),
+                            ),
+                          ],
+                        ),
+                        Container(
+                            margin: const EdgeInsets.only(top: 10, left: 10, right: 10),
+                            height: index == dataGetSet!.customerTransection!.length - 1 ? 0 : 0.8, color: kLightPurple),
+                      ],
                     ),
                   ),
                 ),

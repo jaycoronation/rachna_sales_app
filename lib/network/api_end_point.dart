@@ -20,6 +20,8 @@ const addEmployee = "manageEmployee/save";
 const manageDesignation = "manageDesignation/list";
 const deleteEmployee = "manageEmployee/delete";
 
+const itemListOld = "ItemList";
+
 const itemList = "ItemListNew";
 const addStock = "manageStock/save";
 const deleteStock = "manageStock/delete";

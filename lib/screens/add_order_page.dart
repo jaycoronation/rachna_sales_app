@@ -8,10 +8,13 @@ import 'package:salesapp/Model/customer_list_response_model.dart';
 import 'package:salesapp/model/order_detail_response_model.dart';
 import 'package:salesapp/screens/select_customer_list_page.dart';
 import 'package:salesapp/screens/select_product_page.dart';
+import 'package:salesapp/screens/select_product_page_old.dart';
 
 import '../Model/common_response_model.dart';
 import '../constant/color.dart';
+import '../model/customer_detail_response_model.dart';
 import '../model/product_item_data_response_model.dart';
+import '../model/product_item_list_response_model_old.dart';
 import '../network/api_end_point.dart';
 import '../utils/app_utils.dart';
 import '../utils/base_class.dart';
@@ -20,7 +23,10 @@ import '../widget/loading.dart';
 class AddOrderPage extends StatefulWidget {
   final Order getSet;
   final bool isFromList;
-  const AddOrderPage(this.getSet, this.isFromList, {Key? key}) : super(key: key);
+  final CustomerList customerDetail;
+  final bool isFromDetail;
+
+  const AddOrderPage(this.getSet, this.isFromList, this.customerDetail, this.isFromDetail, {Key? key}) : super(key: key);
 
   @override
   _AddOrderPageState createState() => _AddOrderPageState();
@@ -41,16 +47,28 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
   var searchText = "";
   FocusNode inputNode = FocusNode();
 
-  var listProduct = List<ItemData>.empty(growable: true);
+  // var listProduct = List<ItemData>.empty(growable: true);
+  var listProduct = List<Products>.empty(growable: true);
+
   var customerDetail = CustomerList();
+  // var customerDetail1 = CustomerList();
 
   var subTotal = 0.0;
-
   var mainListProduct = List<ItemData>.empty(growable: true);
+
+  bool isFromDetail = false;
 
   @override
   void initState() {
     super.initState();
+
+    customerDetail = (widget as AddOrderPage).customerDetail;
+    isFromDetail = (widget as AddOrderPage).isFromDetail;
+
+    if(isFromDetail) {
+      isValidCustomer = true;
+    }
+
   }
 
   @override
@@ -91,6 +109,43 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
               child: const Text("Add Order",
                   style: TextStyle(fontWeight: FontWeight.w700, color: white, fontSize: 20)),
             ),
+          isFromDetail ?
+          Stack(
+            children: [
+              Container(
+                color: kLightestPurple,
+                child: Container(
+                    // decoration: BoxDecoration(
+                    //     color: white,
+                    //     border: Border.all(width: 1, color: kLightPurple),
+                    //     borderRadius: const BorderRadius.all(Radius.circular(8.0),),
+                    //     shape: BoxShape.rectangle
+                    // ),
+                    margin: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 40),
+
+                ),
+              ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  margin: EdgeInsets.only(top: 40 ),
+                  padding: const EdgeInsets.all(10),
+                  alignment: Alignment.center,
+                  width: MediaQuery.of(context).size.width / 3,
+                  decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [kLightGradient, kDarkGradient],
+                        begin: Alignment.centerLeft,
+                        end: Alignment.centerRight,
+                      ),
+                      borderRadius: BorderRadius.circular(8)
+                  ),
+                  child: const Text("Add Items",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: white),),
+                ),
+              ),
+            ],
+          ) :
             Stack(
               children: [
                 Container(
@@ -103,7 +158,8 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
                           shape: BoxShape.rectangle
                       ),
                       margin: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 40),
-                      child: TextField(
+                      child:
+                      TextField(
                         keyboardType: TextInputType.text,
                         textCapitalization: TextCapitalization.sentences,
                         textAlign: TextAlign.start,
@@ -133,7 +189,6 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
                         },
                         onTap: () {
                           _redirectToAddCustomer(context, customerDetail);
-
                         },
                       )
                   ),
@@ -141,7 +196,7 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: Container(
-                    margin: const EdgeInsets.only(top: 90),
+                    margin: EdgeInsets.only(top: 90 ),
                     padding: const EdgeInsets.all(10),
                     alignment: Alignment.center,
                     width: MediaQuery.of(context).size.width / 3,
@@ -161,7 +216,7 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
             ),
             Gap(15),
             Visibility(
-              visible: customerDetail.customerName?.isNotEmpty ?? false,
+              visible: checkValidString(customerDetail.customerName).toString().isNotEmpty,
               child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -177,7 +232,7 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
                   child: Text(customerDetail.customerName.toString().isNotEmpty ? getInitials(customerDetail.customerName.toString().trim()) : "",
                     maxLines: 1,
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 11, color: kBlue, fontWeight: FontWeight.w400),
+                    style: const TextStyle(fontSize: 11, color: kBlue, fontWeight: FontWeight.w400),
                   ),
                 ),
                 Column(
@@ -186,7 +241,7 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
                   children: [
                     Container(
                       margin: const EdgeInsets.only(left: 10),
-                      child: Text(checkValidString(customerDetail.customerName.toString().trim()),
+                      child: Text(checkValidString(customerDetail.customerName),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         textAlign: TextAlign.start,
@@ -195,7 +250,7 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
                     ),
                     Container(
                       margin: const EdgeInsets.only(left: 10, right: 10),
-                      child: Text("${checkValidString(customerDetail.addressLine1.toString().trim())}\n${checkValidString(customerDetail.addressLine2.toString().trim())}",
+                      child: Text("${checkValidString(customerDetail.addressLine1)}\n${checkValidString(customerDetail.addressLine2)}",
                         overflow: TextOverflow.ellipsis,
                         maxLines: 3,
                         textAlign: TextAlign.start,
@@ -220,7 +275,6 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
                   },
                   child: Container(
                       margin: const EdgeInsets.only(right: 20, top: 20, bottom: 10),
-
                       decoration: BoxDecoration(
                           color: white,
                           border: Border.all(width: 1, color: kBlue),
@@ -316,7 +370,6 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
                                             onPressed: () {
                                               listProduct[index].quantity = listProduct[index].quantity + 1;
                                               getPriceCalculated();
-                                              print(listProduct[index].quantity);
                                             },
                                             icon:Image.asset('assets/images/ic_blue_add.png', height: 24, width: 24),
                                           )
@@ -369,7 +422,7 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
                         textAlign: TextAlign.start,
                         cursorColor: black,
                         style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 15, color: black,),
-                        onSubmitted: (value){
+                        onSubmitted: (value) {
                           setState((){
                             if (value.isNotEmpty)
                             {
@@ -552,11 +605,6 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
     );
   }
 
-  // void getPercentage(num price, num discountedPrice) {
-  //   percentageValue = ((price - discountedPrice) / price) * 100;
-  // }
-
-
   void getPriceCalculated() {
     setState(() {
       subTotal = 0.0;
@@ -599,10 +647,43 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
     });
   }
 
-  Future<void> _redirectToAddItem(BuildContext context, List<ItemData> listProductData) async {
+  Future<void> _redirectToAddItem(BuildContext context, List<Products> listProductData) async {
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => SelectProductPage(listProductData)),
+      MaterialPageRoute(builder: (context) => SelectProductPageOld(listProductData)),
+    );
+
+    print("result ===== $result");
+    setState(() {
+      listProduct = [];
+      subTotal = 0.0;
+      if (result != null)
+      {
+        listProduct = result;
+
+        for(var i = 0; i < listProduct.length; i++) {
+          if (subTotal == 0.0) {
+            subTotal = double.parse(listProduct[i].stockPrice.toString());
+          }else {
+            subTotal = subTotal + double.parse(listProduct[i].stockPrice.toString());
+          }
+        }
+
+      }
+
+      isValidProduct = true;
+    });
+
+    if (result == "success") {
+      setState(() {
+      });
+    }
+  }
+
+  /*Future<void> _redirectToAddItem(BuildContext context, List<ItemData> listProductData))  async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => SelectProductPage(listProductData)),//SelectProductPage(listProductData)),
     );
 
     print("result ===== $result");
@@ -630,7 +711,7 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
       setState(() {
       });
     }
-  }
+  }*/
 
   Future<void> _redirectToAddCustomer(BuildContext context, CustomerList customerData) async {
     final result = await Navigator.push(
@@ -650,11 +731,27 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
     }
   }
 
-  void _makeJsonData() async {
+ /* void _makeJsonData() async {
 
     List<ItemData> listProductsTemp = List<ItemData>.empty(growable: true);
     for (int i = 0; i < listProduct.length; i++) {
         listProductsTemp.add(listProduct[i]);
+    }
+
+    if (listProductsTemp.isNotEmpty) {
+      listProduct.clear();
+      listProduct.addAll(listProductsTemp);
+    }
+
+    print("<><> Json Product ${jsonEncode(listProduct).toString().trim()} END<><>");
+
+  }
+*/
+  void _makeJsonData() async {
+
+    List<Products> listProductsTemp = List<Products>.empty(growable: true);
+    for (int i = 0; i < listProduct.length; i++) {
+      listProductsTemp.add(listProduct[i]);
     }
 
     if (listProductsTemp.isNotEmpty) {
@@ -688,7 +785,7 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
       'from_app': FROM_APP,
       'emp_id' : sessionManager.getEmpId().toString().trim(),
       'products' : listProduct.isNotEmpty ? jsonEncode(listProduct).toString().trim() : "",
-      'customer_id' : checkValidString(customerDetail.customerId.toString()),
+      'customer_id' : checkValidString(customerDetail.customerId),
       'company_id' : "RBC",
       'discount' : discountController.value.text.trim(),
       'adjustments' : isAdjPlus ? adjustmentController.value.text.trim() : "-${adjustmentController.value.text.trim()}",

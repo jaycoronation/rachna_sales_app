@@ -56,9 +56,7 @@ class _OrderDetailPageState extends BaseState<OrderDetailPage> {
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
           systemOverlayStyle: SystemUiOverlayStyle.dark,
-          toolbarHeight: 61,
           automaticallyImplyLeading: false,
-          title: const Text(""),
           leading: GestureDetector(
               onTap:() {
                 Navigator.pop(context);
@@ -85,7 +83,7 @@ class _OrderDetailPageState extends BaseState<OrderDetailPage> {
             ),
           ],
           centerTitle: false,
-          elevation: 0,
+          elevation: 0.0,
           backgroundColor: kBlue,
         ),
         body: _isLoading ? const LoadingWidget()
@@ -170,69 +168,65 @@ class _OrderDetailPageState extends BaseState<OrderDetailPage> {
                       primary: false,
                       physics: const NeverScrollableScrollPhysics(),
                       itemCount: listOrderItems.length,
-                      itemBuilder: (ctx, index) => InkWell(
-                        hoverColor: Colors.white.withOpacity(0.0),
-                        onTap: () async {},
-                        child: Container(
-                          color: white,
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 10, right: 10, top: 8, bottom: 5),
-                            child: GestureDetector(
-                              onTap: () {
-                              },
-                              child: Column(
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Column(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Container(
-                                            margin: const EdgeInsets.only(left:10, bottom: 6, top: 5),
-                                            child: Text(checkValidString(listOrderItems[index].stockName),
-                                                maxLines: 2,
-                                                overflow: TextOverflow.clip,
-                                                textAlign: TextAlign.start,
-                                                style: const TextStyle(fontWeight: FontWeight.w400, color: black, fontSize: 13)
-                                            ),
+                      itemBuilder: (ctx, index) => Container(
+                        color: white,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 10, right: 10, top: 8, bottom: 5),
+                          child: GestureDetector(
+                            onTap: () {
+                            },
+                            child: Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Column(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          margin: const EdgeInsets.only(left:10, bottom: 6, top: 5),
+                                          child: Text(checkValidString(listOrderItems[index].stockName),
+                                              maxLines: 2,
+                                              overflow: TextOverflow.clip,
+                                              textAlign: TextAlign.start,
+                                              style: const TextStyle(fontWeight: FontWeight.w400, color: black, fontSize: 13)
                                           ),
-                                          Row(
-                                            children: [
-                                              Container(
-                                                  margin: const EdgeInsets.only(left: 10, top: 5),
-                                                  child: Text(checkValidString(listOrderItems[index].itemPrice),
-                                                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: kGray),)
-                                              ),
-                                              Container(
-                                                  margin: const EdgeInsets.only(left: 5, top: 5),
-                                                  child: Text("x", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: kGray))),
-                                              Container(
-                                                  margin: const EdgeInsets.only(left: 5, top: 5),
-                                                  child: Text(checkValidString(listOrderItems[index].itemQty),
-                                                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: kGray),)
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                      Container(
-                                        alignment: Alignment.center,
-                                        margin: const EdgeInsets.only(right: 10, bottom: 20),
-                                        child: Text("${checkValidString(getPrice(listOrderItems[index].itemTotal.toString()))}",
-                                            maxLines: 2,
-                                            style: const TextStyle(fontWeight: FontWeight.w600, color: black, fontSize: 13)
                                         ),
+                                        Row(
+                                          children: [
+                                            Container(
+                                                margin: const EdgeInsets.only(left: 10, top: 5),
+                                                child: Text(checkValidString(listOrderItems[index].itemPrice),
+                                                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: kGray),)
+                                            ),
+                                            Container(
+                                                margin: const EdgeInsets.only(left: 5, top: 5),
+                                                child: Text("x", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: kGray))),
+                                            Container(
+                                                margin: const EdgeInsets.only(left: 5, top: 5),
+                                                child: Text(checkValidString(listOrderItems[index].itemQty),
+                                                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: kGray),)
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                    Container(
+                                      alignment: Alignment.center,
+                                      margin: const EdgeInsets.only(right: 10, bottom: 20),
+                                      child: Text("${checkValidString(getPrice(listOrderItems[index].itemTotal.toString()))}",
+                                          maxLines: 2,
+                                          style: const TextStyle(fontWeight: FontWeight.w600, color: black, fontSize: 13)
                                       ),
-                                    ],
-                                  ),
-                                  Container(
-                                      margin: const EdgeInsets.only(left: 10, right: 10, bottom: 10, top: 10),
-                                      height:index == listOrderItems.length-1 ? 0 : 0.8
-                                      , color: kLightPurple),
-                                ],
-                              ),
+                                    ),
+                                  ],
+                                ),
+                                Container(
+                                    margin: const EdgeInsets.only(left: 10, right: 10, bottom: 10, top: 10),
+                                    height:index == listOrderItems.length-1 ? 0 : 0.8
+                                    , color: kLightPurple),
+                              ],
                             ),
                           ),
                         ),
@@ -392,7 +386,7 @@ class _OrderDetailPageState extends BaseState<OrderDetailPage> {
   Future<void> _redirectToTransaction(BuildContext context, Order getSet) async {
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => AddPaymentDetailPage(getSet)),
+      MaterialPageRoute(builder: (context) => AddPaymentDetailPage(getSet, "", "")),
     );
 
     print("result ===== $result");
@@ -414,9 +408,9 @@ class _OrderDetailPageState extends BaseState<OrderDetailPage> {
     final url = Uri.parse(BASE_URL + orderDetails);
 
     Map<String, String> jsonBody = {
-      'customer_id': (widget as OrderDetailPage).customerId.toString(),
+      'customer_id': checkValidString((widget as OrderDetailPage).customerId).toString(),
       'from_app' : FROM_APP,
-      'order_id': (widget as OrderDetailPage).orderId.toString()
+      'order_id': checkValidString((widget as OrderDetailPage).orderId).toString()
     };
 
     final response = await http.post(url, body: jsonBody);

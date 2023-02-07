@@ -1,8 +1,9 @@
 import 'dart:convert';
 /// success : 1
 /// message : "Transections found"
-/// totalCount : 5
-/// transection_details : [{"transection_amount":"5000","transection_mode":"cc","transection_type":"0","transection_status":"success","order_details":{"order_id":"","order_number":"","sub_total":"","discount":"","adjustments":"","grand_total":"","order_status":""},"employee_details":{"emp_id":"","emp_name":"","emp_phone":"","emp_email":"","profile":"","incentive":"0","outstanding":"0","total_sales":"0","total_customers":"0"},"customer_details":{"customer_id":"193","customer_name":"Asarfilal Kulfi Ice-Cream Pvt. Ltd"}},{"transection_amount":"5000","transection_mode":"cc","transection_type":"0","transection_status":"success","order_details":{"order_id":"","order_number":"","sub_total":"","discount":"","adjustments":"","grand_total":"","order_status":""},"employee_details":{"emp_id":"","emp_name":"","emp_phone":"","emp_email":"","profile":"","incentive":"0","outstanding":"0","total_sales":"0","total_customers":"0"},"customer_details":{"customer_id":"193","customer_name":"Asarfilal Kulfi Ice-Cream Pvt. Ltd"}},{"transection_amount":"5000","transection_mode":"cc","transection_type":"0","transection_status":"success","order_details":{"order_id":"","order_number":"","sub_total":"","discount":"","adjustments":"","grand_total":"","order_status":""},"employee_details":{"emp_id":"","emp_name":"","emp_phone":"","emp_email":"","profile":"","incentive":"0","outstanding":"0","total_sales":"0","total_customers":"0"},"customer_details":{"customer_id":"193","customer_name":"Asarfilal Kulfi Ice-Cream Pvt. Ltd"}},{"transection_amount":"2000","transection_mode":"cc","transection_type":"2","transection_status":"success","order_details":{"order_id":"","order_number":"","sub_total":"","discount":"","adjustments":"","grand_total":"","order_status":""},"employee_details":{"emp_id":"","emp_name":"","emp_phone":"","emp_email":"","profile":"","incentive":"0","outstanding":"0","total_sales":"0","total_customers":"0"},"customer_details":{"customer_id":"3255","customer_name":"salt"}},{"transection_amount":"3000","transection_mode":"cc","transection_type":"2","transection_status":"success","order_details":{"order_id":"43","order_number":"SALE-0000000001","sub_total":"1470","discount":"10","adjustments":"-500","grand_total":"1470","order_status":""},"employee_details":{"emp_id":"","emp_name":"","emp_phone":"","emp_email":"","profile":"","incentive":"0","outstanding":"0","total_sales":"0","total_customers":"0"},"customer_details":{"customer_id":"3255","customer_name":"salt"}}]
+/// totalCount : "2"
+/// netBalance : "700"
+/// transection_details : [{"transection_amount":"200","transection_mode":"online","transection_type":"0","transection_status":"success","transection_date":"19:49pm 04 Feb 2023","order_details":{"order_id":"43","order_number":"SALE-0000000001","sub_total":"1470","discount":"10","adjustments":"-500","grand_total":"1470","order_status":""},"employee_details":{"emp_id":"58","emp_name":"Jignesh","emp_phone":"8529638522","emp_email":"jignesh1@coronation.in","profile":"https://salesapp.coronation.in/assets/upload/profile/1675170997-circle.png","incentive":"0","outstanding":"0","total_sales":"0","total_customers":"0"},"customer_details":{"customer_id":"3255","customer_name":"salt"}},{"transection_amount":"500","transection_mode":"online","transection_type":"0","transection_status":"success","transection_date":"19:07pm 04 Feb 2023","order_details":{"order_id":"47","order_number":"SALE-0000000047","sub_total":"1000","discount":"","adjustments":"","grand_total":"1000","order_status":""},"employee_details":{"emp_id":"58","emp_name":"Jignesh","emp_phone":"8529638522","emp_email":"jignesh1@coronation.in","profile":"https://salesapp.coronation.in/assets/upload/profile/1675170997-circle.png","incentive":"0","outstanding":"0","total_sales":"0","total_customers":"0"},"customer_details":{"customer_id":"3255","customer_name":"salt"}}]
 
 TransactionListResponseModel transactionListResponseModelFromJson(String str) => TransactionListResponseModel.fromJson(json.decode(str));
 String transactionListResponseModelToJson(TransactionListResponseModel data) => json.encode(data.toJson());
@@ -10,11 +11,13 @@ class TransactionListResponseModel {
   TransactionListResponseModel({
       num? success, 
       String? message, 
-      num? totalCount, 
+      String? totalCount, 
+      String? netBalance, 
       List<TransectionDetails>? transectionDetails,}){
     _success = success;
     _message = message;
     _totalCount = totalCount;
+    _netBalance = netBalance;
     _transectionDetails = transectionDetails;
 }
 
@@ -22,6 +25,7 @@ class TransactionListResponseModel {
     _success = json['success'];
     _message = json['message'];
     _totalCount = json['totalCount'];
+    _netBalance = json['netBalance'];
     if (json['transection_details'] != null) {
       _transectionDetails = [];
       json['transection_details'].forEach((v) {
@@ -31,20 +35,24 @@ class TransactionListResponseModel {
   }
   num? _success;
   String? _message;
-  num? _totalCount;
+  String? _totalCount;
+  String? _netBalance;
   List<TransectionDetails>? _transectionDetails;
 TransactionListResponseModel copyWith({  num? success,
   String? message,
-  num? totalCount,
+  String? totalCount,
+  String? netBalance,
   List<TransectionDetails>? transectionDetails,
 }) => TransactionListResponseModel(  success: success ?? _success,
   message: message ?? _message,
   totalCount: totalCount ?? _totalCount,
+  netBalance: netBalance ?? _netBalance,
   transectionDetails: transectionDetails ?? _transectionDetails,
 );
   num? get success => _success;
   String? get message => _message;
-  num? get totalCount => _totalCount;
+  String? get totalCount => _totalCount;
+  String? get netBalance => _netBalance;
   List<TransectionDetails>? get transectionDetails => _transectionDetails;
 
   Map<String, dynamic> toJson() {
@@ -52,6 +60,7 @@ TransactionListResponseModel copyWith({  num? success,
     map['success'] = _success;
     map['message'] = _message;
     map['totalCount'] = _totalCount;
+    map['netBalance'] = _netBalance;
     if (_transectionDetails != null) {
       map['transection_details'] = _transectionDetails?.map((v) => v.toJson()).toList();
     }
@@ -60,13 +69,14 @@ TransactionListResponseModel copyWith({  num? success,
 
 }
 
-/// transection_amount : "5000"
-/// transection_mode : "cc"
+/// transection_amount : "200"
+/// transection_mode : "online"
 /// transection_type : "0"
 /// transection_status : "success"
-/// order_details : {"order_id":"","order_number":"","sub_total":"","discount":"","adjustments":"","grand_total":"","order_status":""}
-/// employee_details : {"emp_id":"","emp_name":"","emp_phone":"","emp_email":"","profile":"","incentive":"0","outstanding":"0","total_sales":"0","total_customers":"0"}
-/// customer_details : {"customer_id":"193","customer_name":"Asarfilal Kulfi Ice-Cream Pvt. Ltd"}
+/// transection_date : "19:49pm 04 Feb 2023"
+/// order_details : {"order_id":"43","order_number":"SALE-0000000001","sub_total":"1470","discount":"10","adjustments":"-500","grand_total":"1470","order_status":""}
+/// employee_details : {"emp_id":"58","emp_name":"Jignesh","emp_phone":"8529638522","emp_email":"jignesh1@coronation.in","profile":"https://salesapp.coronation.in/assets/upload/profile/1675170997-circle.png","incentive":"0","outstanding":"0","total_sales":"0","total_customers":"0"}
+/// customer_details : {"customer_id":"3255","customer_name":"salt"}
 
 TransectionDetails transectionDetailsFromJson(String str) => TransectionDetails.fromJson(json.decode(str));
 String transectionDetailsToJson(TransectionDetails data) => json.encode(data.toJson());
@@ -76,6 +86,7 @@ class TransectionDetails {
       String? transectionMode, 
       String? transectionType, 
       String? transectionStatus, 
+      String? transectionDate, 
       OrderDetails? orderDetails, 
       EmployeeDetails? employeeDetails, 
       CustomerDetails? customerDetails,}){
@@ -83,6 +94,7 @@ class TransectionDetails {
     _transectionMode = transectionMode;
     _transectionType = transectionType;
     _transectionStatus = transectionStatus;
+    _transectionDate = transectionDate;
     _orderDetails = orderDetails;
     _employeeDetails = employeeDetails;
     _customerDetails = customerDetails;
@@ -93,6 +105,7 @@ class TransectionDetails {
     _transectionMode = json['transection_mode'];
     _transectionType = json['transection_type'];
     _transectionStatus = json['transection_status'];
+    _transectionDate = json['transection_date'];
     _orderDetails = json['order_details'] != null ? OrderDetails.fromJson(json['order_details']) : null;
     _employeeDetails = json['employee_details'] != null ? EmployeeDetails.fromJson(json['employee_details']) : null;
     _customerDetails = json['customer_details'] != null ? CustomerDetails.fromJson(json['customer_details']) : null;
@@ -101,6 +114,7 @@ class TransectionDetails {
   String? _transectionMode;
   String? _transectionType;
   String? _transectionStatus;
+  String? _transectionDate;
   OrderDetails? _orderDetails;
   EmployeeDetails? _employeeDetails;
   CustomerDetails? _customerDetails;
@@ -108,6 +122,7 @@ TransectionDetails copyWith({  String? transectionAmount,
   String? transectionMode,
   String? transectionType,
   String? transectionStatus,
+  String? transectionDate,
   OrderDetails? orderDetails,
   EmployeeDetails? employeeDetails,
   CustomerDetails? customerDetails,
@@ -115,6 +130,7 @@ TransectionDetails copyWith({  String? transectionAmount,
   transectionMode: transectionMode ?? _transectionMode,
   transectionType: transectionType ?? _transectionType,
   transectionStatus: transectionStatus ?? _transectionStatus,
+  transectionDate: transectionDate ?? _transectionDate,
   orderDetails: orderDetails ?? _orderDetails,
   employeeDetails: employeeDetails ?? _employeeDetails,
   customerDetails: customerDetails ?? _customerDetails,
@@ -123,6 +139,7 @@ TransectionDetails copyWith({  String? transectionAmount,
   String? get transectionMode => _transectionMode;
   String? get transectionType => _transectionType;
   String? get transectionStatus => _transectionStatus;
+  String? get transectionDate => _transectionDate;
   OrderDetails? get orderDetails => _orderDetails;
   EmployeeDetails? get employeeDetails => _employeeDetails;
   CustomerDetails? get customerDetails => _customerDetails;
@@ -133,6 +150,7 @@ TransectionDetails copyWith({  String? transectionAmount,
     map['transection_mode'] = _transectionMode;
     map['transection_type'] = _transectionType;
     map['transection_status'] = _transectionStatus;
+    map['transection_date'] = _transectionDate;
     if (_orderDetails != null) {
       map['order_details'] = _orderDetails?.toJson();
     }
@@ -147,8 +165,8 @@ TransectionDetails copyWith({  String? transectionAmount,
 
 }
 
-/// customer_id : "193"
-/// customer_name : "Asarfilal Kulfi Ice-Cream Pvt. Ltd"
+/// customer_id : "3255"
+/// customer_name : "salt"
 
 CustomerDetails customerDetailsFromJson(String str) => CustomerDetails.fromJson(json.decode(str));
 String customerDetailsToJson(CustomerDetails data) => json.encode(data.toJson());
@@ -183,11 +201,11 @@ CustomerDetails copyWith({  String? customerId,
 
 }
 
-/// emp_id : ""
-/// emp_name : ""
-/// emp_phone : ""
-/// emp_email : ""
-/// profile : ""
+/// emp_id : "58"
+/// emp_name : "Jignesh"
+/// emp_phone : "8529638522"
+/// emp_email : "jignesh1@coronation.in"
+/// profile : "https://salesapp.coronation.in/assets/upload/profile/1675170997-circle.png"
 /// incentive : "0"
 /// outstanding : "0"
 /// total_sales : "0"
@@ -282,12 +300,12 @@ EmployeeDetails copyWith({  String? empId,
 
 }
 
-/// order_id : ""
-/// order_number : ""
-/// sub_total : ""
-/// discount : ""
-/// adjustments : ""
-/// grand_total : ""
+/// order_id : "43"
+/// order_number : "SALE-0000000001"
+/// sub_total : "1470"
+/// discount : "10"
+/// adjustments : "-500"
+/// grand_total : "1470"
 /// order_status : ""
 
 OrderDetails orderDetailsFromJson(String str) => OrderDetails.fromJson(json.decode(str));

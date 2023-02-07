@@ -1,8 +1,10 @@
 import 'package:dot_navigation_bar/dot_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/services.dart';
 
 import '../../constant/color.dart';
+import '../../utils/app_utils.dart';
 import '../../utils/session_manager.dart';
 import 'customer_list_page.dart';
 import 'dashboard_page.dart';
@@ -75,105 +77,138 @@ class _TabNavigationPageState extends State<TabNavigation> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBody: true,
-      body: Column(
-        children: [
-          Expanded(child: IndexedStack(
-            index: _currentIndex,
-            children: _pages,
-          )),
-        ],
-      ),
-      bottomNavigationBar: Stack(
-        children: [
-          DotNavigationBar(
-            backgroundColor: kLightestPurple,
-            boxShadow: const [
-              BoxShadow(
+    return WillPopScope(
+      onWillPop: (){
+        if (_currentIndex != 0)
+        {
+          print("Is running if condition");
+          setState(() {
+            _currentIndex = 0;
+          });
+          return Future.value(false);
+        }
+        else
+        {
+          print("Is running else condition");
+          final timeGap = DateTime.now().difference(preBackPressTime);
+          final cantExit = timeGap >= const Duration(seconds: 2);
+          preBackPressTime = DateTime.now();
+          if (cantExit)
+          {
+            showSnackBar('Press back button again to exit', context);
+            return Future.value(false);
+          }
+          else
+          {
+            SystemNavigator.pop();
+            return Future.value(true);
+          }
+        }
+      },
+      child: Scaffold(
+        extendBody: true,
+        body: Column(
+          children: [
+            Expanded(child: IndexedStack(
+              index: _currentIndex,
+              children: _pages,
+            )),
+          ],
+        ),
+        bottomNavigationBar: Stack(
+          children: [
+            DotNavigationBar(
+              backgroundColor: kLightestPurple,
+              boxShadow: const [
+                BoxShadow(
                   color: kBlue,
                   spreadRadius:0,
                   blurRadius: 1,
                   offset: Offset(0, 0), // changes position of shadow
-              )
-            ],
-            key: bottomWidgetKey1,
-            // margin: const EdgeInsets.only(left: 10, right: 10),
-            currentIndex: _pages.indexOf(_selectedTab),
-            dotIndicatorColor: kLightestPurple,
-            unselectedItemColor: kBlue,
-            marginR: const EdgeInsets.symmetric(horizontal: 35, vertical: 12),
-            onTap: onTap,
-            items: [
-              DotNavigationBarItem(
-                icon: const ImageIcon(AssetImage("assets/images/ic_portfolio.png"),),
-                selectedColor: kBlue,
-              ),
-              DotNavigationBarItem(
-                icon: const ImageIcon(AssetImage("assets/images/ic_order_blank.png"),),
-                selectedColor:kBlue,
-              ),
-              DotNavigationBarItem(
-                icon: const ImageIcon(AssetImage("assets/images/ic_customer.png"),),
-                selectedColor: kBlue,
-              ),
-             /* DotNavigationBarItem(
-                icon: const ImageIcon(AssetImage("assets/images/ic_employee.png"),),
-                selectedColor:kBlue,
-              ),*/
-            ],
-          ),
-          Positioned(
-            bottom: 0,
-           // margin: const EdgeInsets.only(left: 10, right: 10, top: 60),
-            child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-              width: MediaQuery.of(context).size.width,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Expanded(child:
-                  Container(
-                    margin: const EdgeInsets.only(right: 20),
-                    color: Colors.transparent,
-                    height: 10, width: 2,
-                    child: Image.asset("assets/images/ic_view_pager_bottom.png", height: 10, width: 2, color: _currentIndex == 0 ? kBlue : kLightestPurple,),
-                  )),
-                  Expanded(child: Container(
-                    margin: const EdgeInsets.only(right:30),
-                    color: Colors.transparent,
-                    height: 10, width: 10,
-                    child: Image.asset("assets/images/ic_view_pager_bottom.png",height: 10, width: 10, color: _currentIndex == 1 ? kBlue : kLightestPurple,),
-                  )),
-                  Expanded(child: Container(
-                    margin: const EdgeInsets.only(right: 30),
-                    color: Colors.transparent,
-                    height: 10, width: 10,
-                    child: Image.asset("assets/images/ic_view_pager_bottom.png", height: 10, width: 10, color: _currentIndex == 2 ? kBlue : kLightestPurple,),
-                  )),
-                  /*Expanded(child: Container(
-                    margin: const EdgeInsets.only(left: 5),
-                    color: Colors.transparent,
-                    height: 10, width: 10,
-                    child: Image.asset("assets/images/ic_view_pager_bottom.png", height: 10, width: 10, color: _currentIndex == 3 ? kBlue : white,),
-                  )),*/
-                ],
+                )
+              ],
+              key: bottomWidgetKey1,
+              // margin: const EdgeInsets.only(left: 10, right: 10),
+              currentIndex: _pages.indexOf(_selectedTab),
+              dotIndicatorColor: kLightestPurple,
+              unselectedItemColor: kBlue,
+              marginR: const EdgeInsets.symmetric(horizontal: 35, vertical: 12),
+              onTap: onTap,
+              items: [
+                DotNavigationBarItem(
+                  icon: const ImageIcon(AssetImage("assets/images/ic_portfolio.png"),),
+                  selectedColor: kBlue,
+                ),
+                DotNavigationBarItem(
+                  icon: const ImageIcon(AssetImage("assets/images/ic_order_blank.png"),),
+                  selectedColor:kBlue,
+                ),
+                DotNavigationBarItem(
+                  icon: const ImageIcon(AssetImage("assets/images/ic_customer.png"),),
+                  selectedColor: kBlue,
+                ),
+                /* DotNavigationBarItem(
+                  icon: const ImageIcon(AssetImage("assets/images/ic_employee.png"),),
+                  selectedColor:kBlue,
+                ),*/
+              ],
+            ),
+            Positioned(
+              bottom: 0,
+              child: Container(
+                margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                width: MediaQuery.of(context).size.width,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Expanded(
+                        child: _currentIndex == 0 ? Container(
+                          margin: const EdgeInsets.only(right: 20),
+                          color: Colors.transparent,
+                          height: 10, width: 2,
+                          child: Image.asset("assets/images/ic_view_pager_bottom.png", height: 10, width: 2, color: _currentIndex == 0 ? kBlue : kLightestPurple,),
+                        ) : Container()
+                    ),
+                    Expanded(
+                        child: _currentIndex == 1 ? Container(
+                          margin: const EdgeInsets.only(right:30),
+                          color: Colors.transparent,
+                          height: 10, width: 10,
+                          child: Image.asset("assets/images/ic_view_pager_bottom.png",height: 10, width: 10, color: _currentIndex == 1 ? kBlue : kLightestPurple,),
+                        ) : Container()
+                    ),
+                    Expanded(
+                        child: _currentIndex == 2 ?  Container(
+                          margin: const EdgeInsets.only(right: 30),
+                          color: Colors.transparent,
+                          height: 10, width: 10,
+                          child: Image.asset("assets/images/ic_view_pager_bottom.png", height: 10, width: 10, color: _currentIndex == 2 ? kBlue : kLightestPurple,),
+                        ) : Container()
+                    ),
+                    /*Expanded(child: Container(
+                      margin: const EdgeInsets.only(left: 5),
+                      color: Colors.transparent,
+                      height: 10, width: 10,
+                      child: Image.asset("assets/images/ic_view_pager_bottom.png", height: 10, width: 10, color: _currentIndex == 3 ? kBlue : white,),
+                    )),*/
+                  ],
+                ),
               ),
             ),
-          ),
-         /* Container(
-            margin: const EdgeInsets.only(top: 60, left: 10, right: 30),
-            child:
-          )*/
-        ],
+            /* Container(
+              margin: const EdgeInsets.only(top: 60, left: 10, right: 30),
+              child:
+            )*/
+          ],
+        ),
       ),
     );
   }
 
 
- /* @override
+/* @override
   Widget build(BuildContext context) {
     return WillPopScope(
         child: Scaffold(
@@ -330,7 +365,7 @@ class _TabNavigationPageState extends State<TabNavigation> {
         });
   }*/
 
- /* @override
+/* @override
   Widget build(BuildContext context) {
     return WillPopScope(
         child: Scaffold(

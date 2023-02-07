@@ -13,12 +13,15 @@ import 'package:salesapp/model/order_detail_response_model.dart';
 import 'package:salesapp/screens/order_detail_page.dart';
 import 'package:salesapp/utils/app_utils.dart';
 
+import '../../Model/customer_list_response_model.dart';
 import '../../constant/color.dart';
+import '../../model/customer_detail_response_model.dart';
 import '../../network/api_end_point.dart';
 import '../../utils/base_class.dart';
 import '../../widget/loading.dart';
 import '../../widget/no_internet.dart';
 import '../add_order_page.dart';
+import '../add_payement_detail_page.dart';
 
 class OrderListPage extends StatefulWidget {
   const OrderListPage({Key? key}) : super(key: key);
@@ -90,7 +93,6 @@ class _OrderListPageState extends BaseState<OrderListPage> {
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
         systemOverlayStyle: SystemUiOverlayStyle.dark,
-        toolbarHeight: 61,
         automaticallyImplyLeading: false,
         title: const Text(""),
         actions: [
@@ -235,7 +237,7 @@ class _OrderListPageState extends BaseState<OrderListPage> {
                             cursorColor: black,
                             style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 15, color: black,),
                             decoration: InputDecoration(
-                                hintText: "Search product",
+                                hintText: "Search Order",
                                 focusedBorder: OutlineInputBorder(
                                   borderSide: const BorderSide(color: kLightPurple, width: 0),
                                   borderRadius: BorderRadius.circular(8),
@@ -558,7 +560,7 @@ class _OrderListPageState extends BaseState<OrderListPage> {
                     child: GestureDetector(
                       behavior: HitTestBehavior.opaque,
                       onTap: () {
-                        _redirectToOrderDetail(context, checkValidString(listOrder[index].customerId.toString()), checkValidString(listOrder[index].orderId.toString()));
+                        _redirectToOrderDetail(context, checkValidString(listOrder[index].customerId).toString(), checkValidString(listOrder[index].orderId).toString());
                       },
                       child: Column(
                         children: [
@@ -619,15 +621,33 @@ class _OrderListPageState extends BaseState<OrderListPage> {
                                       ],
                                     ),
                                     const Gap(5),
-                                    Container(
-                                      margin: const EdgeInsets.only(left: 10, bottom: 5),
-                                      child: Text(
-                                        checkValidString(listOrder[index].createdAt),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        textAlign: TextAlign.start,
-                                        style: const TextStyle(fontSize: 13, color: kGray, fontWeight: FontWeight.w400),
-                                      ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Container(
+                                          margin: const EdgeInsets.only(left: 10, bottom: 5),
+                                          child: Text(
+                                            checkValidString(listOrder[index].createdAt),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            textAlign: TextAlign.start,
+                                            style: const TextStyle(fontSize: 13, color: kGray, fontWeight: FontWeight.w400),
+                                          ),
+                                        ),
+                                        Container(
+                                            margin: const EdgeInsets.only(left: 10, bottom: 5),
+                                            child: TextButton(
+                                              child:const Text("Receive Payment",
+                                                textAlign: TextAlign.start,
+                                                style: TextStyle(fontSize: 13, color: black, fontWeight: FontWeight.w500),
+                                              ),
+                                              onPressed: () {
+                                                _redirectToTransaction(context, checkValidString(listOrder[index].orderId).toString(), checkValidString(listOrder[index].customerId).toString());
+                                              },
+                                            )
+                                          //
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
@@ -681,10 +701,25 @@ class _OrderListPageState extends BaseState<OrderListPage> {
     widget is OrderListPage;
   }
 
+  Future<void> _redirectToTransaction(BuildContext context, String orderId, String customerId) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => AddPaymentDetailPage(Order(), orderId, customerId)),
+    );
+
+    print("result ===== $result");
+
+    if (result == "success") {
+      _getOrderListData(true);
+      setState(() {
+      });
+    }
+  }
+
   Future<void> _redirectToAddOrder(BuildContext context, Order getSet, bool isFromList) async {
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => AddOrderPage(getSet, isFromList)),
+      MaterialPageRoute(builder: (context) => AddOrderPage(getSet, isFromList, CustomerList(), false)),
     );
 
     print("result ===== $result");

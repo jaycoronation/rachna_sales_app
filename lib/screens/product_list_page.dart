@@ -1,3 +1,5 @@
+/*
+import 'dart:collection';
 import 'dart:convert';
 
 import 'package:flutter/gestures.dart';
@@ -35,6 +37,7 @@ class _ProductListPageState extends BaseState<ProductListPage> with TickerProvid
   List<ItemData> _templistProduct = [];
 
   var selectedCategoryName = "";
+  var selectedCategoryId = "1";
   var selectedCategoryProductCount = "";
 
   bool _isLoadingMore = false;
@@ -46,6 +49,8 @@ class _ProductListPageState extends BaseState<ProductListPage> with TickerProvid
   String tabTitle = "";
   List<String> tabTitles = [];
 
+  Map<String, List<ItemData>> listHashMap = HashMap();
+
   late ScrollController _scrollViewController;
   bool isScrollingDown = false;
   late TabController _tabController;
@@ -55,9 +60,6 @@ class _ProductListPageState extends BaseState<ProductListPage> with TickerProvid
   @override
   void initState() {
     super.initState();
-
-    _tabController = TabController(length: listCategory.length, vsync: this);
-
     _scrollViewController = ScrollController();
     _scrollViewController.addListener(() {
 
@@ -88,14 +90,14 @@ class _ProductListPageState extends BaseState<ProductListPage> with TickerProvid
 
   void pagination() {
     if(!_isLastPage && !_isLoadingMore)
-      {
-        if ((_scrollViewController.position.pixels == _scrollViewController.position.maxScrollExtent)) {
-          setState(() {
-            _isLoadingMore = true;
-            _getItemListData(false);
-          });
-        }
+    {
+      if ((_scrollViewController.position.pixels == _scrollViewController.position.maxScrollExtent)) {
+        setState(() {
+          _isLoadingMore = true;
+          _getItemListData(false);
+        });
       }
+    }
   }
 
   @override
@@ -112,9 +114,7 @@ class _ProductListPageState extends BaseState<ProductListPage> with TickerProvid
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
           systemOverlayStyle: SystemUiOverlayStyle.dark,
-          toolbarHeight: 61,
           automaticallyImplyLeading: false,
-          title: const Text(""),
           leading: GestureDetector(
               onTap:() {
                 Navigator.pop(context);
@@ -147,27 +147,6 @@ class _ProductListPageState extends BaseState<ProductListPage> with TickerProvid
                 child: const Icon(Icons.add, color: kBlue, size: 21,),
               ),
             ),
-
-            /*         GestureDetector(
-              onTap: () {
-              },
-              child: Container(
-                height: 45,
-                width: 45,
-                alignment: Alignment.center,
-                child: const Icon(Icons.search, color: white, size: 28,),
-              ),
-            ),
-            GestureDetector(
-              onTap: () {
-              },
-              child: Container(
-                height: 45,
-                width: 45,
-                alignment: Alignment.center,
-                child: const Icon(Icons.calendar_today_outlined, color: white, size: 22,),
-              ),
-            ),*/
           ],
           centerTitle: false,
           elevation: 0,
@@ -176,61 +155,62 @@ class _ProductListPageState extends BaseState<ProductListPage> with TickerProvid
         body: _isLoading
             ? const LoadingWidget()
             : Column(
-              children: [
-                Container(
-                  color: kBlue,
-                  alignment: Alignment.topLeft,
-                  padding: const EdgeInsets.only(left: 22, top: 10, bottom: 20),
-                  child: const Text("Product List", style: TextStyle(fontWeight: FontWeight.w700, color: white,fontSize: 20)),
-                ),
-                Container(
-                  color: kLightestPurple,
-                  child: Column(
-                    children: [
-                      Container(height: 36, width: double.infinity,
-                        margin: const EdgeInsets.only(left: 12, right: 12, top: 20),
-                        child: TabBar(
-                          controller: _tabController,
-                          isScrollable: true,
-                          indicatorColor: kBlue,
-                          labelColor: kBlue,
-                          unselectedLabelColor: kBlue,
-                          tabs: _tabs,
-                        ),
-                      ),
-                      Container(
-                          decoration: BoxDecoration(
-                              color: white,
-                              border: Border.all(width: 1, color: kLightPurple),
-                              borderRadius: const BorderRadius.all(
-                                Radius.circular(8.0),
-                              ),
-                              shape: BoxShape.rectangle
+          children: [
+            Container(
+              color: kBlue,
+              alignment: Alignment.topLeft,
+              padding: const EdgeInsets.only(left: 22, top: 10, bottom: 20),
+              child: const Text("Product List", style: TextStyle(fontWeight: FontWeight.w700, color: white,fontSize: 20)),
+            ),
+            Container(
+              color: kLightestPurple,
+              child: Column(
+                children: [
+                  Container(height: 36, width: double.infinity,
+                    margin: const EdgeInsets.only(left: 12, right: 12, top: 20),
+                    child: TabBar(
+                      controller: _tabController,
+                      isScrollable: true,
+                      indicatorColor: kBlue,
+                      labelColor: kBlue,
+                      unselectedLabelColor: kBlue,
+                      tabs: _tabs,
+                    ),
+                  ),
+                  Container(
+                      decoration: BoxDecoration(
+                          color: white,
+                          border: Border.all(width: 1, color: kLightPurple),
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(8.0),
                           ),
-                          margin: const EdgeInsets.only(left: 15, right: 15,),
-                          child: TextField(
-                            keyboardType: TextInputType.text,
-                            textCapitalization: TextCapitalization.sentences,
-                            textAlign: TextAlign.start,
-                            controller: searchController,
-                            cursorColor: black,
-                            style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 15, color: black,),
-                            decoration: InputDecoration(
-                                hintText: "Search product",
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: const BorderSide(color: kLightPurple, width: 0),
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide: const BorderSide(color: kLightPurple, width: 0),
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                hintStyle: const TextStyle(fontWeight: FontWeight.w400, color: kBlue, fontSize: 14),
-                                prefixIcon: const Icon(Icons.search, size: 26, color: kBlue,)
+                          shape: BoxShape.rectangle
+                      ),
+                      margin: const EdgeInsets.only(left: 15, right: 15,top: 12,bottom: 12),
+                      child: TextField(
+                        keyboardType: TextInputType.text,
+                        textCapitalization: TextCapitalization.sentences,
+                        textAlign: TextAlign.start,
+                        controller: searchController,
+                        cursorColor: black,
+                        style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 15, color: black,),
+                        decoration: InputDecoration(
+                            hintText: "Search product",
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(color: kLightPurple, width: 0),
+                              borderRadius: BorderRadius.circular(8),
                             ),
-                            onChanged: (text) {
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(color: kLightPurple, width: 0),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            hintStyle: const TextStyle(fontWeight: FontWeight.w400, color: kBlue, fontSize: 14),
+                            prefixIcon: const Icon(Icons.search, size: 26, color: kBlue,)
+                        ),
+                        onChanged: (text) {
 
-                              /* searchController.text = text;
+                          */
+/* searchController.text = text;
                               searchController.selection = TextSelection.fromPosition(TextPosition(offset: searchController.text.length));
                               if(text.isEmpty) {
                                 searchText = "";
@@ -238,153 +218,276 @@ class _ProductListPageState extends BaseState<ProductListPage> with TickerProvid
                               }else if(text.length > 3) {
                                 searchText = searchController.text.toString().trim();
                                 // _getItemListData();
-                              }*/
+                              }*//*
 
-                              if(text.isNotEmpty) {
-                                setState(() {
-                                  _templistProduct = _buildSearchListForProducts(text);
-                                });
-                              } else {
-                                setState(() {
-                                  searchController.clear();
-                                  _templistProduct.clear();
-                                });
-                              }
-                            },
-                          )
-                      ),
-                    ],
+
+                          if(text.isNotEmpty) {
+                            setState(() {
+                              _templistProduct = _buildSearchListForProducts(text);
+                            });
+                          } else {
+                            setState(() {
+                              searchController.clear();
+                              _templistProduct.clear();
+                            });
+                          }
+                        },
+                      )
                   ),
-                ),
-                Expanded(
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    physics: BouncingScrollPhysics(),
-                    itemCount: _tabs.length,
-                    itemBuilder: (context, index) {
-                      return Column(
-                        children: [
-                          Container(
-                            color: white,
-                            alignment: Alignment.topLeft,
-                            padding: const EdgeInsets.only(left: 20, top: 10, bottom: 15),
-                            child:RichText(
-                              textAlign: TextAlign.center,
-                              text: TextSpan(
-                                text: listProductTemp[_tabController.index].message,
-                                style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w800, color: kBlue),
-                                children: <TextSpan>[
-                                  TextSpan(text: "  ($selectedCategoryProductCount products)",
-                                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: kGray),
-                                      recognizer: TapGestureRecognizer()..onTap = () => {
-                                      }),
-                                ],
-                              ),
-                            ),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Container(
-                                  alignment: Alignment.center,
-                                  margin: const EdgeInsets.only(left: 20,),
-                                  child: const Text("Product Name", style: TextStyle(fontWeight: FontWeight.w600, color: black, fontSize: 15))),
-                              Expanded(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    RichText(
-                                      textAlign: TextAlign.center,
-                                      text: TextSpan(
-                                        text: 'In stock\n',
-                                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: black),
-                                        children: <TextSpan>[
-                                          TextSpan(text: "(In pack)",
-                                              style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: black),
-                                              recognizer: TapGestureRecognizer()..onTap = () => {
-                                              }),
-                                        ],
-                                      ),
-                                    ),
-                                    Container(
-                                        margin: const EdgeInsets.only(right: 70,left: 20),
-                                        child: const Text("Order", style: TextStyle(fontWeight: FontWeight.w600, color: black, fontSize: 15))),
-                                  ],
-                                ),
-                              ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                children: listProductTemp.isEmpty
+                    ? <Widget>[]
+                    : listProductTemp.map((dynamicContent) {
+                  return Column(
+                    children: [
+                      Container(
+                        color: white,
+                        alignment: Alignment.topLeft,
+                        padding: const EdgeInsets.only(left: 20, top: 10, bottom: 15),
+                        child:RichText(
+                          textAlign: TextAlign.center,
+                          text: TextSpan(
+                            text: dynamicContent.message,
+                            style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w800, color: kBlue),
+                            children: <TextSpan>[
+                              TextSpan(text: "  ($selectedCategoryProductCount products)",
+                                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: kGray),
+                                  recognizer: TapGestureRecognizer()..onTap = () => {
+                                  }),
                             ],
                           ),
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                              alignment: Alignment.center,
+                              margin: const EdgeInsets.only(left: 20,),
+                              child: const Text("Product Name", style: TextStyle(fontWeight: FontWeight.w600, color: black, fontSize: 15))),
                           Expanded(
-                              child: ListView.builder(
-                                  scrollDirection: Axis.vertical,
-                                  physics: const ScrollPhysics(),
-                                  primary: false,
-                                  shrinkWrap: true,
-                                  itemCount:(_templistProduct.isNotEmpty)
-                                      ? _templistProduct.length : listProduct.length,
-                                  itemBuilder: (ctx, index) => InkWell(
-                                    hoverColor: Colors.white.withOpacity(0.0),
-                                    onTap: () async {
-                                      _redirectToAddProduct(context, _templistProduct.isNotEmpty ? _templistProduct[index] : listProduct[index], true);
-                                    },
-                                    child: Container(
-                                      color: white,
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(left: 15, right: 15, top: 8, bottom: 5),
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            if(_templistProduct != null && _templistProduct.length > 0)
-                                            {
-                                              setState(() {
-                                                if(_templistProduct[index].isSelected ?? false) {
-                                                  _templistProduct[index].isSelected = false;
-                                                }else {
-                                                  _templistProduct[index].isSelected = true;
-                                                }
-                                              });
-                                            }
-                                            else
-                                            {
-                                              setState(() {
-                                                if(listProduct[index].isSelected ?? false) {
-                                                  listProduct[index].isSelected = false;
-                                                }else {
-                                                  listProduct[index].isSelected = true;
-                                                }
-                                              });
-                                            }
-                                          },
-                                          child: _showBottomSheetForProductsList(index,_templistProduct.isNotEmpty ? _templistProduct : listProduct),
-                                        ),
-                                      ),
-                                    ),
-                                  ))
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                RichText(
+                                  textAlign: TextAlign.center,
+                                  text: TextSpan(
+                                    text: 'In stock\n',
+                                    style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: black),
+                                    children: <TextSpan>[
+                                      TextSpan(text: "(In pack)",
+                                          style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: black),
+                                          recognizer: TapGestureRecognizer()..onTap = () => {
+                                          }),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                    margin: const EdgeInsets.only(right: 70,left: 20),
+                                    child: const Text("Order", style: TextStyle(fontWeight: FontWeight.w600, color: black, fontSize: 15))),
+                              ],
+                            ),
                           ),
-                          if (_isLoadingMore == true)
+                        ],
+                      ),
+                      Expanded(
+                          child: ListView.builder(
+                              scrollDirection: Axis.vertical,
+                              physics: const ScrollPhysics(),
+                              primary: false,
+                              shrinkWrap: true,
+                              itemCount: dynamicContent.itemData?.length,
+                              itemBuilder: (ctx, index) => InkWell(
+                                hoverColor: Colors.white.withOpacity(0.0),
+                                onTap: () async {
+                                  _redirectToAddProduct(context, _templistProduct.isNotEmpty ? _templistProduct[index] : listProduct[index], true);
+                                },
+                                child: Container(
+                                  color: white,
+                                  padding: const EdgeInsets.only(left: 15, right: 15, top: 8, bottom: 5),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      if(_templistProduct != null && _templistProduct.length > 0)
+                                      {
+                                        setState(() {
+                                          if(_templistProduct[index].isSelected ?? false) {
+                                            _templistProduct[index].isSelected = false;
+                                          }else {
+                                            _templistProduct[index].isSelected = true;
+                                          }
+                                        });
+                                      }
+                                      else
+                                      {
+                                        setState(() {
+                                          if(listProduct[index].isSelected ?? false) {
+                                            listProduct[index].isSelected = false;
+                                          }else {
+                                            listProduct[index].isSelected = true;
+                                          }
+                                        });
+                                      }
+                                    },
+                                    child: _showBottomSheetForProductsList(index,dynamicContent.itemData),
+                                  ),
+                                ),
+                              ))
+                      ),
+                      if (_isLoadingMore == true)
+                        Container(
+                          padding: const EdgeInsets.only(top: 10, bottom: 10),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                  width: 30,
+                                  height: 30,
+                                  child: Lottie.asset('assets/images/loader_new.json', repeat: true, animate: true, frameRate: FrameRate.max)),
+                              const Text(' Loading more...',
+                                  style: TextStyle(color: black, fontWeight: FontWeight.w400, fontSize: 16)
+                              )
+                            ],
+                          ),
+                        ),
+                    ],
+                  );
+                }
+                ).toList(),
+              ),
+            ),
+            */
+/*ListView.builder(
+                  shrinkWrap: true,
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: listProductTemp.length,
+                  itemBuilder: (context, index) {
+                    return Column(
+                      children: [
+                        Container(
+                          color: white,
+                          alignment: Alignment.topLeft,
+                          padding: const EdgeInsets.only(left: 20, top: 10, bottom: 15),
+                          child:RichText(
+                            textAlign: TextAlign.center,
+                            text: TextSpan(
+                              text: listProductTemp[_tabController.index].message,
+                              style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w800, color: kBlue),
+                              children: <TextSpan>[
+                                TextSpan(text: "  ($selectedCategoryProductCount products)",
+                                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: kGray),
+                                    recognizer: TapGestureRecognizer()..onTap = () => {
+                                    }),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
                             Container(
-                              padding: const EdgeInsets.only(top: 10, bottom: 10),
+                                alignment: Alignment.center,
+                                margin: const EdgeInsets.only(left: 20,),
+                                child: const Text("Product Name", style: TextStyle(fontWeight: FontWeight.w600, color: black, fontSize: 15))),
+                            Expanded(
                               child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
-                                  SizedBox(
-                                      width: 30,
-                                      height: 30,
-                                      child: Lottie.asset('assets/images/loader_new.json', repeat: true, animate: true, frameRate: FrameRate.max)),
-                                  const Text(' Loading more...',
-                                      style: TextStyle(color: black, fontWeight: FontWeight.w400, fontSize: 16)
-                                  )
+                                  RichText(
+                                    textAlign: TextAlign.center,
+                                    text: TextSpan(
+                                      text: 'In stock\n',
+                                      style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: black),
+                                      children: <TextSpan>[
+                                        TextSpan(text: "(In pack)",
+                                            style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: black),
+                                            recognizer: TapGestureRecognizer()..onTap = () => {
+                                            }),
+                                      ],
+                                    ),
+                                  ),
+                                  Container(
+                                      margin: const EdgeInsets.only(right: 70,left: 20),
+                                      child: const Text("Order", style: TextStyle(fontWeight: FontWeight.w600, color: black, fontSize: 15))),
                                 ],
                               ),
                             ),
-                        ],
-                      );
-                    },
-                  ),
-                ),
+                          ],
+                        ),
+                        Expanded(
+                            child: ListView.builder(
+                                scrollDirection: Axis.vertical,
+                                physics: const ScrollPhysics(),
+                                primary: false,
+                                shrinkWrap: true,
+                                itemCount:(_templistProduct.isNotEmpty)
+                                    ? _templistProduct.length : listProduct.length,
+                                itemBuilder: (ctx, index) => InkWell(
+                                  hoverColor: Colors.white.withOpacity(0.0),
+                                  onTap: () async {
+                                    _redirectToAddProduct(context, _templistProduct.isNotEmpty ? _templistProduct[index] : listProduct[index], true);
+                                  },
+                                  child: Container(
+                                    color: white,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(left: 15, right: 15, top: 8, bottom: 5),
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          if(_templistProduct != null && _templistProduct.length > 0)
+                                          {
+                                            setState(() {
+                                              if(_templistProduct[index].isSelected ?? false) {
+                                                _templistProduct[index].isSelected = false;
+                                              }else {
+                                                _templistProduct[index].isSelected = true;
+                                              }
+                                            });
+                                          }
+                                          else
+                                          {
+                                            setState(() {
+                                              if(listProduct[index].isSelected ?? false) {
+                                                listProduct[index].isSelected = false;
+                                              }else {
+                                                listProduct[index].isSelected = true;
+                                              }
+                                            });
+                                          }
+                                        },
+                                        child: _showBottomSheetForProductsList(index,_templistProduct.isNotEmpty ? _templistProduct : listProduct),
+                                      ),
+                                    ),
+                                  ),
+                                ))
+                        ),
+                        if (_isLoadingMore == true)
+                          Container(
+                            padding: const EdgeInsets.only(top: 10, bottom: 10),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                    width: 30,
+                                    height: 30,
+                                    child: Lottie.asset('assets/images/loader_new.json', repeat: true, animate: true, frameRate: FrameRate.max)),
+                                const Text(' Loading more...',
+                                    style: TextStyle(color: black, fontWeight: FontWeight.w400, fontSize: 16)
+                                )
+                              ],
+                            ),
+                          ),
+                      ],
+                    );
+                  },
+                ),*//*
 
-
-              ],
+          ],
         ),
       ),
     );
@@ -398,6 +501,8 @@ class _ProductListPageState extends BaseState<ProductListPage> with TickerProvid
     }
     print("SIZE ==== ${_tabs.length}");
     _tabController = getTabController();
+
+
     getTabListener();
     return _tabs;
   }
@@ -416,16 +521,9 @@ class _ProductListPageState extends BaseState<ProductListPage> with TickerProvid
     _tabController.addListener(() {
       if (_tabController.indexIsChanging)
       {
-        if (_tabController.index == 0)
-        {
-          setState(() {
-          });
-        }
-        else
-        {
-          setState(() {
-          });
-        }
+        setState(() {
+          selectedCategoryId = listCategory[_tabController.index].categoryId.toString();
+        });
       }
     });
   }
@@ -441,7 +539,7 @@ class _ProductListPageState extends BaseState<ProductListPage> with TickerProvid
     return _searchList;
   }
 
-  Widget _showBottomSheetForProductsList(int index, List<ItemData> listData) {
+  Widget _showBottomSheetForProductsList(int index, List<ItemData>? listData) {
     return Column(
       children: [
         Row(
@@ -458,7 +556,7 @@ class _ProductListPageState extends BaseState<ProductListPage> with TickerProvid
                       children: [
                         Container(
                           margin: const EdgeInsets.only(left: 6, right: 6, bottom: 6),
-                          child: Text(listData[index].stockName.toString(),
+                          child: Text(listData?[index].stockName.toString() ?? "Test",
                               maxLines: 2,
                               overflow: TextOverflow.clip,
                               textAlign: TextAlign.start,
@@ -467,7 +565,7 @@ class _ProductListPageState extends BaseState<ProductListPage> with TickerProvid
                         ),
                         Container(
                           margin: const EdgeInsets.only(left: 6),
-                          child: Text("MRP ${checkValidString(listData[index].stockPrice)}",
+                          child: Text("MRP ${checkValidString(listData?[index].stockPrice)}",
                               maxLines: 2,
                               style: const TextStyle(fontWeight: FontWeight.w400, color: black, fontSize: 13)
                           ),
@@ -492,7 +590,7 @@ class _ProductListPageState extends BaseState<ProductListPage> with TickerProvid
                   margin: const EdgeInsets.only(top:5, bottom: 5, left: 8),
                   child: Container(
                     margin: const EdgeInsets.all(10),
-                    child: Text(checkValidString(listData[index].inStock),
+                    child: Text(checkValidString(listData?[index].inStock),
                         style: const TextStyle(fontWeight: FontWeight.w500, color: kBlue, fontSize: 12)
                     ),
                   ),
@@ -509,7 +607,7 @@ class _ProductListPageState extends BaseState<ProductListPage> with TickerProvid
                   margin: const EdgeInsets.only(top:5, bottom: 5, right: 8, left:30),
                   child: Container(
                     margin: const EdgeInsets.all(10),
-                    child: Text(checkValidString(listData[index].orderCount),
+                    child: Text(checkValidString(listData?[index].orderCount),
                         style: const TextStyle(fontWeight: FontWeight.w500, color: kBlue, fontSize: 12)
                     ),
                   ),
@@ -664,7 +762,7 @@ class _ProductListPageState extends BaseState<ProductListPage> with TickerProvid
       'from_app' : FROM_APP,
       'limit': _pageResult.toString(),
       'page': _pageIndex.toString(),
-      'category_id' : '2',
+      'category_id' : selectedCategoryId,
       'search' : '',
     };
 
@@ -689,11 +787,6 @@ class _ProductListPageState extends BaseState<ProductListPage> with TickerProvid
         _tempList = dataResponse.itemData;
 
         listProduct.addAll(_tempList!);
-        /*for (var i=0; i < dataResponse.itemData!.length; i++)
-          {
-            print(dataResponse.itemData![i].stockName);
-            listProduct.add(dataResponse.itemData![i]);
-          }*/
 
         print(listProduct.length);
 
@@ -707,19 +800,24 @@ class _ProductListPageState extends BaseState<ProductListPage> with TickerProvid
         }
       }
 
-      for (var i=0; i < listProduct.length; i++)
+      for (var i=0; i < listCategory.length; i++)
+      {
+        for (var j=0; j < listProduct.length; j++)
         {
-          for (var j=0; j < listCategory.length; j++)
-            {
-              if (listProduct[i].categoryId == listCategory[j].categoryId)
-              {
-                ProductCategoryList getSet = ProductCategoryList();
-                getSet.message = listCategory[j].categoryName ?? "";
-                getSet.itemData?.add(listProduct[i]);
-                listProductTemp.add(getSet);
-              }
-            }
+          if (listCategory[i].categoryId == listProduct[j].categoryId)
+          {
+
+            listHashMap[listCategory[j].categoryName ?? ""] = listProduct;
+
+            ProductCategoryList getSet = ProductCategoryList();
+            getSet.message = listCategory[j].categoryName ?? "";
+            getSet.itemData?.add(listProduct[i]);
+            listProductTemp.add(getSet);
+          }
         }
+
+        print("listProductTemp ===== ${ listProductTemp.length} ");
+      }
 
 
       setState(() {
@@ -772,8 +870,6 @@ class _ProductListPageState extends BaseState<ProductListPage> with TickerProvid
           {
             tabTitles.add(listCategory[i].categoryName.toString());
           }
-
-
 
           print("${tabTitles.length} ==== TOTAL LENGHT FOR TABS");
 
@@ -832,4 +928,4 @@ class _ProductListPageState extends BaseState<ProductListPage> with TickerProvid
     }
   }
 
-}
+}*/

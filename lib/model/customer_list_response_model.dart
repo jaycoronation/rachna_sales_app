@@ -385,6 +385,46 @@ CustomerList copyWith({  String? customerId,
   String? get contactPerson => _contactPerson;
   String? get customerTotalSale => _customerTotalSale;
 
+  set customerId(String? value) {
+    _customerId = value;
+  }
+
+  set customerName(String? value) {
+    _customerName = value;
+  }
+
+  set addressLine1(String? value) {
+    _addressLine1 = value;
+  }
+
+  set addressLine2(String? value) {
+    _addressLine2 = value;
+  }
+
+  set addressLine3(String? value) {
+    _addressLine3 = value;
+  }
+
+  set addressLine4(String? value) {
+    _addressLine4 = value;
+  }
+
+  set addressLine5(String? value) {
+    _addressLine5 = value;
+  }
+
+  set cityName(String? value) {
+    _cityName = value;
+  }
+
+  set pincode(String? value) {
+    _pincode = value;
+  }
+
+  set stateName(String? value) {
+    _stateName = value;
+  }
+
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['customer_id'] = _customerId;

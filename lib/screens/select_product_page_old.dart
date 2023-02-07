@@ -2,89 +2,46 @@ import 'dart:convert';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:lottie/lottie.dart';
 import 'package:pretty_http_logger/pretty_http_logger.dart';
-import 'package:salesapp/model/category_response_model.dart';
 
 import '../constant/color.dart';
-import '../model/product_item_data_response_model.dart';
+import '../model/product_item_list_response_model_old.dart';
 import '../network/api_end_point.dart';
 import '../utils/app_utils.dart';
 import '../utils/base_class.dart';
 import '../widget/loading.dart';
 
-class SelectProductPage extends StatefulWidget {
-  final List<ItemData> passListProduct;
-  SelectProductPage(this.passListProduct, {Key? key}) : super(key: key);
+class SelectProductPageOld extends StatefulWidget {
+  final List<Products> passListProduct;
+  SelectProductPageOld(this.passListProduct, {Key? key}) : super(key: key);
 
   @override
   _SelectProductPageState createState() => _SelectProductPageState();
 }
 
-class _SelectProductPageState extends BaseState<SelectProductPage> {
+class _SelectProductPageState extends BaseState<SelectProductPageOld> {
   bool _isLoading = false;
   TextEditingController searchController = TextEditingController();
   var searchText = "";
-  var listCategory = List<CategoryDetails>.empty(growable: true);
-  var listProduct = List<ItemData>.empty(growable: true);
-  List<ItemData> _templistProduct = [];
-  var passListProduct = List<ItemData>.empty(growable: true);
+  var listCategory = List<ItemDataOld>.empty(growable: true);
+  var listProduct = List<Products>.empty(growable: true);
+  List<Products> _templistProduct = [];
+  var passListProduct = List<Products>.empty(growable: true);
 
   var selectedCategoryName = "";
   var selectedCategoryProductCount = "";
-
-  bool _isLoadingMore = false;
-  int _pageIndex = 0;
-  final int _pageResult = 10;
-  bool _isLastPage = false;
-
-  late ScrollController _scrollViewController;
-  bool isScrollingDown = false;
 
   @override
   void initState() {
     super.initState();
 
-    passListProduct = (widget as SelectProductPage).passListProduct;
-    _scrollViewController = ScrollController();
-    _scrollViewController.addListener(() {
-
-      if (_scrollViewController.position.userScrollDirection == ScrollDirection.reverse) {
-        if (!isScrollingDown) {
-          isScrollingDown = true;
-          setState(() {});
-        }
-      }
-      if (_scrollViewController.position.userScrollDirection == ScrollDirection.forward) {
-        if (isScrollingDown) {
-          isScrollingDown = false;
-          setState(() {});
-        }
-      }
-
-      pagination();
-
-    });
-
+    passListProduct = (widget as SelectProductPageOld).passListProduct;
 
     if(isInternetConnected) {
-      _makeCategoryListProduct();
+      _getItemListData();
     }else {
       noInterNet(context);
-    }
-  }
-
-  void pagination() {
-    if(!_isLastPage && !_isLoadingMore)
-    {
-      if ((_scrollViewController.position.pixels == _scrollViewController.position.maxScrollExtent)) {
-        setState(() {
-          _isLoadingMore = true;
-          _getItemListData(false);
-        });
-      }
     }
   }
 
@@ -200,9 +157,9 @@ class _SelectProductPageState extends BaseState<SelectProductPage> {
                               for (var j = 0; j < listCategory.length; j++) {
                                 if (index == j) {
                                   listCategory[j].isSelected = true;
-                                  // listProduct = listCategory[index].products!;
+                                  listProduct = listCategory[index].products!;
                                   selectedCategoryName =  checkValidString(listCategory[index].categoryName);
-                                  // selectedCategoryProductCount = checkValidString(listCategory[index].products!.length.toString());
+                                  selectedCategoryProductCount = checkValidString(listCategory[index].products!.length.toString());
                                 } else {
                                   listCategory[j].isSelected = false;
                                 }
@@ -328,56 +285,42 @@ class _SelectProductPageState extends BaseState<SelectProductPage> {
                 primary: false,
                 shrinkWrap: true,
                 itemCount:(_templistProduct.isNotEmpty) ? _templistProduct.length : listProduct.length,
-                itemBuilder: (ctx, index) => Container(
-                  color: white,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 10, right: 10, top: 8, bottom: 5),
-                    child: GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      onTap: () {
-                        if(_templistProduct != null && _templistProduct.length > 0) {
-                          setState(() {
-                            if(_templistProduct[index].isSelected ?? false) {
-                              _templistProduct[index].isSelected = false;
-                            }else {
-                              _templistProduct[index].isSelected = true;
-                            }
-                          });
-                        } else {
-                          setState(() {
-                            if(listProduct[index].isSelected ?? false) {
-                              listProduct[index].isSelected = false;
-                            }else {
-                              listProduct[index].isSelected = true;
-                            }
-                          });
-                        }
-                      },
-                      child: (_templistProduct.isNotEmpty)
-                          ? _showBottomSheetForProductsList(
-                          index, _templistProduct)
-                          : _showBottomSheetForProductsList(
-                          index, listProduct),
+                itemBuilder: (ctx, index) => InkWell(
+                  hoverColor: Colors.white.withOpacity(0.0),
+                  onTap: () async {},
+                  child: Container(
+                    color: white,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 10, right: 10, top: 8, bottom: 5),
+                      child: GestureDetector(
+                        onTap: () {
+                          if(_templistProduct != null && _templistProduct.length > 0) {
+                            setState(() {
+                              if(_templistProduct[index].isProductSelected ?? false) {
+                                _templistProduct[index].isProductSelected = false;
+                              }else {
+                                _templistProduct[index].isProductSelected = true;
+                              }
+                            });
+                          } else {
+                            setState(() {
+                              if(listProduct[index].isProductSelected ?? false) {
+                                listProduct[index].isProductSelected = false;
+                              }else {
+                                listProduct[index].isProductSelected = true;
+                              }
+                            });
+                          }
+                        },
+                        child: (_templistProduct.isNotEmpty)
+                            ? _showBottomSheetForProductsList(
+                            index, _templistProduct)
+                            : _showBottomSheetForProductsList(
+                            index, listProduct),
+                      ),
                     ),
                   ),
                 ))),
-            if (_isLoadingMore == true)
-              Container(
-                padding: const EdgeInsets.only(top: 10, bottom: 10),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                        width: 30,
-                        height: 30,
-                        child: Lottie.asset('assets/images/loader_new.json', repeat: true, animate: true, frameRate: FrameRate.max)),
-                    const Text(' Loading more...',
-                        style: TextStyle(color: black, fontWeight: FontWeight.w400, fontSize: 16)
-                    )
-                  ],
-                ),
-              ),
             Container(
               margin: const EdgeInsets.only(top: 30, bottom: 20, left: 20, right: 20),
               width: double.infinity,
@@ -391,18 +334,31 @@ class _SelectProductPageState extends BaseState<SelectProductPage> {
               ),
               child: TextButton(
                 onPressed: () {
-
                   FocusScope.of(context).requestFocus(FocusNode());
-                  passListProduct = [];
-                    for(var i = 0; i < listProduct.length; i++) {
-                      if(listProduct[i].isSelected == true) {
-                        passListProduct.add(listProduct[i]);
-                      }else {
-                        passListProduct.remove(listProduct[i]);
+                  // if (listProduct.isNotEmpty || _templistProduct.isNotEmpty) {
+                    passListProduct = [];
+                    for(var n = 0; n < listCategory.length; n++) {
+                      for(var i = 0; i < listCategory[n].products!.length; i++) {
+                        if(listCategory[n].products![i].isProductSelected == true) {
+                          passListProduct.add(listCategory[n].products![i]);
+                        }else {
+                          passListProduct.remove(listCategory[n].products![i]);
+                        }
                       }
                     }
 
-                  Navigator.pop(context, passListProduct);
+                    // print("passListProduct.length--->" + passListProduct.length.toString());
+                    // print(passListProduct);
+                    Navigator.pop(context, passListProduct);
+
+                    if (isInternetConnected) {
+
+                    } else {
+                      noInterNet(context);
+                    }
+                  // }else {
+                  //   showSnackBar("Please select item", context);
+                  // }
 
                 },
                 child: const Text("Submit",
@@ -415,8 +371,8 @@ class _SelectProductPageState extends BaseState<SelectProductPage> {
     );
   }
 
-  List<ItemData> _buildSearchListForProducts(String productSearchTerm) {
-    List<ItemData> _searchList = [];
+  List<Products> _buildSearchListForProducts(String productSearchTerm) {
+    List<Products> _searchList = [];
     for (int i = 0; i < listProduct.length; i++) {
       String name = listProduct[i].stockName.toString().trim();
       if (name.toLowerCase().contains(productSearchTerm.toLowerCase())) {
@@ -426,7 +382,7 @@ class _SelectProductPageState extends BaseState<SelectProductPage> {
     return _searchList;
   }
 
-  Widget _showBottomSheetForProductsList(int index, List<ItemData> listData) {
+  Widget _showBottomSheetForProductsList(int index, List<Products> listData) {
     return Column(
       children: [
         Row(
@@ -440,7 +396,7 @@ class _SelectProductPageState extends BaseState<SelectProductPage> {
                   Container(
                       alignment: Alignment.topLeft,
                       margin: const EdgeInsets.only(left: 10),
-                      child: listData[index].isSelected ?? false
+                      child: listData[index].isProductSelected ?? false
                           ? Image.asset("assets/images/check-box.png", height: 28, width: 28,)
                           : Image.asset("assets/images/ic_checkbox_blue.png", height: 28, width: 28,)
                   ),
@@ -521,31 +477,23 @@ class _SelectProductPageState extends BaseState<SelectProductPage> {
   @override
   void castStatefulWidget() {
     // TODO: implement castStatefulWidget
-    widget is SelectProductPage;
+    widget is SelectProductPageOld;
   }
 
   //API call function...
-  _getItemListData([bool isFirstTime = false]) async {
-    if (isFirstTime) {
-      setState(() {
-        _isLoading = true;
-        _isLoadingMore = false;
-        _pageIndex = 0;
-        _isLastPage = false;
-      });
-    }
+  _getItemListData() async {
+    setState(() {
+      _isLoading = true;
+    });
+
     HttpWithMiddleware http = HttpWithMiddleware.build(middlewares: [
       HttpLogger(logLevel: LogLevel.BODY),
     ]);
 
-    final url = Uri.parse(BASE_URL + itemList);
+    final url = Uri.parse(BASE_URL + itemListOld);
 
     Map<String, String> jsonBody = {
-      'from_app' : FROM_APP,
-      'limit': _pageResult.toString(),
-      'page': _pageIndex.toString(),
-      'category_id' : '2',
-      'search': ''
+      'from_app' : FROM_APP
     };
 
     final response = await http.post(url, body: jsonBody);
@@ -553,82 +501,34 @@ class _SelectProductPageState extends BaseState<SelectProductPage> {
 
     final body = response.body;
     Map<String, dynamic> itemData = jsonDecode(body);
-    var dataResponse = ProductItemDataResponseModel.fromJson(itemData);
-
-    if (isFirstTime) {
-      if (listProduct.isNotEmpty) {
-        listProduct = [];
-      }
-    }
+    var dataResponse = ProductItemListResponseModelOld.fromJson(itemData);
 
     if (statusCode == 200 && dataResponse.success == 1) {
+      var itemListResponse = ProductItemListResponseModelOld.fromJson(itemData);
+      listCategory = itemListResponse.itemDataOld!;
+      listCategory[0].isSelected = true;
+      listProduct = listCategory[0].products!;
+      selectedCategoryName = checkValidString(listCategory[0].categoryName);
+      selectedCategoryProductCount = checkValidString(listCategory[0].products!.length.toString());
 
-      if (dataResponse.itemData != null) {
-
-        List<ItemData>? _tempList = [];
-        _tempList = dataResponse.itemData;
-        listProduct.addAll(_tempList ?? []);
-
-        if (_tempList?.isNotEmpty ?? false) {
-          _pageIndex += 1;
-          if (_tempList!.isEmpty || _tempList.length % _pageResult != 0) {
-            _isLastPage = true;
+      for (var i=0; i < passListProduct.length; i++) {
+        for (var j=0; j < listProduct.length; j++) {
+          if (passListProduct[i].stockId == listProduct[j].stockId) {
+            listProduct[j].quantity = passListProduct[i].quantity;
+            listProduct[j].isProductSelected = true;
           }
         }
       }
-
       setState(() {
         _isLoading = false;
-        _isLoadingMore = false;
       });
 
     }else {
       showSnackBar(dataResponse.message, context);
       setState(() {
         _isLoading = false;
-        _isLoadingMore = false;
-
       });
     }
-  }
-
-  _makeCategoryListProduct() async {
-    setState(() {
-      _isLoading = true;
-    });
-    HttpWithMiddleware http = HttpWithMiddleware.build(middlewares: [
-      HttpLogger(logLevel: LogLevel.BODY),
-    ]);
-
-    final url = Uri.parse(BASE_URL + categoryList);
-
-    Map<String, String> jsonBody = {
-      'from_app':FROM_APP,
-      'page':'',
-      'limit':''
-    };
-
-    final response = await http.post(url, body: jsonBody);
-    final statusCode = response.statusCode;
-
-    final body = response.body;
-    Map<String, dynamic> user = jsonDecode(body);
-    var dataResponse = CategoryResponseModel.fromJson(user);
-
-    if (statusCode == 200 && dataResponse.success == 1) {
-      listCategory = [];
-      if(dataResponse.categoryDetails != null) {
-        if(dataResponse.categoryDetails!.isNotEmpty) {
-          listCategory = dataResponse.categoryDetails ?? [];
-        }
-      }
-
-
-    }else {
-
-    }
-    _getItemListData(true);
-
   }
 
 }

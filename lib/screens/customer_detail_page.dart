@@ -3,10 +3,12 @@ import 'dart:convert';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 
 import 'package:pretty_http_logger/pretty_http_logger.dart';
 import 'package:salesapp/screens/add_customer_page.dart';
 import 'package:salesapp/screens/customer_transaction_page.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../Model/customer_list_response_model.dart';
 import '../../constant/color.dart';
@@ -16,6 +18,8 @@ import '../../utils/base_class.dart';
 import '../../widget/loading.dart';
 import '../../widget/no_internet.dart';
 import '../model/customer_detail_response_model.dart';
+import '../model/order_detail_response_model.dart';
+import 'add_order_page.dart';
 import 'customer_sales_history_page.dart';
 
 class CustomerDetailPage extends StatefulWidget {
@@ -39,6 +43,10 @@ class _CustomerDetailPageState extends BaseState<CustomerDetailPage> with Ticker
   late String? totalSale;
 
   late TabController _tabController;
+  var listFilter = ["Month wise filter", "Year wise filter", "Custom Filter"];
+
+  String dateStartSelectionChanged = "";
+  String dateEndSelectionChanged = "";
 
   @override
   void initState() {
@@ -61,9 +69,7 @@ class _CustomerDetailPageState extends BaseState<CustomerDetailPage> with Ticker
         resizeToAvoidBottomInset: true,
         appBar:AppBar(
           systemOverlayStyle: SystemUiOverlayStyle.dark,
-          toolbarHeight: 61,
           automaticallyImplyLeading: false,
-          title: const Text(""),
           leading: GestureDetector(
               onTap:() {
                 Navigator.pop(context);
@@ -77,9 +83,28 @@ class _CustomerDetailPageState extends BaseState<CustomerDetailPage> with Ticker
                 child: Image.asset('assets/images/ic_back_arrow.png', color: white, height: 22, width: 22),
               )
           ),
+          actions: [
+            Container(
+              margin: const EdgeInsets.only(top: 11, bottom: 11, right: 22),
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () {
+                  _showFilterDialog();
+                },
+                child: const Icon(Icons.filter_alt_outlined, color: white, size: 30,),
+              ),
+            ),
+          ],
           centerTitle: false,
           elevation: 0.0,
           backgroundColor: kBlue,
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            _redirectToAddOrder(context, Order(), false, true);
+          },
+          backgroundColor: kBlue,
+          child: const Icon(Icons.add, color: white,),
         ),
         body: isInternetConnected
             ? _isLoading
@@ -100,7 +125,7 @@ class _CustomerDetailPageState extends BaseState<CustomerDetailPage> with Ticker
                   children: [
                     Expanded(
                       child: Container(
-                        margin: const EdgeInsets.only(left: 22,right: 5),
+                        margin: const EdgeInsets.only(left: 22, right: 5),
                         child: Text(checkValidString(customerDetailResponseModel.customerDetails!.customerName.toString().trim()),
                           overflow: TextOverflow.ellipsis,
                           maxLines: 3,
@@ -110,13 +135,14 @@ class _CustomerDetailPageState extends BaseState<CustomerDetailPage> with Ticker
                       ),
                     ),
                     GestureDetector(
+                      behavior: HitTestBehavior.opaque,
                       onTap: () {
                         _redirectToAddCustomer(context, (widget as CustomerDetailPage).getSet, true);
                       },
                       child: Container(
-                        margin: const EdgeInsets.only(left: 5),
-                        height: 33,
-                        width: 34,
+                        margin: const EdgeInsets.only(right: 22),
+                        height: 40,
+                        width: 40,
                         alignment: Alignment.center,
                         child: const Icon(Icons.edit, color: white, size: 21,),
                       ),
@@ -139,13 +165,13 @@ class _CustomerDetailPageState extends BaseState<CustomerDetailPage> with Ticker
                       children: [
                         Container(
                           alignment: Alignment.topLeft,
-                          padding: const EdgeInsets.only(left: 22, top: 20, ),
+                          padding: const EdgeInsets.only(left: 22, top: 20),
                           child: Text(checkValidString(getPrice(customerDetailResponseModel.customerDetails!.creditLimit.toString())),
                               style: const TextStyle(fontWeight: FontWeight.w600, color: white,fontSize: 14)),
                         ),
                         Container(
                           alignment: Alignment.topLeft,
-                          padding: const EdgeInsets.only(left: 22, top: 5, ),
+                          padding: const EdgeInsets.only(left: 22, top: 5),
                           child: const Text("Credit Limit",
                               style: TextStyle(fontWeight: FontWeight.w400, color: white,fontSize: 14)),
                         ),
@@ -157,13 +183,13 @@ class _CustomerDetailPageState extends BaseState<CustomerDetailPage> with Ticker
                       children: [
                         Container(
                           alignment: Alignment.topLeft,
-                          padding: const EdgeInsets.only(left: 22, top: 20, ),
+                          padding: const EdgeInsets.only(left: 22, top: 20,),
                           child: Text("${checkValidString(customerDetailResponseModel.customerDetails!.billCreditPeriod.toString())}",
-                              style: TextStyle(fontWeight: FontWeight.w600, color: white,fontSize: 14)),
+                              style: const TextStyle(fontWeight: FontWeight.w600, color: white,fontSize: 14)),
                         ),
                         Container(
                           alignment: Alignment.topLeft,
-                          padding: const EdgeInsets.only(left: 22, top: 5, ),
+                          padding: const EdgeInsets.only(left: 22, top: 5,),
                           child: const Text("Limit Period",
                               style: TextStyle(fontWeight: FontWeight.w400, color: white,fontSize: 14)),
                         ),
@@ -172,7 +198,14 @@ class _CustomerDetailPageState extends BaseState<CustomerDetailPage> with Ticker
                     Container(),
                     customerDetailResponseModel.customerDetails!.ledgerMobile.toString().isNotEmpty ?
                     GestureDetector(
-                        onTap:() {
+                        onTap:() async {
+
+                            var url = Uri.parse("tel:${customerDetailResponseModel.customerDetails!.ledgerMobile.toString()}");
+                            if(url.toString().isNotEmpty) {
+                              launch(url.toString());
+                            }else {
+                              throw 'Could not launch $url';
+                            }
                         },
                         child: Container(
                           margin: const EdgeInsets.only(top: 20, left: 60),
@@ -188,6 +221,12 @@ class _CustomerDetailPageState extends BaseState<CustomerDetailPage> with Ticker
                     customerDetailResponseModel.customerDetails!.emailCc.toString().isNotEmpty ?
                     GestureDetector(
                         onTap:() {
+                          var url = Uri.parse("mailto:${customerDetailResponseModel.customerDetails!.emailCc.toString()}");
+                          if(url.toString().isNotEmpty) {
+                            launch(url.toString());
+                          }else {
+                            throw 'Could not launch $url';
+                          }
                         },
                         child: Container(
                           margin: const EdgeInsets.only(top: 20, left: 10),
@@ -220,7 +259,7 @@ class _CustomerDetailPageState extends BaseState<CustomerDetailPage> with Ticker
                               labelColor: kBlue,
                               unselectedLabelColor: kBlue,
                               tabs:  const [
-                                Tab(text: 'Transactions', ),
+                                Tab(text: 'Transactions',),
                                 Tab(text: 'Sales History',)
                               ],
                             ),
@@ -378,6 +417,210 @@ class _CustomerDetailPageState extends BaseState<CustomerDetailPage> with Ticker
     }
   }
 
+  Future<void> _redirectToAddOrder(BuildContext context, Order getSet, bool isFromList, bool isFromDetail) async {
+   CustomerList customerGetSet = CustomerList();
+   customerGetSet.customerId = customerDetailResponseModel.customerDetails!.customerId;
+   customerGetSet.customerName = customerDetailResponseModel.customerDetails!.customerName;
+   customerGetSet.addressLine1 = customerDetailResponseModel.customerDetails!.addressLine1;
+   customerGetSet.addressLine2 = customerDetailResponseModel.customerDetails!.addressLine2;
+   customerGetSet.addressLine3 = customerDetailResponseModel.customerDetails!.addressLine3;
+   customerGetSet.addressLine4 = customerDetailResponseModel.customerDetails!.addressLine4;
+   customerGetSet.addressLine5 = customerDetailResponseModel.customerDetails!.addressLine5;
+   customerGetSet.cityName = customerDetailResponseModel.customerDetails!.cityName;
+   customerGetSet.pincode = customerDetailResponseModel.customerDetails!.pincode;
+   customerGetSet.stateName = customerDetailResponseModel.customerDetails!.stateName;
+
+   final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => AddOrderPage(getSet, isFromList, customerGetSet, isFromDetail)),
+    );
+
+
+    print("result ===== $result");
+
+    if (result == "success") {
+      // _getOrderListData(true);
+      setState(() {
+        isOrderListLoad = true;
+      });
+    }
+  }
+
+  void _showFilterDialog() {
+    showModalBottomSheet(
+        isScrollControlled: true,
+        backgroundColor: white,
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(12), topRight: Radius.circular(12))),
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+                return SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.25,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 12,right: 12,top: 15),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Container(
+                            width: 60,
+                            margin: const EdgeInsets.only(top: 12),
+                            child: const Divider(
+                              height: 1.5,
+                              thickness: 1.5,
+                              color: kBlue,
+                            )),
+                        Container(
+                          margin: const EdgeInsets.only(top: 12),
+                          padding: const EdgeInsets.fromLTRB(14, 8, 14, 8),
+                          child: const Text("Select Date", style: TextStyle(color: black, fontWeight: FontWeight.bold, fontSize: 15)),
+                        ),
+                        Container(height: 6),
+                        Expanded(child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              ListView.builder(
+                                  itemCount: listFilter.length,
+                                  shrinkWrap: true,
+                                  physics: const AlwaysScrollableScrollPhysics(),
+                                  scrollDirection: Axis.vertical,
+                                  itemBuilder: (context, index) {
+                                    return Column(
+                                      children: [
+                                        InkWell(
+                                          onTap: () async {
+                                            setState(() {
+                                              // _transactionModeController.text = checkValidString(listFilter[index]);
+                                            });
+                                            Navigator.of(context).pop();
+
+                                            if (index == 0) {
+                                              var monthTillDate = "";
+                                              monthTillDate = DateTime.now().toString();
+
+                                              var dateParse = DateTime.parse(monthTillDate);
+                                              String currentDate = DateFormat('dd-MM-yyyy').format(dateParse);
+
+                                              print("==========");
+                                              print(currentDate);
+                                              print("==========");
+
+                                              String fromDateTillMonth = "01-" + DateFormat('MM-yyyy').format(dateParse);
+                                              print("==========");
+                                              print(fromDateTillMonth);
+
+                                              dateStartSelectionChanged = fromDateTillMonth;
+                                              dateEndSelectionChanged = currentDate;
+
+                                              if(isInternetConnected) {
+                                                _makeCallCustomerDetail();
+                                              }else {
+                                                noInterNet(context);
+                                              }
+
+                                            }else if (index == 1) {
+
+                                              var yearTillDate = DateTime.now().toString();
+                                              var dateParse = DateTime.parse(yearTillDate);
+
+                                              String currentYear = DateFormat('yyyy').format(dateParse);
+                                              String fromDateTillYear = "01-04-" + DateFormat('yyyy').format(dateParse);
+
+                                              var result = int.parse(currentYear) + 1;
+                                              String toDateTillYear = "31-03-" + result.toString();
+
+                                              print("==========");
+                                              print(fromDateTillYear);
+                                              print("==========");
+                                              print(toDateTillYear);
+
+                                              dateStartSelectionChanged = fromDateTillYear;
+                                              dateEndSelectionChanged = toDateTillYear;
+
+                                              if(isInternetConnected) {
+                                                _makeCallCustomerDetail();
+                                              }else {
+                                                noInterNet(context);
+                                              }
+
+                                            }else if (index == 2) {
+
+                                              DateTimeRange? result = await showDateRangePicker(
+                                                  context: context,
+                                                  firstDate: DateTime(2022, 1, 1), // the earliest allowable
+                                                  lastDate: DateTime.now(), // the latest allowable
+                                                  currentDate: DateTime.now(),
+                                                  saveText: 'Done',
+                                                  builder: (context, Widget? child) => Theme(
+                                                    data: Theme.of(context).copyWith(
+                                                        appBarTheme: Theme.of(context).appBarTheme.copyWith(
+                                                            backgroundColor: kBlue,
+                                                            iconTheme: Theme.of(context).appBarTheme.iconTheme?.copyWith(color: Colors.white)),
+                                                        scaffoldBackgroundColor: white,
+                                                        colorScheme: const ColorScheme.light(
+                                                            onPrimary: Colors.white,
+                                                            primary: kBlue
+                                                        )),
+                                                    child: child!,
+                                                  )
+                                              );
+
+                                              if(result !=null)
+                                              {
+                                                DateTime? startDate = result.start;
+                                                DateTime? endDate = result.end;
+                                                print(startDate);
+                                                print(endDate);
+                                                String startDateFormat = DateFormat('dd-MM-yyyy').format(startDate);
+                                                String endDateFormat = DateFormat('dd-MM-yyyy').format(endDate);
+                                                print("==============");
+                                                print(startDateFormat);
+                                                print(endDateFormat);
+                                                dateStartSelectionChanged = startDateFormat;
+                                                dateEndSelectionChanged = endDateFormat;
+
+                                                if(isInternetConnected) {
+                                                  _makeCallCustomerDetail();
+                                                }else {
+                                                  noInterNet(context);
+                                                }
+                                              }
+
+                                            }else {
+
+                                            }
+                                          },
+                                          child: Container(
+                                            padding: const EdgeInsets.only(left: 20.0, right: 20, top: 8, bottom: 8),
+                                            alignment: Alignment.centerLeft,
+                                            child: Text(
+                                              checkValidString(listFilter[index]),
+                                              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: black),
+                                            ),
+                                          ),
+                                        ),
+                                        const Divider(
+                                          thickness: 0.5,
+                                          color: kTextLightGray,
+                                          endIndent: 16,
+                                          indent: 16,
+                                        ),
+                                      ],
+                                    );
+                                  })
+                            ],
+                          ),
+                        ))
+                      ],
+                    ),
+                  ),
+                );
+              });
+        });
+
+  }
+
   //API call function...
   _makeCallCustomerDetail() async {
     setState(() {
@@ -392,6 +635,8 @@ class _CustomerDetailPageState extends BaseState<CustomerDetailPage> with Ticker
     Map<String, String> jsonBody = {
       'customer_id': (widget as CustomerDetailPage).getSet.customerId.toString().trim(),
       'from_app' : FROM_APP,
+      'fromDate' : dateStartSelectionChanged,
+      'toDate': dateEndSelectionChanged
     };
 
     final response = await http.post(url, body: jsonBody);
@@ -423,6 +668,7 @@ class _CustomerDetailPageState extends BaseState<CustomerDetailPage> with Ticker
       setState(() {
         _isLoading = false;
       });
+
     }else {
       setState(() {
         _isLoading = false;

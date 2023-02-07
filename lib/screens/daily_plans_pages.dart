@@ -49,7 +49,6 @@ class _DailyPlansPageState extends BaseState<DailyPlansPage> {
           resizeToAvoidBottomInset: false,
           appBar: AppBar(
             systemOverlayStyle: SystemUiOverlayStyle.dark,
-            toolbarHeight: 61,
             automaticallyImplyLeading: false,
             title: const Text(""),
             leading: GestureDetector(
@@ -113,90 +112,86 @@ class _DailyPlansPageState extends BaseState<DailyPlansPage> {
                       primary: false,
                       shrinkWrap: true,
                       itemCount: 8,
-                      itemBuilder: (ctx, index) => InkWell(
-                        hoverColor: Colors.white.withOpacity(0.0),
-                        onTap: () async {},
-                        child: Container(
-                          color: white,
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 10, right: 10, top: 8, bottom: 5),
-                            child: GestureDetector(
-                              onTap: () {
-                              },
-                              child: Column(
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        children: [
-                                          const Gap(10),
-                                          Stack(
-                                            children: [
-                                              Container(
-                                                margin: const EdgeInsets.only(top: 10),
-                                                decoration: BoxDecoration(
-                                                    gradient: const LinearGradient(
-                                                      colors: [kLightGradient, kDarkGradient],
-                                                      begin: Alignment.centerLeft,
-                                                      end: Alignment.centerRight,
-                                                    ),
-                                                    borderRadius: BorderRadius.circular(22)
-                                                ),
-                                                width: 35,
-                                                height: 35,
-                                              ),
-                                              Column(
-                                                crossAxisAlignment: CrossAxisAlignment.center,
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: [
-                                                  Container(
-                                                    margin: const EdgeInsets.only(right: 3, left: 6, top: 13),
-                                                    child: const Text("15",
-                                                      maxLines: 1,
-                                                      textAlign: TextAlign.center,
-                                                      style: TextStyle(fontSize: 13, color: white, fontWeight: FontWeight.w600),
-                                                    ),
+                      itemBuilder: (ctx, index) => Container(
+                        color: white,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 10, right: 10, top: 8, bottom: 5),
+                          child: GestureDetector(
+                            onTap: () {
+                            },
+                            child: Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        const Gap(10),
+                                        Stack(
+                                          children: [
+                                            Container(
+                                              margin: const EdgeInsets.only(top: 10),
+                                              decoration: BoxDecoration(
+                                                  gradient: const LinearGradient(
+                                                    colors: [kLightGradient, kDarkGradient],
+                                                    begin: Alignment.centerLeft,
+                                                    end: Alignment.centerRight,
                                                   ),
-                                                  Container(
-                                                    margin: const EdgeInsets.only(right: 3, left: 6, bottom: 3),
-                                                    child: const Text("May",
-                                                      maxLines: 1,
-                                                      textAlign: TextAlign.center,
-                                                      style: TextStyle(fontSize: 11, color: white, fontWeight: FontWeight.w400),
-                                                    ),
-                                                  ),
-                                                ],
+                                                  borderRadius: BorderRadius.circular(22)
                                               ),
-                                            ],
-                                          ),
-                                          Container(
-                                            margin: const EdgeInsets.only(left: 10, top: 6),
-                                            alignment: Alignment.center,
-                                            child: const Text("Hyatt Hotel",
-                                              maxLines: 2,
-                                              overflow: TextOverflow.ellipsis,
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(fontSize: 15, color: black, fontWeight: FontWeight.w700),
+                                              width: 35,
+                                              height: 35,
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                      Container(
-                                        margin: const EdgeInsets.only(right: 10, top: 6),
-                                        child: const Text("11:15AM - 1:00PM",
-                                          textAlign: TextAlign.end,
-                                          style: TextStyle(fontSize: 12, color: kGray, fontWeight: FontWeight.w500),
+                                            Column(
+                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: [
+                                                Container(
+                                                  margin: const EdgeInsets.only(right: 3, left: 6, top: 13),
+                                                  child: const Text("15",
+                                                    maxLines: 1,
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(fontSize: 13, color: white, fontWeight: FontWeight.w600),
+                                                  ),
+                                                ),
+                                                Container(
+                                                  margin: const EdgeInsets.only(right: 3, left: 6, bottom: 3),
+                                                  child: const Text("May",
+                                                    maxLines: 1,
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(fontSize: 11, color: white, fontWeight: FontWeight.w400),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
                                         ),
+                                        Container(
+                                          margin: const EdgeInsets.only(left: 10, top: 6),
+                                          alignment: Alignment.center,
+                                          child: const Text("Hyatt Hotel",
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(fontSize: 15, color: black, fontWeight: FontWeight.w700),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Container(
+                                      margin: const EdgeInsets.only(right: 10, top: 6),
+                                      child: const Text("11:15AM - 1:00PM",
+                                        textAlign: TextAlign.end,
+                                        style: TextStyle(fontSize: 12, color: kGray, fontWeight: FontWeight.w500),
                                       ),
-                                    ],
-                                  ),
-                                  Container(
-                                      margin: const EdgeInsets.only(top: 20, left: 10, right: 10),
-                                      height: index == 8-1 ? 0 : 0.8, color: kLightPurple),
-                                ],
-                              ),
+                                    ),
+                                  ],
+                                ),
+                                Container(
+                                    margin: const EdgeInsets.only(top: 20, left: 10, right: 10),
+                                    height: index == 8-1 ? 0 : 0.8, color: kLightPurple),
+                              ],
                             ),
                           ),
                         ),
