@@ -137,6 +137,7 @@ class _AddEmployeePageState extends BaseState<AddEmployeePage> {
                         child: TextField(
                           cursorColor: black,
                           controller: _emailController,
+                          readOnly: true,
                           keyboardType: TextInputType.emailAddress,
                           style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
                           decoration: const InputDecoration(
@@ -150,6 +151,7 @@ class _AddEmployeePageState extends BaseState<AddEmployeePage> {
                         child: TextField(
                           cursorColor: black,
                           controller: _phoneNumController,
+                          readOnly: true,
                           keyboardType: TextInputType.number,
                           maxLength: 10,
                           style: const TextStyle(fontWeight: FontWeight.w600, color: black, fontSize: 16),

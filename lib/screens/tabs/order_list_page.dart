@@ -12,6 +12,7 @@ import 'package:salesapp/Model/order_list_response_model.dart';
 import 'package:salesapp/model/order_detail_response_model.dart';
 import 'package:salesapp/screens/order_detail_page.dart';
 import 'package:salesapp/utils/app_utils.dart';
+import 'package:salesapp/widget/no_data.dart';
 
 import '../../Model/customer_list_response_model.dart';
 import '../../constant/color.dart';
@@ -50,6 +51,7 @@ class _OrderListPageState extends BaseState<OrderListPage> {
 
   TextEditingController searchController = TextEditingController();
   String searchText = "";
+  var listFilter = ["Month wise filter", "Year wise filter", "Custom Filter"];
 
   @override
   void initState() {
@@ -103,11 +105,11 @@ class _OrderListPageState extends BaseState<OrderListPage> {
               height: 45,
               width: 45,
               alignment: Alignment.center,
-              child: const Icon(Icons.search, color: white, size: 28,),
+              child: const Icon(Icons.search, color: white, size: 32,),
             ),
           ),
           Container(
-            margin: const EdgeInsets.only(top: 14, bottom: 14),
+            margin: const EdgeInsets.only(top: 12, bottom: 12),
             child: GestureDetector(
               onTap: () {
                 _redirectToAddOrder(context, Order(), false);
@@ -126,54 +128,14 @@ class _OrderListPageState extends BaseState<OrderListPage> {
               ),
             ),
           ),
-          GestureDetector(
-            onTap: () async {
-              DateTimeRange? result = await showDateRangePicker(
-                  context: context,
-                  firstDate: DateTime(2022, 1, 1), // the earliest allowable
-                  lastDate: DateTime.now(), // the latest allowable
-                  currentDate: DateTime.now(),
-                  saveText: 'Done',
-                  builder: (context, Widget? child) => Theme(
-                    data: Theme.of(context).copyWith(
-                        appBarTheme: Theme.of(context).appBarTheme.copyWith(
-                            backgroundColor: kBlue,
-                            iconTheme: Theme.of(context).appBarTheme.iconTheme?.copyWith(color: Colors.white)),
-                        scaffoldBackgroundColor: white,
-                        colorScheme: const ColorScheme.light(
-                            onPrimary: Colors.white,
-                            primary: kBlue
-                        )),
-                    child: child!,
-                  )
-              );
-
-              if(result !=null)
-              {
-                DateTime? startDate = result.start;
-                DateTime? endDate = result.end;
-                print(startDate);
-                print(endDate);
-                String startDateFormat = DateFormat('dd-MM-yyyy').format(startDate);
-                String endDateFormat = DateFormat('dd-MM-yyyy').format(endDate);
-                print("==============");
-                print(startDateFormat);
-                print(endDateFormat);
-                dateStartSelectionChanged = startDateFormat;
-                dateEndSelectionChanged = endDateFormat;
-
-                if(isInternetConnected) {
-                  _getOrderListData(true);
-                }else {
-                  noInterNet(context);
-                }
-              }
-            },
-            child: Container(
-              height: 45,
-              width: 45,
-              alignment: Alignment.center,
-              child: const Icon(Icons.calendar_today_outlined, color: white, size: 22,),
+          Container(
+            margin: const EdgeInsets.only(top: 11, bottom: 11, left:  8, right: 22),
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                _showFilterDialog();
+              },
+              child: const Icon(Icons.filter_alt_outlined, color: white, size: 30,),
             ),
           ),
         ],
@@ -189,7 +151,7 @@ class _OrderListPageState extends BaseState<OrderListPage> {
     );
   }
 
-  SingleChildScrollView setData() {
+  Widget setData() {
     return SingleChildScrollView(
       controller: _scrollViewController,
       child: Column(
@@ -256,10 +218,13 @@ class _OrderListPageState extends BaseState<OrderListPage> {
                                   ),
                                   onTap: () {
                                     setState(() {
-                                      isOrderListLoad = false;
                                       searchController.text = "";
                                       searchText = "";
+                                      dateStartSelectionChanged = "";
+                                      dateEndSelectionChanged = "";
+                                      isOrderListLoad = false;
                                     });
+
 
                                     _getOrderListData(true);
                                   },
@@ -547,6 +512,7 @@ class _OrderListPageState extends BaseState<OrderListPage> {
                 ? const Center(
               child: LoadingWidget(),
             ) :
+            // listOrder.isNotEmpty ?
             ListView.builder(
                 scrollDirection: Axis.vertical,
                 physics: const NeverScrollableScrollPhysics(),
@@ -635,14 +601,24 @@ class _OrderListPageState extends BaseState<OrderListPage> {
                                           ),
                                         ),
                                         Container(
-                                            margin: const EdgeInsets.only(left: 10, bottom: 5),
+                                          height: 32,
+                                            margin: const EdgeInsets.only(left: 10, bottom: 5, top: 5, right: 10),
+                                            decoration: BoxDecoration(
+                                                color: kLightestPurple,
+                                                border: Border.all(width: 1, color: kLightPurple),
+                                                borderRadius: const BorderRadius.all(
+                                                  Radius.circular(12.0),
+                                                ),
+                                                shape: BoxShape.rectangle
+                                            ),
                                             child: TextButton(
                                               child:const Text("Receive Payment",
                                                 textAlign: TextAlign.start,
                                                 style: TextStyle(fontSize: 13, color: black, fontWeight: FontWeight.w500),
                                               ),
                                               onPressed: () {
-                                                _redirectToTransaction(context, checkValidString(listOrder[index].orderId).toString(), checkValidString(listOrder[index].customerId).toString());
+                                                _redirectToTransaction(context, checkValidString(listOrder[index].orderId).toString(), checkValidString(listOrder[index].customerId).toString(),
+                                                    checkValidString(listOrder[index].customerName).toString());
                                               },
                                             )
                                           //
@@ -662,6 +638,7 @@ class _OrderListPageState extends BaseState<OrderListPage> {
                     ),
                   ),
                 )),
+            // : const MyNoDataWidget(msg: "", subMsg: "No orders found"),
             if (_isLoadingMore == true)
               Container(
                 padding: const EdgeInsets.only(top: 10, bottom: 10),
@@ -695,16 +672,192 @@ class _OrderListPageState extends BaseState<OrderListPage> {
     }
   }
 
+  void _showFilterDialog() {
+    showModalBottomSheet(
+        isScrollControlled: true,
+        backgroundColor: white,
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(12), topRight: Radius.circular(12))),
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+                return SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.25,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 12,right: 12,top: 15),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Container(
+                            width: 60,
+                            margin: const EdgeInsets.only(top: 12),
+                            child: const Divider(
+                              height: 1.5,
+                              thickness: 1.5,
+                              color: kBlue,
+                            )),
+                        Container(
+                          margin: const EdgeInsets.only(top: 12),
+                          padding: const EdgeInsets.fromLTRB(14, 8, 14, 8),
+                          child: const Text("Select Date", style: TextStyle(color: black, fontWeight: FontWeight.bold, fontSize: 15)),
+                        ),
+                        Container(height: 6),
+                        Expanded(child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              ListView.builder(
+                                  itemCount: listFilter.length,
+                                  shrinkWrap: true,
+                                  physics: const AlwaysScrollableScrollPhysics(),
+                                  scrollDirection: Axis.vertical,
+                                  itemBuilder: (context, index) {
+                                    return Column(
+                                      children: [
+                                        InkWell(
+                                          onTap: () async {
+                                            setState(() {
+                                              // _transactionModeController.text = checkValidString(listFilter[index]);
+                                            });
+                                            Navigator.of(context).pop();
+
+                                            if (index == 0) {
+                                              var monthTillDate = "";
+                                              monthTillDate = DateTime.now().toString();
+
+                                              var dateParse = DateTime.parse(monthTillDate);
+                                              String currentDate = DateFormat('dd-MM-yyyy').format(dateParse);
+
+                                              print("==========");
+                                              print(currentDate);
+                                              print("==========");
+
+                                              String fromDateTillMonth = "01-" + DateFormat('MM-yyyy').format(dateParse);
+                                              print("==========");
+                                              print(fromDateTillMonth);
+
+                                              dateStartSelectionChanged = fromDateTillMonth;
+                                              dateEndSelectionChanged = currentDate;
+
+                                              if(isInternetConnected) {
+                                                _getOrderListData(true);
+                                              }else {
+                                                noInterNet(context);
+                                              }
+
+                                            }else if (index == 1) {
+
+                                              var yearTillDate = DateTime.now().toString();
+                                              var dateParse = DateTime.parse(yearTillDate);
+
+                                              String currentYear = DateFormat('yyyy').format(dateParse);
+                                              String fromDateTillYear = "01-04-" + DateFormat('yyyy').format(dateParse);
+
+                                              var result = int.parse(currentYear) + 1;
+                                              String toDateTillYear = "31-03-" + result.toString();
+
+                                              print("==========");
+                                              print(fromDateTillYear);
+                                              print("==========");
+                                              print(toDateTillYear);
+
+                                              dateStartSelectionChanged = fromDateTillYear;
+                                              dateEndSelectionChanged = toDateTillYear;
+
+                                              if(isInternetConnected) {
+                                                _getOrderListData(true);
+                                              }else {
+                                                noInterNet(context);
+                                              }
+
+                                            }else if (index == 2) {
+
+                                              DateTimeRange? result = await showDateRangePicker(
+                                                  context: context,
+                                                  firstDate: DateTime(2022, 1, 1), // the earliest allowable
+                                                  lastDate: DateTime.now(), // the latest allowable
+                                                  currentDate: DateTime.now(),
+                                                  saveText: 'Done',
+                                                  builder: (context, Widget? child) => Theme(
+                                                    data: Theme.of(context).copyWith(
+                                                        appBarTheme: Theme.of(context).appBarTheme.copyWith(
+                                                            backgroundColor: kBlue,
+                                                            iconTheme: Theme.of(context).appBarTheme.iconTheme?.copyWith(color: Colors.white)),
+                                                        scaffoldBackgroundColor: white,
+                                                        colorScheme: const ColorScheme.light(
+                                                            onPrimary: Colors.white,
+                                                            primary: kBlue
+                                                        )),
+                                                    child: child!,
+                                                  )
+                                              );
+
+                                              if(result !=null)
+                                              {
+                                                DateTime? startDate = result.start;
+                                                DateTime? endDate = result.end;
+                                                print(startDate);
+                                                print(endDate);
+                                                String startDateFormat = DateFormat('dd-MM-yyyy').format(startDate);
+                                                String endDateFormat = DateFormat('dd-MM-yyyy').format(endDate);
+                                                print("==============");
+                                                print(startDateFormat);
+                                                print(endDateFormat);
+                                                dateStartSelectionChanged = startDateFormat;
+                                                dateEndSelectionChanged = endDateFormat;
+
+                                                if(isInternetConnected) {
+                                                  _getOrderListData(true);
+                                                }else {
+                                                  noInterNet(context);
+                                                }
+                                              }
+
+                                            }else {
+
+                                            }
+                                          },
+                                          child: Container(
+                                            padding: const EdgeInsets.only(left: 20.0, right: 20, top: 8, bottom: 8),
+                                            alignment: Alignment.centerLeft,
+                                            child: Text(
+                                              checkValidString(listFilter[index]),
+                                              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: black),
+                                            ),
+                                          ),
+                                        ),
+                                        const Divider(
+                                          thickness: 0.5,
+                                          color: kTextLightGray,
+                                          endIndent: 16,
+                                          indent: 16,
+                                        ),
+                                      ],
+                                    );
+                                  })
+                            ],
+                          ),
+                        ))
+                      ],
+                    ),
+                  ),
+                );
+              });
+        });
+
+  }
+
+
   @override
   void castStatefulWidget() {
     // TODO: implement castStatefulWidget
     widget is OrderListPage;
   }
 
-  Future<void> _redirectToTransaction(BuildContext context, String orderId, String customerId) async {
+  Future<void> _redirectToTransaction(BuildContext context, String orderId, String customerId, String customerName) async {
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => AddPaymentDetailPage(Order(), orderId, customerId)),
+      MaterialPageRoute(builder: (context) => AddPaymentDetailPage(Order(), orderId, customerId, customerName)),
     );
 
     print("result ===== $result");

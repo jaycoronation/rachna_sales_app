@@ -14,7 +14,8 @@ import '../widget/loading.dart';
 
 class SelectProductPageOld extends StatefulWidget {
   final List<Products> passListProduct;
-  SelectProductPageOld(this.passListProduct, {Key? key}) : super(key: key);
+  final bool isFromDetail;
+  SelectProductPageOld(this.passListProduct, this.isFromDetail, {Key? key}) : super(key: key);
 
   @override
   _SelectProductPageState createState() => _SelectProductPageState();
@@ -285,39 +286,36 @@ class _SelectProductPageState extends BaseState<SelectProductPageOld> {
                 primary: false,
                 shrinkWrap: true,
                 itemCount:(_templistProduct.isNotEmpty) ? _templistProduct.length : listProduct.length,
-                itemBuilder: (ctx, index) => InkWell(
-                  hoverColor: Colors.white.withOpacity(0.0),
-                  onTap: () async {},
-                  child: Container(
-                    color: white,
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 10, right: 10, top: 8, bottom: 5),
-                      child: GestureDetector(
-                        onTap: () {
-                          if(_templistProduct != null && _templistProduct.length > 0) {
-                            setState(() {
-                              if(_templistProduct[index].isProductSelected ?? false) {
-                                _templistProduct[index].isProductSelected = false;
-                              }else {
-                                _templistProduct[index].isProductSelected = true;
-                              }
-                            });
-                          } else {
-                            setState(() {
-                              if(listProduct[index].isProductSelected ?? false) {
-                                listProduct[index].isProductSelected = false;
-                              }else {
-                                listProduct[index].isProductSelected = true;
-                              }
-                            });
-                          }
-                        },
-                        child: (_templistProduct.isNotEmpty)
-                            ? _showBottomSheetForProductsList(
-                            index, _templistProduct)
-                            : _showBottomSheetForProductsList(
-                            index, listProduct),
-                      ),
+                itemBuilder: (ctx, index) => Container(
+                  color: white,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 10, right: 10, top: 8, bottom: 5),
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () {
+                        if(_templistProduct != null && _templistProduct.length > 0) {
+                          setState(() {
+                            if(_templistProduct[index].isProductSelected ?? false) {
+                              _templistProduct[index].isProductSelected = false;
+                            }else {
+                              _templistProduct[index].isProductSelected = true;
+                            }
+                          });
+                        } else {
+                          setState(() {
+                            if(listProduct[index].isProductSelected ?? false) {
+                              listProduct[index].isProductSelected = false;
+                            }else {
+                              listProduct[index].isProductSelected = true;
+                            }
+                          });
+                        }
+                      },
+                      child: (_templistProduct.isNotEmpty)
+                          ? _showBottomSheetForProductsList(
+                          index, _templistProduct)
+                          : _showBottomSheetForProductsList(
+                          index, listProduct),
                     ),
                   ),
                 ))),
@@ -487,7 +485,7 @@ class _SelectProductPageState extends BaseState<SelectProductPageOld> {
     });
 
     HttpWithMiddleware http = HttpWithMiddleware.build(middlewares: [
-      HttpLogger(logLevel: LogLevel.BODY),
+      HttpLogger(logLevel: LogLevel.NONE),
     ]);
 
     final url = Uri.parse(BASE_URL + itemListOld);

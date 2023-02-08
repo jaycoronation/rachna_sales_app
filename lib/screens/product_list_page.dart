@@ -209,8 +209,7 @@ class _ProductListPageState extends BaseState<ProductListPage> with TickerProvid
                         ),
                         onChanged: (text) {
 
-                          */
-/* searchController.text = text;
+ searchController.text = text;
                               searchController.selection = TextSelection.fromPosition(TextPosition(offset: searchController.text.length));
                               if(text.isEmpty) {
                                 searchText = "";
@@ -218,7 +217,7 @@ class _ProductListPageState extends BaseState<ProductListPage> with TickerProvid
                               }else if(text.length > 3) {
                                 searchText = searchController.text.toString().trim();
                                 // _getItemListData();
-                              }*//*
+                              }
 
 
                           if(text.isNotEmpty) {
@@ -361,8 +360,7 @@ class _ProductListPageState extends BaseState<ProductListPage> with TickerProvid
                 ).toList(),
               ),
             ),
-            */
-/*ListView.builder(
+ListView.builder(
                   shrinkWrap: true,
                   physics: const BouncingScrollPhysics(),
                   itemCount: listProductTemp.length,
@@ -436,31 +434,7 @@ class _ProductListPageState extends BaseState<ProductListPage> with TickerProvid
                                     color: white,
                                     child: Padding(
                                       padding: const EdgeInsets.only(left: 15, right: 15, top: 8, bottom: 5),
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          if(_templistProduct != null && _templistProduct.length > 0)
-                                          {
-                                            setState(() {
-                                              if(_templistProduct[index].isSelected ?? false) {
-                                                _templistProduct[index].isSelected = false;
-                                              }else {
-                                                _templistProduct[index].isSelected = true;
-                                              }
-                                            });
-                                          }
-                                          else
-                                          {
-                                            setState(() {
-                                              if(listProduct[index].isSelected ?? false) {
-                                                listProduct[index].isSelected = false;
-                                              }else {
-                                                listProduct[index].isSelected = true;
-                                              }
-                                            });
-                                          }
-                                        },
-                                        child: _showBottomSheetForProductsList(index,_templistProduct.isNotEmpty ? _templistProduct : listProduct),
-                                      ),
+                                      child: _showBottomSheetForProductsList(index,_templistProduct.isNotEmpty ? _templistProduct : listProduct),
                                     ),
                                   ),
                                 ))
@@ -485,7 +459,7 @@ class _ProductListPageState extends BaseState<ProductListPage> with TickerProvid
                       ],
                     );
                   },
-                ),*//*
+                ),
 
           ],
         ),
@@ -928,4 +902,5 @@ class _ProductListPageState extends BaseState<ProductListPage> with TickerProvid
     }
   }
 
-}*/
+}
+*/

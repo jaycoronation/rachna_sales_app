@@ -16,8 +16,8 @@ class AddPaymentDetailPage extends StatefulWidget {
   final Order dataGetSet;
   final String orderId;
   final String customerId;
-
-  const AddPaymentDetailPage(this.dataGetSet, this.orderId, this.customerId, {Key? key}) : super(key: key);
+  final String customerName;
+  const AddPaymentDetailPage(this.dataGetSet, this.orderId, this.customerId, this.customerName, {Key? key}) : super(key: key);
 
   @override
   _AddPaymentDetailPageState createState() => _AddPaymentDetailPageState();
@@ -26,15 +26,19 @@ class AddPaymentDetailPage extends StatefulWidget {
 class _AddPaymentDetailPageState extends BaseState<AddPaymentDetailPage> {
   bool _isLoading = false;
 
-  TextEditingController _transactionController = TextEditingController();
-  TextEditingController _transactionModeController = TextEditingController();
-  TextEditingController _paymentTypeController = TextEditingController();
+  TextEditingController _customerNameController = TextEditingController();
   TextEditingController _amountController = TextEditingController();
+  TextEditingController _transactionModeController = TextEditingController();
+  // TextEditingController _paymentTypeController = TextEditingController();
+  TextEditingController _transactionIdController = TextEditingController();
+
   FocusNode inputNode = FocusNode();
   Order? dataGetSet;
 
   String orderId = "";
   String customerId = "";
+
+  bool isTransactionId = false;
 
   var listPaymentModes = ["Cash", "NEFT", "Net Banking", "UPI", "Cheque", "Debit Card", "Credit Card", "Google Pay", "Paytm"];
 
@@ -45,7 +49,12 @@ class _AddPaymentDetailPageState extends BaseState<AddPaymentDetailPage> {
     orderId = checkValidString((widget as AddPaymentDetailPage).orderId).toString();
     // print("orderId--->" + orderId);
     customerId = checkValidString((widget as AddPaymentDetailPage).customerId).toString();
+
+    _customerNameController.text = checkValidString((widget as AddPaymentDetailPage).customerName).toString();;
     // print("customerId--->" + customerId);
+    print("--------------");
+    print(isTransactionId);
+    print("--------------");
 
     super.initState();
   }
@@ -92,19 +101,38 @@ class _AddPaymentDetailPageState extends BaseState<AddPaymentDetailPage> {
                         child: const Text("Add Payment Details",
                             style: TextStyle(fontWeight: FontWeight.w700, color: white, fontSize: 20)),
                       ),
-                      /*Container(
-                        margin: const EdgeInsets.only(top:20, left: 20, right: 20),
+                      Container(
+                        margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
                         child: TextField(
                           cursorColor: black,
-                          controller: _transactionController,
+                          controller: _customerNameController,
                           keyboardType: TextInputType.name,
                           style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
                           decoration: const InputDecoration(
-                              labelText: 'Transaction',
-                              prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16)
+                            labelText: 'Customer Name',
+                            counterText: '',
+                            prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
                           ),
                         ),
-                      ),*/
+                      ),
+                      Container(
+                        margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
+                        child: TextField(
+                          cursorColor: black,
+                          controller: _amountController,
+                          keyboardType: TextInputType.number,
+                          style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
+                          decoration: const InputDecoration(
+                            labelText: 'Payment Amount',
+                            counterText: '',
+                            prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
+                          ),
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
+                        ),
+                      ),
+
                       Container(
                         margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
                         child: TextField(
@@ -120,9 +148,26 @@ class _AddPaymentDetailPageState extends BaseState<AddPaymentDetailPage> {
                               labelText: 'Transaction Mode',
                               prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16)
                           ),
+                         /* onChanged: (value) {
+                            setState(() {
+                              print("==============");
+                              print(value);
+                              print("==============");
+                              print(isTransactionId);
+                              print("==============");
+
+                              if (value == "Cash") {
+                                isTransactionId = true;
+                              }else {
+                                isTransactionId = false;
+                              }
+
+                            });
+
+                          },*/
                         ),
                       ),
-                      Container(
+                      /*Container(
                         margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
                         child: TextField(
                           cursorColor: black,
@@ -138,21 +183,24 @@ class _AddPaymentDetailPageState extends BaseState<AddPaymentDetailPage> {
                             showPayementTypeActionDialog();
                           },
                         ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
-                        child: TextField(
-                          cursorColor: black,
-                          controller: _amountController,
-                          keyboardType: TextInputType.name,
-                          style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
-                          decoration: const InputDecoration(
-                              labelText: 'Amount',
-                              counterText: '',
-                              prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
+                      ),*/
+                      // Visibility(
+                      //   visible: isTransactionId,
+                      //   child:
+                        Container(
+                          margin: const EdgeInsets.only(top:20, left: 20, right: 20),
+                          child: TextField(
+                            cursorColor: black,
+                            controller: _transactionIdController,
+                            keyboardType: TextInputType.text,
+                            style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
+                            decoration: const InputDecoration(
+                                labelText: 'Transaction Id',
+                                prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16)
+                            ),
                           ),
                         ),
-                      ),
+                      // ),
                       Container(
                         margin: const EdgeInsets.only(top: 40, bottom: 10, left: 20, right: 20),
                         width: double.infinity,
@@ -167,20 +215,23 @@ class _AddPaymentDetailPageState extends BaseState<AddPaymentDetailPage> {
                         child: TextButton(
                           onPressed: () {
                             FocusScope.of(context).requestFocus(FocusNode());
-                            // String transaction = _transactionController.text.toString();
-                            String transactionMode = _transactionModeController.text.toString();
-                            String paymentType = _paymentTypeController.text.toString();
+                            String customerName = _customerNameController.text.toString();
                             String amount = _amountController.text.toString();
+                            String transactionMode = _transactionModeController.text.toString();
+                            // String paymentType = _paymentTypeController.text.toString();
+                            String transactionId = _transactionIdController.text.toString();
 
-                            /*if (transaction.trim().isEmpty) {
-                              showSnackBar("Please enter a transaction id", context);
-                            } else*/
-                              if (transactionMode.trim().isEmpty) {
-                              showSnackBar("Please select a transaction mode", context);
-                            } else if(paymentType.isEmpty) {
-                              showSnackBar('Please select payment type',context);
+                            if (customerName.trim().isEmpty) {
+                              showSnackBar("Please enter a customer name", context);
                             } else if (amount.trim().isEmpty) {
                               showToast("Please enter amount");
+                            } else if (transactionMode.trim().isEmpty) {
+                              showSnackBar("Please select a transaction mode", context);
+                           /* } else if(paymentType.isEmpty) {
+                              showSnackBar('Please select payment type',context);*/
+                            } else if (transactionMode != "Cash" && transactionId.trim().isEmpty) {
+                                showSnackBar("Please enter a transaction id", context);
+                              
                             } else {
                               if(isInternetConnected) {
                                 _saveTransaction();
@@ -250,6 +301,19 @@ class _AddPaymentDetailPageState extends BaseState<AddPaymentDetailPage> {
                                           onTap: () {
                                             setState(() {
                                               _transactionModeController.text = checkValidString(listPaymentModes[index]);
+
+
+                                              if (_transactionModeController.text.toString() == "Cash") {
+                                                isTransactionId = true;
+                                              }else {
+                                                isTransactionId = false;
+                                              }
+
+                                              print("==============");
+                                              print(_transactionModeController.text);
+                                              print("==============");
+                                              print(isTransactionId);
+                                              print("==============");
                                             });
                                             Navigator.of(context).pop();
                                           },
@@ -288,7 +352,7 @@ class _AddPaymentDetailPageState extends BaseState<AddPaymentDetailPage> {
 
   }
 
-  void showPayementTypeActionDialog() {
+  /*void showPayementTypeActionDialog() {
     showModalBottomSheet<void>(
       context: context,
       backgroundColor: white,
@@ -351,8 +415,7 @@ class _AddPaymentDetailPageState extends BaseState<AddPaymentDetailPage> {
         );
       },
     );
-  }
-
+  }*/
 
   @override
   void castStatefulWidget() {
@@ -376,9 +439,10 @@ class _AddPaymentDetailPageState extends BaseState<AddPaymentDetailPage> {
       'customer_id': customerId.isNotEmpty ? customerId : checkValidString(dataGetSet?.customerId).toString(),
       'transection_amount':_amountController.value.text.trim(),
       'transection_mode': _transactionModeController.value.text.trim(),
-      'transection_type':_paymentTypeController.value.text.trim(),
+      'transection_type': 'credit', //_paymentTypeController.value.text.trim(),
       'transection_status': '',
       'transection_date':'',
+      'transection_id' : _transactionIdController.value.text.trim(),
       "from_app": FROM_APP,
     };
 

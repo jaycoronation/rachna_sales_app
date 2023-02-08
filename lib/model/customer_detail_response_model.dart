@@ -153,8 +153,10 @@ class CustomerDetails {
       String? areaName, 
       String? cityName, 
       String? contactPerson, 
-      String? customerTotalSale, 
-      List<CustomerTransection>? customerTransection, 
+      String? customerTotalSale,
+    String? customerTotalOverdue,
+
+    List<CustomerTransection>? customerTransection,
       List<SalesHistory>? salesHistory,}){
     _customerId = customerId;
     _tallyId = tallyId;
@@ -193,6 +195,7 @@ class CustomerDetails {
     _cityName = cityName;
     _contactPerson = contactPerson;
     _customerTotalSale = customerTotalSale;
+    _customerTotalOverdue = customerTotalOverdue;
     _customerTransection = customerTransection;
     _salesHistory = salesHistory;
 }
@@ -235,6 +238,7 @@ class CustomerDetails {
     _cityName = json['city_name'];
     _contactPerson = json['contact_person'];
     _customerTotalSale = json['customer_total_sale'];
+    _customerTotalOverdue = json['customer_total_overdue'];
     if (json['customer_transection'] != null) {
       _customerTransection = [];
       json['customer_transection'].forEach((v) {
@@ -285,6 +289,7 @@ class CustomerDetails {
   String? _cityName;
   String? _contactPerson;
   String? _customerTotalSale;
+  String? _customerTotalOverdue;
   List<CustomerTransection>? _customerTransection;
   List<SalesHistory>? _salesHistory;
 CustomerDetails copyWith({  String? customerId,
@@ -324,6 +329,7 @@ CustomerDetails copyWith({  String? customerId,
   String? cityName,
   String? contactPerson,
   String? customerTotalSale,
+  String? customerTotalOverdue,
   List<CustomerTransection>? customerTransection,
   List<SalesHistory>? salesHistory,
 }) => CustomerDetails(  customerId: customerId ?? _customerId,
@@ -363,6 +369,7 @@ CustomerDetails copyWith({  String? customerId,
   cityName: cityName ?? _cityName,
   contactPerson: contactPerson ?? _contactPerson,
   customerTotalSale: customerTotalSale ?? _customerTotalSale,
+  customerTotalOverdue : customerTotalOverdue ?? _customerTotalOverdue,
   customerTransection: customerTransection ?? _customerTransection,
   salesHistory: salesHistory ?? _salesHistory,
 );
@@ -403,6 +410,9 @@ CustomerDetails copyWith({  String? customerId,
   String? get cityName => _cityName;
   String? get contactPerson => _contactPerson;
   String? get customerTotalSale => _customerTotalSale;
+  String? get customerTotalOverdue => _customerTotalOverdue;
+
+
   List<CustomerTransection>? get customerTransection => _customerTransection;
   List<SalesHistory>? get salesHistory => _salesHistory;
 
@@ -445,6 +455,8 @@ CustomerDetails copyWith({  String? customerId,
     map['city_name'] = _cityName;
     map['contact_person'] = _contactPerson;
     map['customer_total_sale'] = _customerTotalSale;
+    map['customer_total_overdue'] = _customerTotalOverdue;
+
     if (_customerTransection != null) {
       map['customer_transection'] = _customerTransection?.map((v) => v.toJson()).toList();
     }

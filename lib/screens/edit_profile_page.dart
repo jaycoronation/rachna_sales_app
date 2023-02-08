@@ -713,15 +713,13 @@ class _EditProfilePageState extends BaseState<EditProfilePage> {
       final url = Uri.parse(BASE_URL + editProfile);
       var request = MultipartRequest("POST", url);
 
-
       request.fields['from_app'] = FROM_APP;
+      request.fields['emp_id'] = sessionManager.getEmpId().toString().trim();
       request.fields['emp_name'] = _nameController.value.text.toString();
       request.fields['emp_phone'] = _phoneController.value.text.trim();
       request.fields['emp_email'] = _emailController.value.text.trim();
-      request.fields['email'] = _emailController.value.text.trim();
       request.fields['designation_id'] = _designationFilteredId;//strSelectedDesignationId;
       request.fields['parent_id'] = sessionManager.getParentId().toString().trim();
-
 
       if (pickImgPath != "") {
         request.files.add(await MultipartFile.fromPath('profile', pickImgPath));
@@ -741,7 +739,7 @@ class _EditProfilePageState extends BaseState<EditProfilePage> {
         });
         showSnackBar(apiData.message, context);
 
-        Navigator.pop(context);
+        Navigator.pop(context, "success");
 
       } else {
         setState(() {

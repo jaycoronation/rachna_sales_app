@@ -13,8 +13,8 @@ import '../widget/loading.dart';
 import 'add_payement_detail_page.dart';
 
 class OrderDetailPage extends StatefulWidget {
-  final customerId;
-  final orderId;
+  final String customerId;
+  final String orderId;
   const OrderDetailPage(this.customerId, this.orderId, {Key? key}) : super(key: key);
 
   @override
@@ -27,7 +27,6 @@ class _OrderDetailPageState extends BaseState<OrderDetailPage> {
   List<OrderItems> listOrderItems = List<OrderItems>.empty();
   OrderDetailResponseModel orderDetailResponseModel = OrderDetailResponseModel();
   late ScrollController _scrollViewController;
-
 
   @override
   void initState() {
@@ -100,30 +99,57 @@ class _OrderDetailPageState extends BaseState<OrderDetailPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Container(
-                            alignment: Alignment.topLeft,
-                            padding: const EdgeInsets.only(left: 22, top: 40, bottom: 5),
-                            child: const Text("Order ID", style: TextStyle(fontWeight: FontWeight.w400, color: kGray, fontSize: 14)),
+                          Row(
+                            children: [
+                              Container(
+                                alignment: Alignment.topLeft,
+                                padding: const EdgeInsets.only(left: 22, top: 20, bottom: 10),
+                                child: const Text("Order Id :", style: TextStyle(fontWeight: FontWeight.w400, color: kGray, fontSize: 14)),
+                              ),
+                              Container(
+                                alignment: Alignment.topLeft,
+                                padding: const EdgeInsets.only(left: 22, bottom: 10,top: 20,),
+                                child: Text(checkValidString(orderDetailResponseModel.order?.orderId.toString()), style: TextStyle(fontWeight: FontWeight.w500, color: black, fontSize: 14)),
+                              ),
+                            ],
                           ),
-                          Container(
-                            alignment: Alignment.topLeft,
-                            padding: const EdgeInsets.only(left: 22, bottom: 10),
-                            child: Text(checkValidString(orderDetailResponseModel.order?.orderId.toString()), style: TextStyle(fontWeight: FontWeight.w500, color: black, fontSize: 14)),
+                          Row(
+                            children: [
+                              Container(
+                                alignment: Alignment.topLeft,
+                                padding: const EdgeInsets.only(left: 22, top: 10, bottom: 10),
+                                child: const Text("Order Placed On :", style: TextStyle(fontWeight: FontWeight.w400, color: kGray, fontSize: 14)),
+                              ),
+                              Container(
+                                alignment: Alignment.topLeft,
+                                padding: const EdgeInsets.only(left: 22, top: 10,bottom: 10),
+                                child: Text(checkValidString(orderDetailResponseModel.order?.orderDate).toString(),
+                                    style: const TextStyle(fontWeight: FontWeight.w500, color: black, fontSize: 14)),
+                              ),
+                            ],
                           ),
-                          Container(
-                            alignment: Alignment.topLeft,
-                            padding: const EdgeInsets.only(left: 22, top: 30, bottom: 5),
-                            child: const Text("Total Amount Paid", style: TextStyle(fontWeight: FontWeight.w400, color: kGray, fontSize: 14)),
+                          Row(
+                            children: [
+                              Container(
+                                alignment: Alignment.topLeft,
+                                padding: const EdgeInsets.only(left: 22, top: 10, bottom: 20),
+                                child: const Text("Total Amount Paid", style: TextStyle(fontWeight: FontWeight.w400, color: kGray, fontSize: 14)),
+                              ),
+                              Container(
+                                alignment: Alignment.topLeft,
+                                padding: const EdgeInsets.only(left: 22,  top: 10, bottom: 20),
+                                child: Text(checkValidString(getPrice(orderDetailResponseModel.order!.grandTotal.toString())),
+                                    style: const TextStyle(fontWeight: FontWeight.w500, color: black, fontSize: 14)),
+                              ),
+                            ],
                           ),
-                          Container(
-                            alignment: Alignment.topLeft,
-                            padding: const EdgeInsets.only(left: 22, bottom: 10),
-                            child: Text(checkValidString(getPrice(orderDetailResponseModel.order!.grandTotal.toString())), style: TextStyle(fontWeight: FontWeight.w500, color: black, fontSize: 14)),
-                          ),
+
                         ],
                       ),
-                      Column(
+                      /*Column(
                         children: [
                           Container(
                             alignment: Alignment.topLeft,
@@ -133,9 +159,10 @@ class _OrderDetailPageState extends BaseState<OrderDetailPage> {
                           Container(
                             alignment: Alignment.topLeft,
                             padding: const EdgeInsets.only(right: 22, bottom: 10),
-                            child: Text(checkValidString(orderDetailResponseModel.order?.orderDate.toString()), style: TextStyle(fontWeight: FontWeight.w500, color: black, fontSize: 14)),
+                            child: Text(checkValidString(orderDetailResponseModel.order?.orderDate).toString(),
+                                style: TextStyle(fontWeight: FontWeight.w500, color: black, fontSize: 14)),
                           ),
-                          Container(
+                         *//* Container(
                             alignment: Alignment.topLeft,
                             padding: const EdgeInsets.only(right: 22, top: 30, bottom: 5),
                             child: const Text("Delivery On", style: TextStyle(fontWeight: FontWeight.w400, color: kGray, fontSize: 14)),
@@ -144,17 +171,12 @@ class _OrderDetailPageState extends BaseState<OrderDetailPage> {
                             alignment: Alignment.topLeft,
                             padding: const EdgeInsets.only(right: 22, bottom: 10),
                             child: Text(checkValidString(orderDetailResponseModel.order?.deliveryDate.toString()), style: TextStyle(fontWeight: FontWeight.w500, color: black, fontSize: 14)),
-                          ),
+                          ),*//*
                         ],
-                      )
+                      )*/
                     ],
                   ),
-                  Divider(
-                    indent: 8,
-                    endIndent: 8,
-                    color: kBlue,
-                    height: 2,
-                  ),
+                  const Divider(indent: 8, endIndent: 8, color: kBlue, height: 2),
                   Container(
                       alignment: Alignment.topLeft,
                       margin: const EdgeInsets.only(left: 20, top: 20, bottom: 10),
@@ -202,7 +224,7 @@ class _OrderDetailPageState extends BaseState<OrderDetailPage> {
                                             ),
                                             Container(
                                                 margin: const EdgeInsets.only(left: 5, top: 5),
-                                                child: Text("x", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: kGray))),
+                                                child: const Text("x", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: kGray))),
                                             Container(
                                                 margin: const EdgeInsets.only(left: 5, top: 5),
                                                 child: Text(checkValidString(listOrderItems[index].itemQty),
@@ -231,17 +253,12 @@ class _OrderDetailPageState extends BaseState<OrderDetailPage> {
                           ),
                         ),
                       )),
-                  Divider(
-                    indent: 8,
-                    endIndent: 8,
-                    color: kBlue,
-                    height: 2,
-                  ),
+                  const Divider(indent: 8, endIndent: 8, color: kBlue, height: 2,),
                   Container(
                       alignment: Alignment.topLeft,
                       margin: const EdgeInsets.only(left: 20, top: 20, bottom: 10),
                       child: const Text("Payment Summary",
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: kBlue),)
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: kBlue),)
                   ),
                   Column(
                     children: [
@@ -249,18 +266,18 @@ class _OrderDetailPageState extends BaseState<OrderDetailPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Container(
-                              margin: const EdgeInsets.only(left: 20, top: 5),
+                              margin: const EdgeInsets.only(left: 20, top: 5, bottom: 10),
                               child: Text("Price(${listOrderItems.length} items)",
-                                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: kGray),)
+                                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: kGray),)
                           ),
                           Container(
-                              margin: const EdgeInsets.only(right: 20, top: 5),
+                              margin: const EdgeInsets.only(right: 20, top: 5, bottom: 10),
                               child: Text(checkValidString(getPrice(orderDetailResponseModel.order!.subTotal.toString())),
                                 style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: black),)
                           ),
                         ],
                       ),
-                      Row(
+                      /*Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Container(
@@ -274,37 +291,32 @@ class _OrderDetailPageState extends BaseState<OrderDetailPage> {
                                 style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: black),)
                           ),
                         ],
-                      ),
+                      ),*/
                       checkValidString(orderDetailResponseModel.order!.adjustments.toString()).isNotEmpty ?
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Container(
                               margin: const EdgeInsets.only(left: 20, top: 15, bottom: 20),
-                              child: Text("Adjustment Amount",
+                              child: const Text("Adjustment Amount",
                                 style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: kGray),)
                           ),
                           Container(
                               margin: const EdgeInsets.only(right: 20, top: 15, bottom: 20),
                               child: Text(checkValidString(getPrice(orderDetailResponseModel.order!.adjustments.toString())),
-                                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: black),)
+                                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: black),)
                           ),
                         ],
                       ) : Container(),
                     ],
                   ),
-                  Divider(
-                    indent: 8,
-                    endIndent: 8,
-                    color: kBlue,
-                    height: 2,
-                  ),
+                  const Divider(indent: 8, endIndent: 8, color: kBlue, height: 2,),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Container(
                           margin: const EdgeInsets.only(left: 20, top: 20, bottom: 20),
-                          child: Text("Amount Paid",
+                          child: const Text("Amount Paid",
                             style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: kBlue),)
                       ),
                       Container(
@@ -314,13 +326,8 @@ class _OrderDetailPageState extends BaseState<OrderDetailPage> {
                       ),
                     ],
                   ),
-                  Divider(
-                    indent: 8,
-                    endIndent: 8,
-                    color: kBlue,
-                    height: 2,
-                  ),
-                  Container(
+                  const Divider(indent: 8, endIndent: 8, color: kBlue, height: 2,),
+                  /*Container(
                       alignment: Alignment.topLeft,
                       margin: const EdgeInsets.only(left: 20, top: 20, bottom: 10),
                       child: const Text("Payment Mode",
@@ -332,17 +339,13 @@ class _OrderDetailPageState extends BaseState<OrderDetailPage> {
                       child: Text(checkValidString(orderDetailResponseModel.order!.paymentMode.toString()),
                         style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400, color: black),)
                   ),
-                  Divider(
-                    indent: 8,
-                    endIndent: 8,
-                    color: kBlue,
-                    height: 2,
-                  ),
+                  const Divider(indent: 8, endIndent: 8, color: kBlue, height: 2,),
+                  */
                   Container(
                       alignment: Alignment.topLeft,
                       margin: const EdgeInsets.only(left: 20, top: 20, bottom: 10),
                       child: const Text("Delivery Details",
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: kBlue),)
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: kBlue),)
                   ),
                   Container(
                       alignment: Alignment.topLeft,
@@ -386,7 +389,7 @@ class _OrderDetailPageState extends BaseState<OrderDetailPage> {
   Future<void> _redirectToTransaction(BuildContext context, Order getSet) async {
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => AddPaymentDetailPage(getSet, "", "")),
+      MaterialPageRoute(builder: (context) => AddPaymentDetailPage(getSet, "", "", "")),
     );
 
     print("result ===== $result");
@@ -424,7 +427,7 @@ class _OrderDetailPageState extends BaseState<OrderDetailPage> {
       orderDetailResponseModel = dataResponse;
 
       // print("orderId====>" + orderDetailResponseModel.order!.orderId.toString());
-      //
+
       // print("orderItems?.length====>" + orderDetailResponseModel.order!.orderItems!.length.toString());
 
 

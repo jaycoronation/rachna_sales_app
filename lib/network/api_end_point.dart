@@ -1,4 +1,4 @@
-const BASE_URL = "https://salesapp.coronation.in/services/";
+const BASE_URL = "https://salesapp.coronation.in/services/";//"http://192.168.50.34/SALESAPP_LIVE/services/";//
 
 var API_KEY = "YzMxYjMyMzY0Y2UxOWNhOGZjZDE1MGE0MTdlY2NlNTg=";
 var FROM_APP = "true";
@@ -38,3 +38,5 @@ const categoryList = "manageCategory/list";
 
 const saveTransaction = "manageTransection/save";
 const transactionList = "manageTransection/list";
+
+const transactionDetail = "manageTransection/details";

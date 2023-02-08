@@ -1,68 +1,45 @@
 import 'dart:convert';
 /// success : 1
-/// message : "Transections found"
-/// totalCount : "12"
-/// netBalance : "15320"
-/// transection_lits : [{"id":"19","transection_amount":"200","transection_mode":"Debit Card","transection_type":"Credit","transection_status":"success","transection_id":"11111111","transection_date":"17:01pm 08 Feb 2023","order_details":{"order_id":"12","order_number":"SALE-0000000012","sub_total":"3800","discount":"10","adjustments":"10","grand_total":"3800","order_status":""},"employee_details":{"emp_id":"1","emp_name":"Raj","emp_phone":"9725059007","emp_email":"raj@coronation.in","profile":"","incentive":"0","outstanding":"0","total_sales":"0","total_customers":"0"},"customer_details":{"customer_id":"3268","customer_name":"J P CORPORATION"}},{"id":"18","transection_amount":"1000","transection_mode":"UPI","transection_type":"Credit","transection_status":"success","transection_id":"851111@upi","transection_date":"17:00pm 08 Feb 2023","order_details":{"order_id":"10","order_number":"SALE-0000000001","sub_total":"1920","discount":"","adjustments":"","grand_total":"1920","order_status":" "},"employee_details":{"emp_id":"1","emp_name":"Raj","emp_phone":"9725059007","emp_email":"raj@coronation.in","profile":"","incentive":"0","outstanding":"0","total_sales":"0","total_customers":"0"},"customer_details":{"customer_id":"3267","customer_name":"Shree Laxminarayan Food Industries"}},{"id":"17","transection_amount":"1000","transection_mode":"Cash","transection_type":"Credit","transection_status":"success","transection_id":"","transection_date":"16:56pm 08 Feb 2023","order_details":{"order_id":"12","order_number":"SALE-0000000012","sub_total":"3800","discount":"10","adjustments":"10","grand_total":"3800","order_status":""},"employee_details":{"emp_id":"1","emp_name":"Raj","emp_phone":"9725059007","emp_email":"raj@coronation.in","profile":"","incentive":"0","outstanding":"0","total_sales":"0","total_customers":"0"},"customer_details":{"customer_id":"3268","customer_name":"J P CORPORATION"}},{"id":"16","transection_amount":"3800.0","transection_mode":"Cash","transection_type":"Debit","transection_status":"success","transection_id":"","transection_date":"16:12pm 08 Feb 2023","order_details":{"order_id":"14","order_number":"SALE-0000000014","sub_total":"3800","discount":"","adjustments":"","grand_total":"3800","order_status":""},"employee_details":{"emp_id":"1","emp_name":"Raj","emp_phone":"9725059007","emp_email":"raj@coronation.in","profile":"","incentive":"0","outstanding":"0","total_sales":"0","total_customers":"0"},"customer_details":{"customer_id":"3265","customer_name":"HRPL Restaurants Private Limited"}},{"id":"15","transection_amount":"1000.0","transection_mode":"Cash","transection_type":"Debit","transection_status":"success","transection_id":"","transection_date":"16:11pm 08 Feb 2023","order_details":{"order_id":"13","order_number":"SALE-0000000013","sub_total":"1000","discount":"","adjustments":"","grand_total":"1000","order_status":""},"employee_details":{"emp_id":"1","emp_name":"Raj","emp_phone":"9725059007","emp_email":"raj@coronation.in","profile":"","incentive":"0","outstanding":"0","total_sales":"0","total_customers":"0"},"customer_details":{"customer_id":"3266","customer_name":"Enthrall Foods PVT.LTD."}},{"id":"14","transection_amount":"3800.0","transection_mode":"Cash","transection_type":"Debit","transection_status":"success","transection_id":"","transection_date":"16:08pm 08 Feb 2023","order_details":{"order_id":"12","order_number":"SALE-0000000012","sub_total":"3800","discount":"10","adjustments":"10","grand_total":"3800","order_status":""},"employee_details":{"emp_id":"1","emp_name":"Raj","emp_phone":"9725059007","emp_email":"raj@coronation.in","profile":"","incentive":"0","outstanding":"0","total_sales":"0","total_customers":"0"},"customer_details":{"customer_id":"3268","customer_name":"J P CORPORATION"}},{"id":"13","transection_amount":"200","transection_mode":"Cash","transection_type":"Credit","transection_status":"success","transection_id":"","transection_date":"15:12pm 08 Feb 2023","order_details":{"order_id":"11","order_number":"SALE-0000000011","sub_total":"3720","discount":"","adjustments":"","grand_total":"3720","order_status":" "},"employee_details":{"emp_id":"1","emp_name":"Raj","emp_phone":"9725059007","emp_email":"raj@coronation.in","profile":"","incentive":"0","outstanding":"0","total_sales":"0","total_customers":"0"},"customer_details":{"customer_id":"3267","customer_name":"Shree Laxminarayan Food Industries"}},{"id":"12","transection_amount":"500","transection_mode":"Cash","transection_type":"Credit","transection_status":"success","transection_id":"","transection_date":"15:12pm 08 Feb 2023","order_details":{"order_id":"11","order_number":"SALE-0000000011","sub_total":"3720","discount":"","adjustments":"","grand_total":"3720","order_status":" "},"employee_details":{"emp_id":"1","emp_name":"Raj","emp_phone":"9725059007","emp_email":"raj@coronation.in","profile":"","incentive":"0","outstanding":"0","total_sales":"0","total_customers":"0"},"customer_details":{"customer_id":"3267","customer_name":"Shree Laxminarayan Food Industries"}},{"id":"11","transection_amount":"3720","transection_mode":"","transection_type":"Debit","transection_status":"success","transection_id":"","transection_date":"15:06pm 08 Feb 2023","order_details":{"order_id":"11","order_number":"SALE-0000000011","sub_total":"3720","discount":"","adjustments":"","grand_total":"3720","order_status":" "},"employee_details":{"emp_id":"1","emp_name":"Raj","emp_phone":"9725059007","emp_email":"raj@coronation.in","profile":"","incentive":"0","outstanding":"0","total_sales":"0","total_customers":"0"},"customer_details":{"customer_id":"3267","customer_name":"Shree Laxminarayan Food Industries"}},{"id":"10","transection_amount":"100","transection_mode":"cash","transection_type":"Credit","transection_status":"success","transection_id":"","transection_date":"13:12pm 08 Feb 2023","order_details":{"order_id":"10","order_number":"SALE-0000000001","sub_total":"1920","discount":"","adjustments":"","grand_total":"1920","order_status":" "},"employee_details":{"emp_id":"1","emp_name":"Raj","emp_phone":"9725059007","emp_email":"raj@coronation.in","profile":"","incentive":"0","outstanding":"0","total_sales":"0","total_customers":"0"},"customer_details":{"customer_id":"3267","customer_name":"Shree Laxminarayan Food Industries"}}]
+/// message : "transection details found"
+/// transection_details : {"id":"19","transection_amount":"200","transection_mode":"Debit Card","transection_type":"Credit","transection_id":"11111111","transection_status":"success","order_details":{"order_id":"12","order_number":"SALE-0000000012","sub_total":"3800","discount":"10","adjustments":"10","grand_total":"3800","order_status":""},"employee_details":{"emp_id":"1","emp_name":"Raj","emp_phone":"9725059007","emp_email":"raj@coronation.in","profile":"","incentive":"0","outstanding":"0","total_sales":"0","total_customers":"0"},"customer_details":{"customer_id":"3268","customer_name":"J P CORPORATION"}}
 
-TransactionListResponseModel transactionListResponseModelFromJson(String str) => TransactionListResponseModel.fromJson(json.decode(str));
-String transactionListResponseModelToJson(TransactionListResponseModel data) => json.encode(data.toJson());
-class TransactionListResponseModel {
-  TransactionListResponseModel({
+TransactionDetailResponseModel transactionDetailResponseModelFromJson(String str) => TransactionDetailResponseModel.fromJson(json.decode(str));
+String transactionDetailResponseModelToJson(TransactionDetailResponseModel data) => json.encode(data.toJson());
+class TransactionDetailResponseModel {
+  TransactionDetailResponseModel({
       num? success, 
       String? message, 
-      String? totalCount, 
-      String? netBalance, 
-      List<TransectionLits>? transectionLits,}){
+      TransectionDetails? transectionDetails,}){
     _success = success;
     _message = message;
-    _totalCount = totalCount;
-    _netBalance = netBalance;
-    _transectionLits = transectionLits;
+    _transectionDetails = transectionDetails;
 }
 
-  TransactionListResponseModel.fromJson(dynamic json) {
+  TransactionDetailResponseModel.fromJson(dynamic json) {
     _success = json['success'];
     _message = json['message'];
-    _totalCount = json['totalCount'];
-    _netBalance = json['netBalance'];
-    if (json['transection_lits'] != null) {
-      _transectionLits = [];
-      json['transection_lits'].forEach((v) {
-        _transectionLits?.add(TransectionLits.fromJson(v));
-      });
-    }
+    _transectionDetails = json['transection_details'] != null ? TransectionDetails.fromJson(json['transection_details']) : null;
   }
   num? _success;
   String? _message;
-  String? _totalCount;
-  String? _netBalance;
-  List<TransectionLits>? _transectionLits;
-TransactionListResponseModel copyWith({  num? success,
+  TransectionDetails? _transectionDetails;
+TransactionDetailResponseModel copyWith({  num? success,
   String? message,
-  String? totalCount,
-  String? netBalance,
-  List<TransectionLits>? transectionLits,
-}) => TransactionListResponseModel(  success: success ?? _success,
+  TransectionDetails? transectionDetails,
+}) => TransactionDetailResponseModel(  success: success ?? _success,
   message: message ?? _message,
-  totalCount: totalCount ?? _totalCount,
-  netBalance: netBalance ?? _netBalance,
-  transectionLits: transectionLits ?? _transectionLits,
+  transectionDetails: transectionDetails ?? _transectionDetails,
 );
   num? get success => _success;
   String? get message => _message;
-  String? get totalCount => _totalCount;
-  String? get netBalance => _netBalance;
-  List<TransectionLits>? get transectionLits => _transectionLits;
+  TransectionDetails? get transectionDetails => _transectionDetails;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['success'] = _success;
     map['message'] = _message;
-    map['totalCount'] = _totalCount;
-    map['netBalance'] = _netBalance;
-    if (_transectionLits != null) {
-      map['transection_lits'] = _transectionLits?.map((v) => v.toJson()).toList();
+    if (_transectionDetails != null) {
+      map['transection_details'] = _transectionDetails?.toJson();
     }
     return map;
   }
@@ -73,24 +50,22 @@ TransactionListResponseModel copyWith({  num? success,
 /// transection_amount : "200"
 /// transection_mode : "Debit Card"
 /// transection_type : "Credit"
-/// transection_status : "success"
 /// transection_id : "11111111"
-/// transection_date : "17:01pm 08 Feb 2023"
+/// transection_status : "success"
 /// order_details : {"order_id":"12","order_number":"SALE-0000000012","sub_total":"3800","discount":"10","adjustments":"10","grand_total":"3800","order_status":""}
 /// employee_details : {"emp_id":"1","emp_name":"Raj","emp_phone":"9725059007","emp_email":"raj@coronation.in","profile":"","incentive":"0","outstanding":"0","total_sales":"0","total_customers":"0"}
 /// customer_details : {"customer_id":"3268","customer_name":"J P CORPORATION"}
 
-TransectionLits transectionLitsFromJson(String str) => TransectionLits.fromJson(json.decode(str));
-String transectionLitsToJson(TransectionLits data) => json.encode(data.toJson());
-class TransectionLits {
-  TransectionLits({
+TransectionDetails transectionDetailsFromJson(String str) => TransectionDetails.fromJson(json.decode(str));
+String transectionDetailsToJson(TransectionDetails data) => json.encode(data.toJson());
+class TransectionDetails {
+  TransectionDetails({
       String? id, 
       String? transectionAmount, 
       String? transectionMode, 
       String? transectionType, 
-      String? transectionStatus, 
       String? transectionId, 
-      String? transectionDate, 
+      String? transectionStatus, 
       OrderDetails? orderDetails, 
       EmployeeDetails? employeeDetails, 
       CustomerDetails? customerDetails,}){
@@ -98,22 +73,20 @@ class TransectionLits {
     _transectionAmount = transectionAmount;
     _transectionMode = transectionMode;
     _transectionType = transectionType;
-    _transectionStatus = transectionStatus;
     _transectionId = transectionId;
-    _transectionDate = transectionDate;
+    _transectionStatus = transectionStatus;
     _orderDetails = orderDetails;
     _employeeDetails = employeeDetails;
     _customerDetails = customerDetails;
 }
 
-  TransectionLits.fromJson(dynamic json) {
+  TransectionDetails.fromJson(dynamic json) {
     _id = json['id'];
     _transectionAmount = json['transection_amount'];
     _transectionMode = json['transection_mode'];
     _transectionType = json['transection_type'];
-    _transectionStatus = json['transection_status'];
     _transectionId = json['transection_id'];
-    _transectionDate = json['transection_date'];
+    _transectionStatus = json['transection_status'];
     _orderDetails = json['order_details'] != null ? OrderDetails.fromJson(json['order_details']) : null;
     _employeeDetails = json['employee_details'] != null ? EmployeeDetails.fromJson(json['employee_details']) : null;
     _customerDetails = json['customer_details'] != null ? CustomerDetails.fromJson(json['customer_details']) : null;
@@ -122,29 +95,26 @@ class TransectionLits {
   String? _transectionAmount;
   String? _transectionMode;
   String? _transectionType;
-  String? _transectionStatus;
   String? _transectionId;
-  String? _transectionDate;
+  String? _transectionStatus;
   OrderDetails? _orderDetails;
   EmployeeDetails? _employeeDetails;
   CustomerDetails? _customerDetails;
-TransectionLits copyWith({  String? id,
+TransectionDetails copyWith({  String? id,
   String? transectionAmount,
   String? transectionMode,
   String? transectionType,
-  String? transectionStatus,
   String? transectionId,
-  String? transectionDate,
+  String? transectionStatus,
   OrderDetails? orderDetails,
   EmployeeDetails? employeeDetails,
   CustomerDetails? customerDetails,
-}) => TransectionLits(  id: id ?? _id,
+}) => TransectionDetails(  id: id ?? _id,
   transectionAmount: transectionAmount ?? _transectionAmount,
   transectionMode: transectionMode ?? _transectionMode,
   transectionType: transectionType ?? _transectionType,
-  transectionStatus: transectionStatus ?? _transectionStatus,
   transectionId: transectionId ?? _transectionId,
-  transectionDate: transectionDate ?? _transectionDate,
+  transectionStatus: transectionStatus ?? _transectionStatus,
   orderDetails: orderDetails ?? _orderDetails,
   employeeDetails: employeeDetails ?? _employeeDetails,
   customerDetails: customerDetails ?? _customerDetails,
@@ -153,9 +123,8 @@ TransectionLits copyWith({  String? id,
   String? get transectionAmount => _transectionAmount;
   String? get transectionMode => _transectionMode;
   String? get transectionType => _transectionType;
-  String? get transectionStatus => _transectionStatus;
   String? get transectionId => _transectionId;
-  String? get transectionDate => _transectionDate;
+  String? get transectionStatus => _transectionStatus;
   OrderDetails? get orderDetails => _orderDetails;
   EmployeeDetails? get employeeDetails => _employeeDetails;
   CustomerDetails? get customerDetails => _customerDetails;
@@ -166,9 +135,8 @@ TransectionLits copyWith({  String? id,
     map['transection_amount'] = _transectionAmount;
     map['transection_mode'] = _transectionMode;
     map['transection_type'] = _transectionType;
-    map['transection_status'] = _transectionStatus;
     map['transection_id'] = _transectionId;
-    map['transection_date'] = _transectionDate;
+    map['transection_status'] = _transectionStatus;
     if (_orderDetails != null) {
       map['order_details'] = _orderDetails?.toJson();
     }

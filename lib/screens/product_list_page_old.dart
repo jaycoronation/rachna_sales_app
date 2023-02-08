@@ -205,7 +205,6 @@ class _ProductListPageState extends BaseState<ProductListPageOld> {
                           prefixIcon: const Icon(Icons.search, size: 26, color: kBlue,)
                       ),
                       onChanged: (text) {
-
                         /* searchController.text = text;
                         searchController.selection = TextSelection.fromPosition(TextPosition(offset: searchController.text.length));
                         if(text.isEmpty) {
@@ -297,32 +296,11 @@ class _ProductListPageState extends BaseState<ProductListPageOld> {
                         color: white,
                         child: Padding(
                           padding: const EdgeInsets.only(left: 15, right: 15, top: 8, bottom: 5),
-                          child: GestureDetector(
-                            onTap: () {
-                              if(_templistProduct != null && _templistProduct.length > 0) {
-                                setState(() {
-                                  if(_templistProduct[index].isProductSelected ?? false) {
-                                    _templistProduct[index].isProductSelected = false;
-                                  }else {
-                                    _templistProduct[index].isProductSelected = true;
-                                  }
-                                });
-                              } else {
-                                setState(() {
-                                  if(listProduct[index].isProductSelected ?? false) {
-                                    listProduct[index].isProductSelected = false;
-                                  }else {
-                                    listProduct[index].isProductSelected = true;
-                                  }
-                                });
-                              }
-                            },
-                            child: (_templistProduct.isNotEmpty)
-                                ? _showBottomSheetForProductsList(
-                                index, _templistProduct)
-                                : _showBottomSheetForProductsList(
-                                index, listProduct),
-                          ),
+                          child: (_templistProduct.isNotEmpty)
+                              ? _showBottomSheetForProductsList(
+                              index, _templistProduct)
+                              : _showBottomSheetForProductsList(
+                              index, listProduct),
                         ),
                       ),
                     ))),

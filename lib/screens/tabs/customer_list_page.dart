@@ -106,7 +106,7 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
           ),*/
 
           Container(
-            margin: const EdgeInsets.only(top: 11, bottom: 11, right: 3),
+            margin: const EdgeInsets.only(top: 12, bottom: 12, right: 3),
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTap: () {
@@ -195,6 +195,7 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
 
   SingleChildScrollView setData() {
     return SingleChildScrollView(
+      controller: _scrollViewController,
       child: Column(
           children: [
             Container(
@@ -414,7 +415,6 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
             ListView.builder(
                 scrollDirection: Axis.vertical,
                 physics: const NeverScrollableScrollPhysics(),
-                controller: _scrollViewController,
                 primary: false,
                 shrinkWrap: true,
                 itemCount: listCustomer.length,
@@ -476,7 +476,7 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         Container(
-                                          margin: const EdgeInsets.only(left: 10, bottom: 5),
+                                          margin: const EdgeInsets.only(left: 10,),
                                           child: RichText(
                                             textAlign: TextAlign.center,
                                             text: TextSpan(
@@ -507,7 +507,7 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
                             ],
                           ),
                           Container(
-                              margin: const EdgeInsets.only(top: 10, left: 10, right: 10),
+                              margin: const EdgeInsets.only(top: 5, left: 10, right: 10),
                               height: index == listCustomer.length-1 ? 0 : 0.8, color: kLightPurple),
                         ],
                       ),
@@ -734,7 +734,6 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
         _isLoadingMore = false;
         _isSearchLoading = false;
 
-        // isAddedOrRemovedProduct = true;
       });
 
     }else {

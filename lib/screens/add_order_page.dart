@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -51,10 +52,10 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
   var listProduct = List<Products>.empty(growable: true);
 
   var customerDetail = CustomerList();
-  // var customerDetail1 = CustomerList();
 
   var subTotal = 0.0;
   var mainListProduct = List<ItemData>.empty(growable: true);
+  var itemTotal = 0.0;
 
   bool isFromDetail = false;
 
@@ -66,7 +67,29 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
     isFromDetail = (widget as AddOrderPage).isFromDetail;
 
     if(isFromDetail) {
-      isValidCustomer = true;
+      setState(() {
+        _isLoading = true;
+        isValidCustomer = true;
+
+      });
+
+      if(listProduct.isEmpty) {
+        Timer(const Duration(milliseconds: 500), () =>
+            _redirectToAddItem(context, listProduct, true)
+        );
+        Timer(const Duration(seconds: 2), () =>
+            setState(() {
+              _isLoading = false;
+            })
+        );
+      }else {
+        Timer(const Duration(seconds: 2), () =>
+            setState(() {
+              _isLoading = false;
+            })
+        );
+      }
+
     }
 
   }
@@ -128,7 +151,7 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
               Align(
                 alignment: Alignment.bottomCenter,
                 child: Container(
-                  margin: EdgeInsets.only(top: 40 ),
+                  margin: const EdgeInsets.only(top: 40),
                   padding: const EdgeInsets.all(10),
                   alignment: Alignment.center,
                   width: MediaQuery.of(context).size.width / 3,
@@ -271,7 +294,7 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
                     child: const Text("Order Items", style: TextStyle(fontWeight: FontWeight.w600, color: kBlue, fontSize: 15))),
                 GestureDetector(
                   onTap: () {
-                    _redirectToAddItem(context, listProduct);
+                    _redirectToAddItem(context, listProduct, false);
                   },
                   child: Container(
                       margin: const EdgeInsets.only(right: 20, top: 20, bottom: 10),
@@ -362,14 +385,18 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
                                                   listProduct[index].quantity = listProduct[index].quantity - 1;
                                                 }
                                               getPriceCalculated();
+
+                                              // getItemCalculation(listProduct[index], index);
                                             },
                                             icon: Image.asset('assets/images/ic_blue_minus.png', height: 24, width: 24),
                                           ),
-                                          Text(listProduct[index].quantity.toString(), style: const TextStyle(fontWeight: FontWeight.w400, color: black, fontSize: 13)),
+                                          Text(listProduct[index].quantity.toString(),
+                                              style: const TextStyle(fontWeight: FontWeight.w400, color: black, fontSize: 13)),
                                           IconButton(
                                             onPressed: () {
                                               listProduct[index].quantity = listProduct[index].quantity + 1;
                                               getPriceCalculated();
+                                              // getItemCalculation(listProduct[index], index);
                                             },
                                             icon:Image.asset('assets/images/ic_blue_add.png', height: 24, width: 24),
                                           )
@@ -521,15 +548,19 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
                               getPriceCalculated();
                             }
                         },
-                        onSubmitted: (value){
-                          if (isAdjPlus)
+                        onSubmitted: (value) {
+                          if (value.isEmpty)
+                          {
+                            getPriceCalculated();
+                          }
+                     /*     if (isAdjPlus)
                             {
                               subTotal = subTotal + double.parse(value.isNotEmpty ? value : "0.0");
                             }
                           else
                             {
                               subTotal = subTotal - double.parse(value.isNotEmpty ? value : "0.0");
-                            }
+                            }*/
                         },
                       )
                   ),
@@ -605,27 +636,45 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
     );
   }
 
+  void getItemCalculation(Products product, int index) {
+    setState(() {
+      itemTotal = 0.0;
+
+      if (product.quantity == 1) {
+        itemTotal = itemTotal + double.parse(product.stockPrice.toString());
+      } else {
+        var total = double.parse(product.stockPrice.toString()) * product.quantity;
+        itemTotal = itemTotal + total;
+      }
+      listProduct[index] = product;
+    });
+
+  }
+
   void getPriceCalculated() {
     setState(() {
       subTotal = 0.0;
+      itemTotal = 0.0;
+
       for(var i = 0; i < listProduct.length; i++) {
         print("subTotal ==== " + subTotal.toString());
         if (listProduct[i].quantity == 1) {
-          subTotal =
-              subTotal + double.parse(listProduct[i].stockPrice.toString());
+          subTotal = subTotal + double.parse(listProduct[i].stockPrice.toString());
         }
         else {
           var total = double.parse(listProduct[i].stockPrice.toString()) * listProduct[i].quantity;
           subTotal = subTotal + total;
         }
-        }
+      }
+
+
+
       if (discountController.value.text.isNotEmpty) {
         var value = discountController.value.text;
         subTotal = subTotal - double.parse(value.isNotEmpty ? value : "0");
       }
 
-      if (adjustmentController.value.text.isNotEmpty)
-      {
+      if (adjustmentController.value.text.isNotEmpty) {
         var value = adjustmentController.value.text;
         // subTotal = subTotal + (double.parse(value.isNotEmpty ? value : "0.0"));
 
@@ -647,10 +696,10 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
     });
   }
 
-  Future<void> _redirectToAddItem(BuildContext context, List<Products> listProductData) async {
+  Future<void> _redirectToAddItem(BuildContext context, List<Products> listProductData, bool isFromDetail) async {
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => SelectProductPageOld(listProductData)),
+      MaterialPageRoute(builder: (context) => SelectProductPageOld(listProductData, isFromDetail)),
     );
 
     print("result ===== $result");

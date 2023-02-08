@@ -391,7 +391,6 @@ class _SelectProductPageState extends BaseState<SelectProductPage> {
               ),
               child: TextButton(
                 onPressed: () {
-
                   FocusScope.of(context).requestFocus(FocusNode());
                   passListProduct = [];
                     for(var i = 0; i < listProduct.length; i++) {

@@ -33,6 +33,7 @@ class CustomerDetailPage extends StatefulWidget {
 
 class _CustomerDetailPageState extends BaseState<CustomerDetailPage> with TickerProviderStateMixin {
   bool _isLoading = false;
+  bool _ = false;
 
   CustomerDetailResponseModel customerDetailResponseModel = CustomerDetailResponseModel();
 
@@ -199,7 +200,6 @@ class _CustomerDetailPageState extends BaseState<CustomerDetailPage> with Ticker
                     customerDetailResponseModel.customerDetails!.ledgerMobile.toString().isNotEmpty ?
                     GestureDetector(
                         onTap:() async {
-
                             var url = Uri.parse("tel:${customerDetailResponseModel.customerDetails!.ledgerMobile.toString()}");
                             if(url.toString().isNotEmpty) {
                               launch(url.toString());
@@ -393,7 +393,7 @@ class _CustomerDetailPageState extends BaseState<CustomerDetailPage> with Ticker
               controller: _tabController,
               children: [
                 CustomerTransactionListPage(customerDetailResponseModel.customerDetails),
-                CustomerSalesHistoryListPage(customerDetailResponseModel.customerDetails),
+                CustomerSalesHistoryListPage(customerDetailResponseModel.customerDetails, callApi),
               ],
             ),
           ),
@@ -435,11 +435,10 @@ class _CustomerDetailPageState extends BaseState<CustomerDetailPage> with Ticker
       MaterialPageRoute(builder: (context) => AddOrderPage(getSet, isFromList, customerGetSet, isFromDetail)),
     );
 
-
     print("result ===== $result");
 
     if (result == "success") {
-      // _getOrderListData(true);
+      _makeCallCustomerDetail();
       setState(() {
         isOrderListLoad = true;
       });
@@ -621,6 +620,12 @@ class _CustomerDetailPageState extends BaseState<CustomerDetailPage> with Ticker
 
   }
 
+  void callApi(bool isFrom) {
+    if (isFrom) {
+      _makeCallCustomerDetail();
+    }
+  }
+
   //API call function...
   _makeCallCustomerDetail() async {
     setState(() {
@@ -648,8 +653,8 @@ class _CustomerDetailPageState extends BaseState<CustomerDetailPage> with Ticker
 
     if (statusCode == 200 && dataResponse.success == 1) {
       customerDetailResponseModel = dataResponse;
-      totalSale = dataResponse.totalSale.toString();
-      totalOverdue = dataResponse.totalOverdue.toString();
+      totalSale = checkValidString(dataResponse.customerDetails?.customerTotalSale).toString();
+      totalOverdue = checkValidString(dataResponse.customerDetails?.customerTotalOverdue).toString();
 
       listCustomerTransaction = [];
       listCustomerSalesHistory = [];

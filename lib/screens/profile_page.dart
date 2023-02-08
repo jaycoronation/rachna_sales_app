@@ -358,7 +358,6 @@ class _ProfilePageState extends BaseState<ProfilePage> {
       child: GestureDetector(
         onTap: () {
           _redirectToProfile(context);
-          // Navigator.push(context, MaterialPageRoute(builder: (context) => const EditProfilePage()));
 
         },
         child: Card(
@@ -393,9 +392,6 @@ class _ProfilePageState extends BaseState<ProfilePage> {
     );
 
     print("result ===== $result");
-    setState(() {
-
-    });
 
     if (result == "success") {
       _profileDetailRequest();
