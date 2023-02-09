@@ -242,7 +242,7 @@ class _TransactionDetailPageState extends BaseState<TransactionDetailPage> {
   Future<void> _redirectToTransaction(BuildContext context, Order getSet) async {
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => AddPaymentDetailPage(getSet, "", "", "")),
+      MaterialPageRoute(builder: (context) => AddPaymentDetailPage(getSet, "", "", "", "")),
     );
 
     print("result ===== $result");

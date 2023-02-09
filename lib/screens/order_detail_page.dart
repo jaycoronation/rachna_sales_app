@@ -107,11 +107,11 @@ class _OrderDetailPageState extends BaseState<OrderDetailPage> {
                               Container(
                                 alignment: Alignment.topLeft,
                                 padding: const EdgeInsets.only(left: 22, top: 20, bottom: 10),
-                                child: const Text("Order Id :", style: TextStyle(fontWeight: FontWeight.w400, color: kGray, fontSize: 14)),
+                                child: const Text("Order Number :", style: TextStyle(fontWeight: FontWeight.w400, color: kGray, fontSize: 14)),
                               ),
                               Container(
                                 alignment: Alignment.topLeft,
-                                padding: const EdgeInsets.only(left: 22, bottom: 10,top: 20,),
+                                padding: const EdgeInsets.only(left: 8, bottom: 10,top: 20,),
                                 child: Text(checkValidString(orderDetailResponseModel.order?.orderId.toString()), style: TextStyle(fontWeight: FontWeight.w500, color: black, fontSize: 14)),
                               ),
                             ],
@@ -125,7 +125,7 @@ class _OrderDetailPageState extends BaseState<OrderDetailPage> {
                               ),
                               Container(
                                 alignment: Alignment.topLeft,
-                                padding: const EdgeInsets.only(left: 22, top: 10,bottom: 10),
+                                padding: const EdgeInsets.only(left: 8, top: 10,bottom: 10),
                                 child: Text(checkValidString(orderDetailResponseModel.order?.orderDate).toString(),
                                     style: const TextStyle(fontWeight: FontWeight.w500, color: black, fontSize: 14)),
                               ),
@@ -140,7 +140,7 @@ class _OrderDetailPageState extends BaseState<OrderDetailPage> {
                               ),
                               Container(
                                 alignment: Alignment.topLeft,
-                                padding: const EdgeInsets.only(left: 22,  top: 10, bottom: 20),
+                                padding: const EdgeInsets.only(left: 8,  top: 10, bottom: 20),
                                 child: Text(checkValidString(getPrice(orderDetailResponseModel.order!.grandTotal.toString())),
                                     style: const TextStyle(fontWeight: FontWeight.w500, color: black, fontSize: 14)),
                               ),
@@ -277,21 +277,24 @@ class _OrderDetailPageState extends BaseState<OrderDetailPage> {
                           ),
                         ],
                       ),
-                      /*Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                              margin: const EdgeInsets.only(left: 20, top: 15),
-                              child: Text("Shipping charges",
-                                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: kGray),)
-                          ),
-                          Container(
-                              margin: const EdgeInsets.only(right: 20, top: 15),
-                              child: Text(checkValidString(getPrice(orderDetailResponseModel.order!.shippingCharge.toString())),
-                                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: black),)
-                          ),
-                        ],
-                      ),*/
+                      Visibility(
+                        visible: orderDetailResponseModel.order!.discount.toString().isNotEmpty,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                                margin: const EdgeInsets.only(left: 20, top: 5, bottom: 15),
+                                child: const Text("Discount",
+                                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: kGray),)
+                            ),
+                            Container(
+                                margin: const EdgeInsets.only(right: 20, top: 5, bottom: 15),
+                                child: Text(checkValidString(getPrice(orderDetailResponseModel.order!.discount.toString())),
+                                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: black),)
+                            ),
+                          ],
+                        ),
+                      ),
                       checkValidString(orderDetailResponseModel.order!.adjustments.toString()).isNotEmpty ?
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -351,19 +354,19 @@ class _OrderDetailPageState extends BaseState<OrderDetailPage> {
                       alignment: Alignment.topLeft,
                       margin: const EdgeInsets.only(left: 20, bottom: 10, right: 20),
                       child: Text(checkValidString(orderDetailResponseModel.order!.customerName.toString()),
-                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: black),)
+                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500, color: black),)
                   ),
                   Container(
                       alignment: Alignment.topLeft,
                       margin: const EdgeInsets.only(left: 20, bottom: 10, right: 20),
                       child: Text("${checkValidString(orderDetailResponseModel.order!.addressLine1.toString())} ${checkValidString(orderDetailResponseModel.order!.addressLine2.toString())}-${checkValidString(orderDetailResponseModel.order!.pincode.toString())} ${checkValidString(orderDetailResponseModel.order!.city.toString())} ${checkValidString(orderDetailResponseModel.order!.stateName.toString())} ${checkValidString(orderDetailResponseModel.order!.countryName.toString())}",
-                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400, color: kGray),)
+                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w400, color: kGray),)
                   ),
                   Container(
                       alignment: Alignment.topLeft,
                       margin: const EdgeInsets.only(left: 20, bottom: 10),
                       child: Text(checkValidString(orderDetailResponseModel.order!.customerMobile.toString()),
-                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400, color: kGray),)
+                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w400, color: kGray),)
                   ),
                 ],
               ),
@@ -389,7 +392,7 @@ class _OrderDetailPageState extends BaseState<OrderDetailPage> {
   Future<void> _redirectToTransaction(BuildContext context, Order getSet) async {
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => AddPaymentDetailPage(getSet, "", "", "")),
+      MaterialPageRoute(builder: (context) => AddPaymentDetailPage(getSet, "", "", "", "")),
     );
 
     print("result ===== $result");

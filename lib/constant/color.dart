@@ -31,6 +31,9 @@ const Color kLightPurple = Color(0xffc8d9ff);
 const Color kLightestPurple = Color(0xffeef4ff);
 const Color kLightestGray= Color(0xffe0e0e0);
 
+const Color kRed = Color(0xfffd1717);
+
+
 
 
 

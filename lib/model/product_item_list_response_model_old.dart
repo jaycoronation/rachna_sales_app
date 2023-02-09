@@ -195,9 +195,12 @@ class Products {
       String? itemDenominator, 
       String? integratedTax,
       bool? isProductSelected,
-    num quantity = 0,
+    num quantity = 1,
     String? inStock,
-    String? orderCount
+    String? orderCount,
+
+    num itemPrice = 0
+
   }){
     _stockId = stockId;
     _tallyId = tallyId;
@@ -230,6 +233,9 @@ class Products {
     _quantity = quantity;
     _inStock = inStock;
     _orderCount = orderCount;
+
+    _itemPrice = itemPrice;
+
   }
 
   set isProductSelected(bool? value) {
@@ -238,6 +244,10 @@ class Products {
 
   set quantity(num value) {
     _quantity = value;
+  }
+
+  set itemPrice(num value) {
+    _itemPrice = value;
   }
 
   Products.fromJson(dynamic json) {
@@ -271,6 +281,7 @@ class Products {
     _isProductSelected = json['isProductSelected'];
     _inStock = json['in_stock'];
     _orderCount = json['order_count'];
+
   }
   String? _stockId;
   String? _tallyId;
@@ -304,6 +315,8 @@ class Products {
   String? _inStock;
   String? _orderCount;
 
+  num _itemPrice = 0;
+
 
   Products copyWith({
     String? stockId,
@@ -336,7 +349,9 @@ class Products {
     bool? isProductSelected,
     num quantity = 1,
     String? inStock,
-    String? orderCount
+    String? orderCount,
+
+    num? itemPrice
 
 }) => Products(  stockId: stockId ?? _stockId,
       tallyId: tallyId ?? _tallyId,
@@ -370,7 +385,9 @@ class Products {
       inStock: inStock ?? _inStock,
       orderCount: orderCount ?? _orderCount,
 
-);
+      itemPrice: itemPrice ?? _itemPrice
+
+  );
   String? get stockId => _stockId;
   String? get tallyId => _tallyId;
   String? get stockName => _stockName;
@@ -403,6 +420,7 @@ class Products {
   String? get inStock => _inStock;
   String? get orderCount => _orderCount;
 
+  num get itemPrice => _itemPrice;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};

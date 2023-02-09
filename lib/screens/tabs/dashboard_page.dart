@@ -475,7 +475,7 @@ class _DashboardPageState extends BaseState<DashboardPage> {
                     },
                     child: Container(
                       decoration: BoxDecoration(
-                        color: kLightestPurple,
+                        color: kLightestGray,//kLightestPurple,
                           border: Border.all(width: 1, color: kLightPurple),
                           borderRadius: const BorderRadius.all(Radius.circular(6.0)),
                           shape: BoxShape.rectangle

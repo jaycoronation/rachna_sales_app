@@ -1,9 +1,9 @@
 import 'dart:convert';
 /// success : 1
 /// message : "Order List"
-/// total_amount : "8370"
-/// todays_sale : "8370"
-/// orderList : [{"order_number":"SALE-0000000001","order_id":"43","customer_id":"3255","customer_name":"salt","sub_total":"1470","discount":"10","adjustments":"-500","grand_total":"1470","order_status":"","created_at":"10:09am 03 Feb 2023 ","transection_details":[{"id":"1","transection_amount":"3000","transection_mode":"cc","transection_type":"2","transection_status":"success","transection_date":"31-01-2023"}]}]
+/// total_amount : "27840"
+/// todays_sale : "8000"
+/// orderList : [{"order_number":"SALE-0000000017","order_id":"17","customer_id":"3268","customer_name":"J P CORPORATION","sub_total":"1000","discount":"0","adjustments":"0","grand_total":"1000","order_status":"","created_at":"12:22pm 09 Feb 2023 ","pending_amount":"0","transection_details":[{"id":"25","transection_amount":"1000.0","transection_mode":"","transection_type":"2","transection_status":"success","transection_date":"09-02-2023"},{"id":"26","transection_amount":"1000","transection_mode":"Cash","transection_type":"1","transection_status":"success","transection_date":"09-02-2023"}]},{"order_number":"SALE-0000000016","order_id":"16","customer_id":"3268","customer_name":"J P CORPORATION","sub_total":"7000","discount":"1000","adjustments":"600","grand_total":"7000","order_status":"","created_at":"12:01pm 09 Feb 2023 ","pending_amount":"7000","transection_details":[{"id":"24","transection_amount":"7000.0","transection_mode":"","transection_type":"2","transection_status":"success","transection_date":"09-02-2023"}]},{"order_number":"SALE-0000000015","order_id":"15","customer_id":"3255","customer_name":"salt","sub_total":"5600","discount":"600","adjustments":"0","grand_total":"5600","order_status":"","created_at":"18:38pm 08 Feb 2023 ","pending_amount":"600","transection_details":[{"id":"22","transection_amount":"5600.0","transection_mode":"Cash","transection_type":"2","transection_status":"success","transection_date":"08-02-2023"},{"id":"23","transection_amount":"5000","transection_mode":"Cash","transection_type":"1","transection_status":"success","transection_date":"08-02-2023"}]},{"order_number":"SALE-0000000014","order_id":"14","customer_id":"3265","customer_name":"HRPL Restaurants Private Limited","sub_total":"3800","discount":"0","adjustments":"0","grand_total":"3800","order_status":"","created_at":"16:12pm 08 Feb 2023 ","pending_amount":"3800","transection_details":[{"id":"16","transection_amount":"3800.0","transection_mode":"Cash","transection_type":"2","transection_status":"success","transection_date":"08-02-2023"}]},{"order_number":"SALE-0000000013","order_id":"13","customer_id":"3266","customer_name":"Enthrall Foods PVT.LTD.","sub_total":"1000","discount":"0","adjustments":"0","grand_total":"1000","order_status":"","created_at":"16:11pm 08 Feb 2023 ","pending_amount":"1000","transection_details":[{"id":"15","transection_amount":"1000.0","transection_mode":"Cash","transection_type":"2","transection_status":"success","transection_date":"08-02-2023"}]},{"order_number":"SALE-0000000012","order_id":"12","customer_id":"3268","customer_name":"J P CORPORATION","sub_total":"3800","discount":"10","adjustments":"10","grand_total":"3800","order_status":"","created_at":"16:08pm 08 Feb 2023 ","pending_amount":"400","transection_details":[{"id":"14","transection_amount":"3800.0","transection_mode":"","transection_type":"2","transection_status":"success","transection_date":"08-02-2023"},{"id":"17","transection_amount":"1000","transection_mode":"Cash","transection_type":"1","transection_status":"success","transection_date":"08-02-2023"},{"id":"19","transection_amount":"200","transection_mode":"Debit Card","transection_type":"1","transection_status":"success","transection_date":"08-02-2023"},{"id":"20","transection_amount":"200","transection_mode":"Cash","transection_type":"1","transection_status":"success","transection_date":"08-02-2023"},{"id":"21","transection_amount":"2000","transection_mode":"Cash","transection_type":"1","transection_status":"success","transection_date":"08-02-2023"}]},{"order_number":"SALE-0000000011","order_id":"11","customer_id":"3267","customer_name":"Shree Laxminarayan Food Industries","sub_total":"3720","discount":"0","adjustments":"0","grand_total":"3720","order_status":" ","created_at":"15:06pm 08 Feb 2023 ","pending_amount":"3020","transection_details":[{"id":"11","transection_amount":"3720","transection_mode":"","transection_type":"2","transection_status":"success","transection_date":"08-02-2023"},{"id":"12","transection_amount":"500","transection_mode":"Cash","transection_type":"1","transection_status":"success","transection_date":"08-02-2023"},{"id":"13","transection_amount":"200","transection_mode":"Cash","transection_type":"1","transection_status":"success","transection_date":"08-02-2023"}]},{"order_number":"SALE-0000000001","order_id":"10","customer_id":"3267","customer_name":"Shree Laxminarayan Food Industries","sub_total":"1920","discount":"0","adjustments":"0","grand_total":"1920","order_status":" ","created_at":"12:55pm 08 Feb 2023 ","pending_amount":"120","transection_details":[{"id":"8","transection_amount":"1920","transection_mode":"","transection_type":"2","transection_status":"success","transection_date":"08-02-2023"},{"id":"9","transection_amount":"700","transection_mode":"cash","transection_type":"1","transection_status":"success","transection_date":"08-02-2023"},{"id":"10","transection_amount":"100","transection_mode":"cash","transection_type":"1","transection_status":"success","transection_date":"08-02-2023"},{"id":"18","transection_amount":"1000","transection_mode":"UPI","transection_type":"1","transection_status":"success","transection_date":"08-02-2023"}]}]
 
 OrderListResponseModel orderListResponseModelFromJson(String str) => OrderListResponseModel.fromJson(json.decode(str));
 String orderListResponseModelToJson(OrderListResponseModel data) => json.encode(data.toJson());
@@ -69,17 +69,18 @@ OrderListResponseModel copyWith({  num? success,
 
 }
 
-/// order_number : "SALE-0000000001"
-/// order_id : "43"
-/// customer_id : "3255"
-/// customer_name : "salt"
-/// sub_total : "1470"
-/// discount : "10"
-/// adjustments : "-500"
-/// grand_total : "1470"
+/// order_number : "SALE-0000000017"
+/// order_id : "17"
+/// customer_id : "3268"
+/// customer_name : "J P CORPORATION"
+/// sub_total : "1000"
+/// discount : "0"
+/// adjustments : "0"
+/// grand_total : "1000"
 /// order_status : ""
-/// created_at : "10:09am 03 Feb 2023 "
-/// transection_details : [{"id":"1","transection_amount":"3000","transection_mode":"cc","transection_type":"2","transection_status":"success","transection_date":"31-01-2023"}]
+/// created_at : "12:22pm 09 Feb 2023 "
+/// pending_amount : "0"
+/// transection_details : [{"id":"25","transection_amount":"1000.0","transection_mode":"","transection_type":"2","transection_status":"success","transection_date":"09-02-2023"},{"id":"26","transection_amount":"1000","transection_mode":"Cash","transection_type":"1","transection_status":"success","transection_date":"09-02-2023"}]
 
 OrderList orderListFromJson(String str) => OrderList.fromJson(json.decode(str));
 String orderListToJson(OrderList data) => json.encode(data.toJson());
@@ -95,6 +96,7 @@ class OrderList {
       String? grandTotal, 
       String? orderStatus, 
       String? createdAt, 
+      String? pendingAmount, 
       List<TransectionDetails>? transectionDetails,}){
     _orderNumber = orderNumber;
     _orderId = orderId;
@@ -106,6 +108,7 @@ class OrderList {
     _grandTotal = grandTotal;
     _orderStatus = orderStatus;
     _createdAt = createdAt;
+    _pendingAmount = pendingAmount;
     _transectionDetails = transectionDetails;
 }
 
@@ -120,6 +123,7 @@ class OrderList {
     _grandTotal = json['grand_total'];
     _orderStatus = json['order_status'];
     _createdAt = json['created_at'];
+    _pendingAmount = json['pending_amount'];
     if (json['transection_details'] != null) {
       _transectionDetails = [];
       json['transection_details'].forEach((v) {
@@ -137,6 +141,7 @@ class OrderList {
   String? _grandTotal;
   String? _orderStatus;
   String? _createdAt;
+  String? _pendingAmount;
   List<TransectionDetails>? _transectionDetails;
 OrderList copyWith({  String? orderNumber,
   String? orderId,
@@ -148,6 +153,7 @@ OrderList copyWith({  String? orderNumber,
   String? grandTotal,
   String? orderStatus,
   String? createdAt,
+  String? pendingAmount,
   List<TransectionDetails>? transectionDetails,
 }) => OrderList(  orderNumber: orderNumber ?? _orderNumber,
   orderId: orderId ?? _orderId,
@@ -159,6 +165,7 @@ OrderList copyWith({  String? orderNumber,
   grandTotal: grandTotal ?? _grandTotal,
   orderStatus: orderStatus ?? _orderStatus,
   createdAt: createdAt ?? _createdAt,
+  pendingAmount: pendingAmount ?? _pendingAmount,
   transectionDetails: transectionDetails ?? _transectionDetails,
 );
   String? get orderNumber => _orderNumber;
@@ -171,6 +178,7 @@ OrderList copyWith({  String? orderNumber,
   String? get grandTotal => _grandTotal;
   String? get orderStatus => _orderStatus;
   String? get createdAt => _createdAt;
+  String? get pendingAmount => _pendingAmount;
   List<TransectionDetails>? get transectionDetails => _transectionDetails;
 
   Map<String, dynamic> toJson() {
@@ -185,6 +193,7 @@ OrderList copyWith({  String? orderNumber,
     map['grand_total'] = _grandTotal;
     map['order_status'] = _orderStatus;
     map['created_at'] = _createdAt;
+    map['pending_amount'] = _pendingAmount;
     if (_transectionDetails != null) {
       map['transection_details'] = _transectionDetails?.map((v) => v.toJson()).toList();
     }
@@ -193,12 +202,12 @@ OrderList copyWith({  String? orderNumber,
 
 }
 
-/// id : "1"
-/// transection_amount : "3000"
-/// transection_mode : "cc"
+/// id : "25"
+/// transection_amount : "1000.0"
+/// transection_mode : ""
 /// transection_type : "2"
 /// transection_status : "success"
-/// transection_date : "31-01-2023"
+/// transection_date : "09-02-2023"
 
 TransectionDetails transectionDetailsFromJson(String str) => TransectionDetails.fromJson(json.decode(str));
 String transectionDetailsToJson(TransectionDetails data) => json.encode(data.toJson());

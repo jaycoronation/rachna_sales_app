@@ -8,18 +8,17 @@ import 'package:pretty_http_logger/pretty_http_logger.dart';
 import 'package:salesapp/Model/customer_list_response_model.dart';
 import 'package:salesapp/model/order_detail_response_model.dart';
 import 'package:salesapp/screens/select_customer_list_page.dart';
-import 'package:salesapp/screens/select_product_page.dart';
 import 'package:salesapp/screens/select_product_page_old.dart';
 
 import '../Model/common_response_model.dart';
 import '../constant/color.dart';
-import '../model/customer_detail_response_model.dart';
 import '../model/product_item_data_response_model.dart';
 import '../model/product_item_list_response_model_old.dart';
 import '../network/api_end_point.dart';
 import '../utils/app_utils.dart';
 import '../utils/base_class.dart';
 import '../widget/loading.dart';
+import 'add_payement_detail_page.dart';
 
 class AddOrderPage extends StatefulWidget {
   final Order getSet;
@@ -50,12 +49,10 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
 
   // var listProduct = List<ItemData>.empty(growable: true);
   var listProduct = List<Products>.empty(growable: true);
-
   var customerDetail = CustomerList();
 
   var subTotal = 0.0;
   var mainListProduct = List<ItemData>.empty(growable: true);
-  var itemTotal = 0.0;
 
   bool isFromDetail = false;
 
@@ -70,28 +67,25 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
       setState(() {
         _isLoading = true;
         isValidCustomer = true;
-
       });
 
       if(listProduct.isEmpty) {
         Timer(const Duration(milliseconds: 500), () =>
             _redirectToAddItem(context, listProduct, true)
         );
-        Timer(const Duration(seconds: 2), () =>
+
+        Timer(const Duration(seconds: 1), () =>
             setState(() {
               _isLoading = false;
             })
         );
+
       }else {
-        Timer(const Duration(seconds: 2), () =>
-            setState(() {
-              _isLoading = false;
-            })
-        );
+        setState(() {
+          _isLoading = false;
+        });
       }
-
     }
-
   }
 
   @override
@@ -316,111 +310,106 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
                 primary: false,
                 shrinkWrap: true,
                 itemCount: listProduct.length,
-                itemBuilder: (ctx, index) => InkWell(
-                  hoverColor: Colors.white.withOpacity(0.0),
-                  onTap: () async {},
-                  child: Container(
-                    color: white,
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 10, right: 10, top: 8, bottom: 5),
-                      child: GestureDetector(
-                        onTap: () {
-                        },
-                        child: Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      margin: const EdgeInsets.only(left:10, bottom: 6, top: 5),
-                                      child: Text(checkValidString(listProduct[index].stockName),
-                                          maxLines: 2,
-                                          overflow: TextOverflow.clip,
-                                          textAlign: TextAlign.start,
-                                          style: const TextStyle(fontWeight: FontWeight.w400, color: black, fontSize: 13)
-                                      ),
+                itemBuilder: (ctx, index) => Container(
+                  color: white,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 10, right: 10, top: 8, bottom: 5),
+                    child: GestureDetector(
+                      onTap: () {
+                      },
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    margin: const EdgeInsets.only(left:10, bottom: 6, top: 5),
+                                    child: Text(checkValidString(listProduct[index].stockName),
+                                        maxLines: 2,
+                                        overflow: TextOverflow.clip,
+                                        textAlign: TextAlign.start,
+                                        style: const TextStyle(fontWeight: FontWeight.w400, color: black, fontSize: 13)
                                     ),
-                                    Container(
-                                      margin: const EdgeInsets.only(left: 10),
-                                      child: Text("MRP ${checkValidString(listProduct[index].stockPrice)}",
-                                          textAlign: TextAlign.start,
-                                          style: const TextStyle(fontWeight: FontWeight.w400, color: black, fontSize: 13)
-                                      ),
+                                  ),
+                                  Container(
+                                    margin: const EdgeInsets.only(left: 10),
+                                    child: Text("MRP ${checkValidString(listProduct[index].stockPrice)}",
+                                        textAlign: TextAlign.start,
+                                        style: const TextStyle(fontWeight: FontWeight.w400, color: black, fontSize: 13)
                                     ),
-                                    Container(
-                                        margin: const EdgeInsets.only( top: 5),
-                                        child: TextButton(onPressed: () {
-                                          setState(() {
-                                            listProduct.remove(listProduct[index]);
-                                          });
-                                        },
-                                          child: const Text("Remove",
-                                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400, color: kBlue),),
+                                  ),
+                                  Container(
+                                      margin: const EdgeInsets.only( top: 5),
+                                      child: TextButton(onPressed: () {
+                                        setState(() {
+                                          listProduct.remove(listProduct[index]);
+                                        });
+                                      },
+                                        child: const Text("Remove",
+                                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400, color: kBlue),),
+                                      )
+                                  ),
+                                ],
+                              ),
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Container(
+                                    alignment: Alignment.topRight,
+                                    margin: const EdgeInsets.only(bottom: 6),
+                                    child: Row(
+                                      children: [
+                                        IconButton(
+                                          onPressed: () {
+
+                                            if (listProduct[index].quantity == 1)
+                                              {
+                                                _deleteProduct(index);
+                                              }
+                                            else
+                                              {
+                                                listProduct[index].quantity = listProduct[index].quantity - 1;
+                                              }
+                                            getPriceCalculated();
+
+                                            getItemCalculation(listProduct[index], index);
+                                          },
+                                          icon: Image.asset('assets/images/ic_blue_minus.png', height: 24, width: 24),
+                                        ),
+                                        Text(listProduct[index].quantity.toString(),
+                                            style: const TextStyle(fontWeight: FontWeight.w400, color: black, fontSize: 13)),
+                                        IconButton(
+                                          onPressed: () {
+                                            listProduct[index].quantity = listProduct[index].quantity + 1;
+                                            getPriceCalculated();
+                                            getItemCalculation(listProduct[index], index);
+                                          },
+                                          icon:Image.asset('assets/images/ic_blue_add.png', height: 24, width: 24),
                                         )
+                                      ],
                                     ),
-                                  ],
-                                ),
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Container(
-                                      alignment: Alignment.topRight,
-                                      margin: const EdgeInsets.only(bottom: 6),
-                                      child: Row(
-                                        children: [
-                                          IconButton(
-                                            onPressed: () {
-
-                                              if (listProduct[index].quantity == 1)
-                                                {
-                                                  listProduct.removeAt(index);
-                                                }
-                                              else
-                                                {
-                                                  listProduct[index].quantity = listProduct[index].quantity - 1;
-                                                }
-                                              getPriceCalculated();
-
-                                              // getItemCalculation(listProduct[index], index);
-                                            },
-                                            icon: Image.asset('assets/images/ic_blue_minus.png', height: 24, width: 24),
-                                          ),
-                                          Text(listProduct[index].quantity.toString(),
-                                              style: const TextStyle(fontWeight: FontWeight.w400, color: black, fontSize: 13)),
-                                          IconButton(
-                                            onPressed: () {
-                                              listProduct[index].quantity = listProduct[index].quantity + 1;
-                                              getPriceCalculated();
-                                              // getItemCalculation(listProduct[index], index);
-                                            },
-                                            icon:Image.asset('assets/images/ic_blue_add.png', height: 24, width: 24),
-                                          )
-                                        ],
-                                      ),
+                                  ),
+                                  Container(
+                                    alignment: Alignment.center,
+                                    margin: const EdgeInsets.only(right: 10, bottom: 20),
+                                    child: Text("${checkValidString(getPrice(listProduct[index].itemPrice.toString()))}",
+                                        maxLines: 2,
+                                        style: const TextStyle(fontWeight: FontWeight.w600, color: black, fontSize: 13)
                                     ),
-                                    Container(
-                                      alignment: Alignment.center,
-                                      margin: const EdgeInsets.only(right: 10, bottom: 20),
-                                      child: Text("${checkValidString(getPrice(listProduct[index].stockPrice.toString()))}",
-                                          maxLines: 2,
-                                          style: const TextStyle(fontWeight: FontWeight.w600, color: black, fontSize: 13)
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            Container(
-                                margin: const EdgeInsets.only(left: 10, right: 10),
-                                height:index == listProduct.length-1 ? 0 : 0.8
-                                , color: kLightPurple),
-                          ],
-                        ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          Container(
+                              margin: const EdgeInsets.only(left: 10, right: 10),
+                              height:index == listProduct.length-1 ? 0 : 0.8, color: kLightPurple),
+                        ],
                       ),
                     ),
                   ),
@@ -430,7 +419,7 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
                 child: Container(
                 alignment: Alignment.topLeft,
                 margin: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 10),
-                child: Text("Sub Total : ${subTotal}", style: TextStyle(fontWeight: FontWeight.w700, color: black, fontSize: 16)))),
+                child: Text("Sub Total : $subTotal", style: const TextStyle(fontWeight: FontWeight.w700, color: black, fontSize: 16)))),
             Container(
               color: kLightestPurple,
               child: Column(
@@ -514,7 +503,7 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
                                   },
                                     child: Icon(Icons.add,color: isAdjPlus ? kBlue : black,)
                                 ),
-                                Gap(6),
+                                const Gap(6),
                                 GestureDetector(
                                   onTap: (){
                                     setState(() {
@@ -532,21 +521,16 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
                             borderRadius: BorderRadius.circular(8),
                           ),
                           enabledBorder: OutlineInputBorder(
-                            borderSide:
-                            const BorderSide(color: kLightPurple, width: 0),
+                            borderSide: const BorderSide(color: kLightPurple, width: 0),
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          hintStyle: const TextStyle(
-                              fontWeight: FontWeight.w400,
-                              color: kBlue,
-                              fontSize: 14
+                          hintStyle: const TextStyle(fontWeight: FontWeight.w400, color: kBlue, fontSize: 14
                           ),
                         ),
-                        onChanged: (value){
-                          if (value.isEmpty)
-                            {
-                              getPriceCalculated();
-                            }
+                        onChanged: (value) {
+                          if (value.isEmpty) {
+                            getPriceCalculated();
+                          }
                         },
                         onSubmitted: (value) {
                           if (value.isEmpty)
@@ -615,16 +599,15 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
 
                   if (!isValidCustomer) {
                     showSnackBar("Please select customer", context);
-                  }else if (!isValidProduct) {
+                  } else if (!isValidProduct) {
                     showSnackBar("Please select product", context);
-                  }else {
+                  } else {
                     if (isInternetConnected) {
                       _saveOrderCall();
                     } else {
                       noInterNet(context);
                     }
                   }
-
                 },
                 child: const Text("Submit",
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: white),),
@@ -638,26 +621,23 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
 
   void getItemCalculation(Products product, int index) {
     setState(() {
-      itemTotal = 0.0;
+      product.itemPrice = 0.0;
 
       if (product.quantity == 1) {
-        itemTotal = itemTotal + double.parse(product.stockPrice.toString());
+        product.itemPrice = double.parse(product.itemPrice.toString()) + double.parse(product.stockPrice.toString());
       } else {
         var total = double.parse(product.stockPrice.toString()) * product.quantity;
-        itemTotal = itemTotal + total;
+        product.itemPrice = double.parse(product.itemPrice.toString()) + total;
       }
-      listProduct[index] = product;
     });
-
   }
 
   void getPriceCalculated() {
     setState(() {
       subTotal = 0.0;
-      itemTotal = 0.0;
 
       for(var i = 0; i < listProduct.length; i++) {
-        print("subTotal ==== " + subTotal.toString());
+        // print("subTotal ==== " + subTotal.toString());
         if (listProduct[i].quantity == 1) {
           subTotal = subTotal + double.parse(listProduct[i].stockPrice.toString());
         }
@@ -676,10 +656,9 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
 
       if (adjustmentController.value.text.isNotEmpty) {
         var value = adjustmentController.value.text;
-        // subTotal = subTotal + (double.parse(value.isNotEmpty ? value : "0.0"));
 
-        print("value ==== $value");
-        print("subTotal ==== $subTotal");
+        // print("value ==== $value");
+        // print("subTotal ==== $subTotal");
 
         if (isAdjPlus)
         {
@@ -706,8 +685,7 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
     setState(() {
       listProduct = [];
       subTotal = 0.0;
-      if (result != null)
-      {
+      if (result != null) {
         listProduct = result;
 
         for(var i = 0; i < listProduct.length; i++) {
@@ -716,11 +694,12 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
           }else {
             subTotal = subTotal + double.parse(listProduct[i].stockPrice.toString());
           }
+
+          getItemCalculation(listProduct[i], i);
         }
-
       }
-
       isValidProduct = true;
+
     });
 
     if (result == "success") {
@@ -780,7 +759,7 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
     }
   }
 
- /* void _makeJsonData() async {
+  /* void _makeJsonData() async {
 
     List<ItemData> listProductsTemp = List<ItemData>.empty(growable: true);
     for (int i = 0; i < listProduct.length; i++) {
@@ -816,6 +795,98 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
   void castStatefulWidget() {
     // TODO: implement castStatefulWidget
     widget is AddOrderPage;
+  }
+
+  void _deleteProduct(int index) {
+    showModalBottomSheet<void>(
+      context: context,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(topLeft: Radius.circular(12), topRight: Radius.circular(12))
+      ),
+      builder: (BuildContext context) {
+        return Wrap(
+          children: [
+            Container(
+              decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.only(topLeft: Radius.circular(12), topRight: Radius.circular(12)),
+                  color: white),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                    height: 2,
+                    width: 40,
+                    alignment: Alignment.center,
+                    color: kBlue,
+                    margin: const EdgeInsets.only(top: 10, bottom: 10),
+                  ),
+                  Container(
+                      margin: const EdgeInsets.only(top: 10, bottom: 10),
+                      child: const Text('Remove Product', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: black))
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(top: 10, bottom: 15),
+                    child: const Text('Are you sure want to remove this product?', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400, color: black)),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(left: 10, right: 10, bottom: 30),
+                    child: Container(
+                      margin: const EdgeInsets.only(left: 15, right: 15),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child:
+                            Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(width: 0.4, color: kBlue),
+                                borderRadius:  BorderRadius.all(Radius.circular(kButtonCornerRadius)),
+                              ),
+                              margin: const EdgeInsets.only(right: 10),
+                              child: TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child:const Text('No', style:TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: kBlue,))
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: DecoratedBox(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(kButtonCornerRadius),
+                                color:kBlue,
+                              ),
+                              child: TextButton(
+                                onPressed: () async {
+                                  Navigator.pop(context);
+
+                                  listProduct.removeAt(index);
+
+                                  getPriceCalculated();
+
+                                  getItemCalculation(listProduct[index], index);
+
+                                  setState(() {
+
+                                  });
+                                },
+                                child:
+                                const Text('Yes',style:TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: white)),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   _saveOrderCall() async {
@@ -856,7 +927,6 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
     if (statusCode == 200 && dataResponse.success == 1) {
       setState(() {
         _isLoading = false;
-
         tabNavigationReload();
       });
       showSnackBar(dataResponse.message, context);

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
 
 import 'package:pretty_http_logger/pretty_http_logger.dart';
@@ -20,6 +21,7 @@ import '../../widget/no_internet.dart';
 import '../model/customer_detail_response_model.dart';
 import '../model/order_detail_response_model.dart';
 import 'add_order_page.dart';
+import 'add_payement_detail_page.dart';
 import 'customer_sales_history_page.dart';
 
 class CustomerDetailPage extends StatefulWidget {
@@ -68,7 +70,7 @@ class _CustomerDetailPageState extends BaseState<CustomerDetailPage> with Ticker
     return Scaffold(
         backgroundColor: appBG,
         resizeToAvoidBottomInset: true,
-        appBar:AppBar(
+        appBar: AppBar(
           systemOverlayStyle: SystemUiOverlayStyle.dark,
           automaticallyImplyLeading: false,
           leading: GestureDetector(
@@ -102,7 +104,8 @@ class _CustomerDetailPageState extends BaseState<CustomerDetailPage> with Ticker
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            _redirectToAddOrder(context, Order(), false, true);
+            showOptionActionDialog();
+            // _redirectToAddOrder(context, Order(), false, true);
           },
           backgroundColor: kBlue,
           child: const Icon(Icons.add, color: white,),
@@ -339,10 +342,10 @@ class _CustomerDetailPageState extends BaseState<CustomerDetailPage> with Ticker
                                                 textAlign: TextAlign.center,
                                                 text: TextSpan(
                                                   text: '₹ ',
-                                                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w400, color: kGreen),
+                                                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w400, color: kRed),
                                                   children: <TextSpan>[
                                                     TextSpan(text: totalOverdue.toString(),
-                                                        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: kGreen),
+                                                        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: kRed),
                                                         recognizer: TapGestureRecognizer()..onTap = () => {
                                                         }),
                                                   ],
@@ -397,6 +400,8 @@ class _CustomerDetailPageState extends BaseState<CustomerDetailPage> with Ticker
               ],
             ),
           ),
+          Gap(50),
+          // Container(color: Colors.transparent, height: 50,)
         ]
     );
   }
@@ -441,6 +446,25 @@ class _CustomerDetailPageState extends BaseState<CustomerDetailPage> with Ticker
       _makeCallCustomerDetail();
       setState(() {
         isOrderListLoad = true;
+      });
+    }
+  }
+
+  Future<void> _redirectToTransaction(BuildContext context, String orderId, String customerId, String customerName, String totalAmount) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => AddPaymentDetailPage(Order(), orderId, customerId, customerName, totalAmount)),
+    );
+
+    print("result ===== $result");
+
+    if (result == "success") {
+      setState(() {
+        isCustomerListReload = true;
+        tabNavigationReload();
+
+        callApi(true);
+
       });
     }
   }
@@ -620,6 +644,71 @@ class _CustomerDetailPageState extends BaseState<CustomerDetailPage> with Ticker
 
   }
 
+  void showOptionActionDialog() {
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: white,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))),
+      elevation: 5,
+      isDismissible: true,
+      builder: (BuildContext context) {
+        return Wrap(
+          children: [
+            Padding(
+                padding: const EdgeInsets.all(14),
+                child: Column(
+                  children: [
+                    Container(height: 2, width: 40, color: kBlue, margin: const EdgeInsets.only(bottom: 12)),
+                    const Text("Select Option",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: black, fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                    Container(height: 12),
+                    InkWell(
+                      onTap: () async {
+                        Navigator.pop(context);
+
+                        _redirectToAddOrder(context, Order(), false, true);
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.only(left: 18, right: 18, top: 15, bottom: 15),
+                        alignment: Alignment.topLeft,
+                        child: const Text("Add Order",
+                          textAlign: TextAlign.start,
+                          style: TextStyle(fontSize: 15, color: black, fontWeight: FontWeight.normal),
+                        ),
+                      ),
+                    ),
+                    const Divider(
+                      color: kLightestGray,
+                      height: 1,
+                    ),
+                    InkWell(
+                      onTap: () async {
+                        Navigator.pop(context);
+
+                        _redirectToTransaction(context, "", customerDetailResponseModel.customerDetails!.customerId.toString(),
+                            customerDetailResponseModel.customerDetails!.customerName.toString(), "");
+                      },
+                      child: Container(
+                        alignment: Alignment.topLeft,
+                        padding: const EdgeInsets.only(left: 18, right: 18, top: 15, bottom: 15),
+                        child: const Text("Add Transaction",
+                          textAlign: TextAlign.start,
+                          style: TextStyle(fontSize: 15, color: black, fontWeight: FontWeight.normal),
+                        ),
+                      ),
+                    ),
+                    Container(height: 12)
+                  ],
+                ))
+          ],
+        );
+      },
+    );
+  }
+
   void callApi(bool isFrom) {
     if (isFrom) {
       _makeCallCustomerDetail();
@@ -638,7 +727,7 @@ class _CustomerDetailPageState extends BaseState<CustomerDetailPage> with Ticker
     final url = Uri.parse(BASE_URL + customerDetails);
 
     Map<String, String> jsonBody = {
-      'customer_id': (widget as CustomerDetailPage).getSet.customerId.toString().trim(),
+      'customer_id': checkValidString((widget as CustomerDetailPage).getSet.customerId).toString().trim(),
       'from_app' : FROM_APP,
       'fromDate' : dateStartSelectionChanged,
       'toDate': dateEndSelectionChanged

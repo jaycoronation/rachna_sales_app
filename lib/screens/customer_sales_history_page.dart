@@ -15,7 +15,6 @@ class CustomerSalesHistoryListPage extends StatefulWidget {
   final CustomerDetails? dataGetSet;
   final void Function(bool isFrom) callAPI;
 
-
   const CustomerSalesHistoryListPage(this.dataGetSet, this.callAPI, {Key? key}) : super(key: key);
 
   @override
@@ -29,7 +28,6 @@ class _CustomerSalesHistoryListPageState extends BaseState<CustomerSalesHistoryL
     super.initState();
 
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -135,28 +133,32 @@ class _CustomerSalesHistoryListPageState extends BaseState<CustomerSalesHistoryL
                                           style: const TextStyle(fontSize: 13, color: kGray, fontWeight: FontWeight.w400),
                                         ),
                                       ),
-                                      Container(
-                                          height: 32,
-                                          margin: const EdgeInsets.only(left: 10, bottom: 5, top: 5, right: 10),
-                                          decoration: BoxDecoration(
-                                              color: kLightestPurple,
-                                              border: Border.all(width: 1, color: kLightPurple),
-                                              borderRadius: const BorderRadius.all(
-                                                Radius.circular(12.0),
-                                              ),
-                                              shape: BoxShape.rectangle
-                                          ),
-                                          child: TextButton(
-                                            child:const Text("Receive Payment",
-                                              textAlign: TextAlign.start,
-                                              style: TextStyle(fontSize: 13, color: black, fontWeight: FontWeight.w500),
+                                      Visibility(
+                                        visible: checkValidString(dataGetSet?.salesHistory![index].pendingAmount).toString() == "0" ? false : true,
+                                        child: Container(
+                                            height: 32,
+                                            margin: const EdgeInsets.only(left: 10, bottom: 5, top: 5, right: 10),
+                                            decoration: BoxDecoration(
+                                                color: kLightestPurple,
+                                                border: Border.all(width: 1, color: kLightPurple),
+                                                borderRadius: const BorderRadius.all(
+                                                  Radius.circular(12.0),
+                                                ),
+                                                shape: BoxShape.rectangle
                                             ),
-                                            onPressed: () {
-                                              _redirectToTransaction(context, checkValidString(dataGetSet?.salesHistory![index].orderId).toString(),
-                                                  checkValidString(dataGetSet?.customerId).toString(), checkValidString(dataGetSet?.customerName).toString());
-                                            },
-                                          )
-                                        //
+                                            child: TextButton(
+                                              child:const Text("Receive Payment",
+                                                textAlign: TextAlign.start,
+                                                style: TextStyle(fontSize: 13, color: black, fontWeight: FontWeight.w500),
+                                              ),
+                                              onPressed: () {
+                                                _redirectToTransaction(context, checkValidString(dataGetSet?.salesHistory![index].orderId).toString(),
+                                                    checkValidString(dataGetSet?.customerId).toString(), checkValidString(dataGetSet?.customerName).toString(),
+                                                    checkValidString(dataGetSet?.salesHistory![index].pendingAmount).toString());
+                                              },
+                                            )
+                                          //
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -180,10 +182,10 @@ class _CustomerSalesHistoryListPageState extends BaseState<CustomerSalesHistoryL
     );
   }
 
-  Future<void> _redirectToTransaction(BuildContext context, String orderId, String customerId, String customerName) async {
+  Future<void> _redirectToTransaction(BuildContext context, String orderId, String customerId, String customerName, String totalAmount) async {
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => AddPaymentDetailPage(Order(), orderId, customerId, customerName)),
+      MaterialPageRoute(builder: (context) => AddPaymentDetailPage(Order(), orderId, customerId, customerName, totalAmount)),
     );
 
     print("result ===== $result");
@@ -194,6 +196,7 @@ class _CustomerSalesHistoryListPageState extends BaseState<CustomerSalesHistoryL
         tabNavigationReload();
 
         (widget as CustomerSalesHistoryListPage).callAPI(true);
+
       });
     }
   }

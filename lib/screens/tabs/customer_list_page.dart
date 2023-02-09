@@ -360,10 +360,10 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
                                                     textAlign: TextAlign.center,
                                                     text: TextSpan(
                                                       text: '₹ ',
-                                                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w400, color: kGreen),
+                                                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w400, color: kRed),
                                                       children: <TextSpan>[
                                                         TextSpan(text: totalOverdue.toString(),
-                                                            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: kGreen),
+                                                            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: kRed),
                                                             recognizer: TapGestureRecognizer()..onTap = () => {
                                                             }),
                                                       ],
@@ -412,124 +412,133 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
                 ? const Center(
               child: LoadingWidget(),
             ) :
-            ListView.builder(
-                scrollDirection: Axis.vertical,
-                physics: const NeverScrollableScrollPhysics(),
-                primary: false,
-                shrinkWrap: true,
-                itemCount: listCustomer.length,
-                itemBuilder: (ctx, index) => Container(
-                  color: white,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 10, right: 10, top: 8, bottom: 5),
-                    child: GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      onTap: () {
-                        CustomerList getSet = listCustomer[index];
-                        _redirectToCustomerDetail(context, getSet, true);
-                        // _redirectToAddCustomer(context, getSet, true);
-                      },
-                      child: Column(
-                        children: [
-                          Row(
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                ListView.builder(
+                    scrollDirection: Axis.vertical,
+                    physics: const NeverScrollableScrollPhysics(),
+                    primary: false,
+                    shrinkWrap: true,
+                    itemCount: listCustomer.length,
+                    itemBuilder: (ctx, index) => Container(
+                      color: white,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10, top: 8, bottom: 5),
+                        child: GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: () {
+                            CustomerList getSet = listCustomer[index];
+                            _redirectToCustomerDetail(context, getSet, true);
+                            // _redirectToAddCustomer(context, getSet, true);
+                          },
+                          child: Column(
                             children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
-                                        Expanded(
-                                          child: Container(
-                                            margin: const EdgeInsets.only(left: 10,right: 5),
-                                            child: Text(checkValidString(listCustomer[index].customerName.toString().trim()),
-                                              overflow: TextOverflow.ellipsis,
-                                              maxLines: 3,
-                                              textAlign: TextAlign.start,
-                                              style: const TextStyle(fontSize: 15, color: black, fontWeight: FontWeight.w700),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Expanded(
+                                              child: Container(
+                                                margin: const EdgeInsets.only(left: 10,right: 5),
+                                                child: Text(checkValidString(listCustomer[index].customerName.toString().trim()),
+                                                  overflow: TextOverflow.ellipsis,
+                                                  maxLines: 3,
+                                                  textAlign: TextAlign.start,
+                                                  style: const TextStyle(fontSize: 15, color: black, fontWeight: FontWeight.w700),
+                                                ),
+                                              ),
                                             ),
-                                          ),
+                                            /*Container(
+                                              margin: const EdgeInsets.only(right: 10),
+                                              alignment: Alignment.bottomLeft,
+                                              child: RichText(
+                                                textAlign: TextAlign.center,
+                                                text: TextSpan(
+                                                  text: '₹ ',
+                                                  style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: black),
+                                                  children: <TextSpan>[
+                                                    TextSpan(text: checkValidString(listCustomer[index].customerTotalSale.toString()),
+                                                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: black),
+                                                        recognizer: TapGestureRecognizer()..onTap = () => {
+                                                        }),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),*/
+                                          ],
                                         ),
-                                        /*Container(
-                                          margin: const EdgeInsets.only(right: 10),
-                                          alignment: Alignment.bottomLeft,
-                                          child: RichText(
-                                            textAlign: TextAlign.center,
-                                            text: TextSpan(
-                                              text: '₹ ',
-                                              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: black),
-                                              children: <TextSpan>[
-                                                TextSpan(text: checkValidString(listCustomer[index].customerTotalSale.toString()),
-                                                    style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: black),
-                                                    recognizer: TapGestureRecognizer()..onTap = () => {
-                                                    }),
-                                              ],
+                                        const Gap(5),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Container(
+                                              margin: const EdgeInsets.only(left: 10,),
+                                              child: RichText(
+                                                textAlign: TextAlign.center,
+                                                text: TextSpan(
+                                                  text: 'Total Sale : ',
+                                                  style:  const TextStyle(fontSize: 13, fontWeight: FontWeight.w400, color: kGray),
+                                                  children: <TextSpan>[
+                                                    TextSpan(text:checkValidString(getPrice(listCustomer[index].customerTotalSale.toString())),
+                                                        style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: black),
+                                                        recognizer: TapGestureRecognizer()..onTap = () => {
+                                                        }),
+                                                  ],
+                                                ),
+                                              ),
                                             ),
-                                          ),
-                                        ),*/
+                                            IconButton(
+                                              icon: const Icon(Icons.delete_outline_outlined, color: black, size: 24,),
+                                              iconSize: 24,
+                                              alignment: Alignment.center,
+                                              onPressed: () async {
+                                                _deleteCustomer(listCustomer[index], index);
+                                              },
+                                            ),
+                                          ],
+                                        ),
                                       ],
                                     ),
-                                    const Gap(5),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Container(
-                                          margin: const EdgeInsets.only(left: 10,),
-                                          child: RichText(
-                                            textAlign: TextAlign.center,
-                                            text: TextSpan(
-                                              text: 'Total Sale : ',
-                                              style:  const TextStyle(fontSize: 13, fontWeight: FontWeight.w400, color: kGray),
-                                              children: <TextSpan>[
-                                                TextSpan(text:checkValidString(getPrice(listCustomer[index].customerTotalSale.toString())),
-                                                    style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: black),
-                                                    recognizer: TapGestureRecognizer()..onTap = () => {
-                                                    }),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                        IconButton(
-                                          icon: const Icon(Icons.delete_outline_outlined, color: black, size: 24,),
-                                          iconSize: 24,
-                                          alignment: Alignment.center,
-                                          onPressed: () async {
-                                            _deleteCustomer(listCustomer[index], index);
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
+                              Container(
+                                  margin: const EdgeInsets.only(top: 5, left: 10, right: 10),
+                                  height: index == listCustomer.length-1 ? 0 : 0.8, color: kLightPurple),
                             ],
                           ),
-                          Container(
-                              margin: const EdgeInsets.only(top: 5, left: 10, right: 10),
-                              height: index == listCustomer.length-1 ? 0 : 0.8, color: kLightPurple),
+                        ),
+                      ),
+                    )),
+                Visibility(
+                    visible: _isLoadingMore,
+                    child: Positioned(
+                      bottom: 80,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                              width: 30,
+                              height: 30,
+                              child: Lottie.asset('assets/images/loader_new.json', repeat: true, animate: true, frameRate: FrameRate.max)),
+                          const Text(
+                              ' Loading more...',
+                              style: TextStyle(color: black, fontWeight: FontWeight.w400, fontSize: 16)
+                          )
                         ],
                       ),
-                    ),
-                  ),
-                )),
-            Visibility(visible: _isLoadingMore,
-                child: Container(
-                padding: const EdgeInsets.only(top: 10, bottom: 10),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(width: 30,
-                        height: 30, child: Lottie.asset('assets/images/loader_new.json', repeat: true, animate: true, frameRate: FrameRate.max)),
-                    const Text(
-                        ' Loading more...',
-                        style: TextStyle(color: black, fontWeight: FontWeight.w400, fontSize: 16)
-                    )
-                  ],
-                ),
-              ))
+                    ))
+              ],
+            ),
+
           ]
       ),
     );

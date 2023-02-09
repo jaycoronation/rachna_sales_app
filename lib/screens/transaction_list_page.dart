@@ -334,7 +334,6 @@ class _TransactionListPageState extends BaseState<TransactionListPage> {
                       child: GestureDetector(
                         onTap: () {
                           Navigator.push(context, MaterialPageRoute(builder: (context) => TransactionDetailPage(checkValidString(listTransactions[index].id).toString())));
-
                         },
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -407,22 +406,25 @@ class _TransactionListPageState extends BaseState<TransactionListPage> {
                     ),
                   )),
             ),
-            if (_isLoadingMore == true)
-              Container(
-                padding: const EdgeInsets.only(top: 10, bottom: 10),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(width: 30,
-                        height: 30, child: Lottie.asset('assets/images/loader_new.json', repeat: true, animate: true, frameRate: FrameRate.max)),
-                    const Text(
-                        ' Loading more...',
-                        style: TextStyle(color: black, fontWeight: FontWeight.w400, fontSize: 16)
-                    )
-                  ],
-                ),
-              ),
+            Visibility(
+                visible: _isLoadingMore,
+                child: Positioned(
+                  bottom: 50,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                          width: 30,
+                          height: 30,
+                          child: Lottie.asset('assets/images/loader_new.json', repeat: true, animate: true, frameRate: FrameRate.max)),
+                      const Text(
+                          ' Loading more...',
+                          style: TextStyle(color: black, fontWeight: FontWeight.w400, fontSize: 16)
+                      )
+                    ],
+                  ),
+                )),
           ],
         ),
       ),
@@ -438,7 +440,7 @@ class _TransactionListPageState extends BaseState<TransactionListPage> {
   Future<void> _redirectToAddPayment(BuildContext context) async {
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => AddPaymentDetailPage(Order(), "", "", "")),
+      MaterialPageRoute(builder: (context) => AddPaymentDetailPage(Order(), "", "", "", "")),
     );
 
     print("result ===== $result");
@@ -483,7 +485,8 @@ class _TransactionListPageState extends BaseState<TransactionListPage> {
       'limit': _pageResult.toString(),
       'search' : searchText,
       'fromDate' : dateStartSelectionChanged,
-      'toDate': dateEndSelectionChanged
+      'toDate': dateEndSelectionChanged,
+      'emp_id' : sessionManager.getEmpId().toString().trim()
     };
 
     final response = await http.post(url, body: jsonBody);

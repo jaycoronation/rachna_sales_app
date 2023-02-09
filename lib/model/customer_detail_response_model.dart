@@ -2,9 +2,9 @@ import 'dart:convert';
 /// success : 1
 /// message : ""
 /// customerListCount : "1"
-/// total_sale : "12070"
-/// total_overdue : "0"
-/// customerDetails : {"customer_id":"3255","tally_id":"1","customer_name":"salt","address_line1":"ahm","address_line2":"ahm","pincode":"380015","country_name":"india","gst_registration_type":"Regular","state_name":"Gujarat","parent":"","gst_applicable":"Yes","bill_credit_period":"90","bank_details":"","email_cc":"","ledger_phone":"","ledger_contact":"","ledger_mobile":"","led_bank_name":"","led_bank_ac_no":"","led_bank_ifsc_code":"","led_bank_swift_code":"","gst_type":"Regular","customer_gst":"","credit_limit":"100000","created_at":"1675399059","updated_at":"1675399059","deleted_at":"","is_deleted":"0","status":"Y","company_id":"1","address_line3":"ahm","address_line4":"ahm","address_line5":"ahm","area_name":"ahm","city_name":"ahm","contact_person":"raj","customer_total_sale":"12070","customer_transection":[{"id":"1","transection_amount":"3000","transection_mode":"cc","transection_type":"2","transection_status":"success","transection_date":"31-01-2023"},{"id":"2","transection_amount":"2000","transection_mode":"cc","transection_type":"2","transection_status":"success","transection_date":"31-01-2023"}],"sales_history":[{"order_id":"43","order_number":"SALE-0000000001","grand_total":"1470","total_item":"3","created_at":"03-02-2023"},{"order_id":"45","order_number":"SALE-0000000045","grand_total":"9600","total_item":"2","created_at":"03-02-2023"},{"order_id":"47","order_number":"SALE-0000000047","grand_total":"1000","total_item":"1","created_at":"03-02-2023"}]}
+/// total_sale : "27840"
+/// total_overdue : "15940"
+/// customerDetails : {"customer_id":"3268","tally_id":"72250","customer_name":"J P CORPORATION","address_line1":"2ND FLOOR, 205,","address_line2":"205, MAGNATE SQUARE,","pincode":"382480","country_name":"India","gst_registration_type":"Regular","state_name":"Gujarat","parent":"Sundry Debtors ( Sanjaybhai Gohel)","gst_applicable":"Yes","bill_credit_period":"7 Days","bank_details":"","email_cc":"","ledger_phone":"","ledger_contact":"","ledger_mobile":"","led_bank_name":"","led_bank_ac_no":"","led_bank_ifsc_code":"","led_bank_swift_code":"","gst_type":"Regular","customer_gst":"24CWNPP3922M1Z0","credit_limit":"0","created_at":"1675841486","updated_at":"1675841486","deleted_at":"","is_deleted":"0","status":"Y","company_id":"1","address_line3":"NEAR SARDAR CHOWK,","address_line4":"NEW RANIP, AHMEDABAD - 382480","address_line5":"MO. 7600010577","area_name":"Ranip","city_name":"AHMEDABAD","contact_person":"","customer_total_sale":"11800","customer_total_overdue":"7400","customer_transection":[{"id":"26","transection_amount":"1000","transection_mode":"Cash","transection_type":"1","transection_status":"success","transection_date":"12:23pm 09 Feb 2023"},{"id":"21","transection_amount":"2000","transection_mode":"Cash","transection_type":"1","transection_status":"success","transection_date":"17:55pm 08 Feb 2023"},{"id":"20","transection_amount":"200","transection_mode":"Cash","transection_type":"1","transection_status":"success","transection_date":"17:43pm 08 Feb 2023"},{"id":"19","transection_amount":"200","transection_mode":"Debit Card","transection_type":"1","transection_status":"success","transection_date":"17:01pm 08 Feb 2023"},{"id":"17","transection_amount":"1000","transection_mode":"Cash","transection_type":"1","transection_status":"success","transection_date":"16:56pm 08 Feb 2023"}],"sales_history":[{"order_id":"17","order_number":"SALE-0000000017","grand_total":"1000","total_item":"1","created_at":"12:22pm 09 Feb 2023","pending_amount":""}]}
 
 CustomerDetailResponseModel customerDetailResponseModelFromJson(String str) => CustomerDetailResponseModel.fromJson(json.decode(str));
 String customerDetailResponseModelToJson(CustomerDetailResponseModel data) => json.encode(data.toJson());
@@ -73,18 +73,18 @@ CustomerDetailResponseModel copyWith({  num? success,
 
 }
 
-/// customer_id : "3255"
-/// tally_id : "1"
-/// customer_name : "salt"
-/// address_line1 : "ahm"
-/// address_line2 : "ahm"
-/// pincode : "380015"
-/// country_name : "india"
+/// customer_id : "3268"
+/// tally_id : "72250"
+/// customer_name : "J P CORPORATION"
+/// address_line1 : "2ND FLOOR, 205,"
+/// address_line2 : "205, MAGNATE SQUARE,"
+/// pincode : "382480"
+/// country_name : "India"
 /// gst_registration_type : "Regular"
 /// state_name : "Gujarat"
-/// parent : ""
+/// parent : "Sundry Debtors ( Sanjaybhai Gohel)"
 /// gst_applicable : "Yes"
-/// bill_credit_period : "90"
+/// bill_credit_period : "7 Days"
 /// bank_details : ""
 /// email_cc : ""
 /// ledger_phone : ""
@@ -95,23 +95,24 @@ CustomerDetailResponseModel copyWith({  num? success,
 /// led_bank_ifsc_code : ""
 /// led_bank_swift_code : ""
 /// gst_type : "Regular"
-/// customer_gst : ""
-/// credit_limit : "100000"
-/// created_at : "1675399059"
-/// updated_at : "1675399059"
+/// customer_gst : "24CWNPP3922M1Z0"
+/// credit_limit : "0"
+/// created_at : "1675841486"
+/// updated_at : "1675841486"
 /// deleted_at : ""
 /// is_deleted : "0"
 /// status : "Y"
 /// company_id : "1"
-/// address_line3 : "ahm"
-/// address_line4 : "ahm"
-/// address_line5 : "ahm"
-/// area_name : "ahm"
-/// city_name : "ahm"
-/// contact_person : "raj"
-/// customer_total_sale : "12070"
-/// customer_transection : [{"id":"1","transection_amount":"3000","transection_mode":"cc","transection_type":"2","transection_status":"success","transection_date":"31-01-2023"},{"id":"2","transection_amount":"2000","transection_mode":"cc","transection_type":"2","transection_status":"success","transection_date":"31-01-2023"}]
-/// sales_history : [{"order_id":"43","order_number":"SALE-0000000001","grand_total":"1470","total_item":"3","created_at":"03-02-2023"},{"order_id":"45","order_number":"SALE-0000000045","grand_total":"9600","total_item":"2","created_at":"03-02-2023"},{"order_id":"47","order_number":"SALE-0000000047","grand_total":"1000","total_item":"1","created_at":"03-02-2023"}]
+/// address_line3 : "NEAR SARDAR CHOWK,"
+/// address_line4 : "NEW RANIP, AHMEDABAD - 382480"
+/// address_line5 : "MO. 7600010577"
+/// area_name : "Ranip"
+/// city_name : "AHMEDABAD"
+/// contact_person : ""
+/// customer_total_sale : "11800"
+/// customer_total_overdue : "7400"
+/// customer_transection : [{"id":"26","transection_amount":"1000","transection_mode":"Cash","transection_type":"1","transection_status":"success","transection_date":"12:23pm 09 Feb 2023"},{"id":"21","transection_amount":"2000","transection_mode":"Cash","transection_type":"1","transection_status":"success","transection_date":"17:55pm 08 Feb 2023"},{"id":"20","transection_amount":"200","transection_mode":"Cash","transection_type":"1","transection_status":"success","transection_date":"17:43pm 08 Feb 2023"},{"id":"19","transection_amount":"200","transection_mode":"Debit Card","transection_type":"1","transection_status":"success","transection_date":"17:01pm 08 Feb 2023"},{"id":"17","transection_amount":"1000","transection_mode":"Cash","transection_type":"1","transection_status":"success","transection_date":"16:56pm 08 Feb 2023"}]
+/// sales_history : [{"order_id":"17","order_number":"SALE-0000000017","grand_total":"1000","total_item":"1","created_at":"12:22pm 09 Feb 2023","pending_amount":""}]
 
 CustomerDetails customerDetailsFromJson(String str) => CustomerDetails.fromJson(json.decode(str));
 String customerDetailsToJson(CustomerDetails data) => json.encode(data.toJson());
@@ -153,10 +154,9 @@ class CustomerDetails {
       String? areaName, 
       String? cityName, 
       String? contactPerson, 
-      String? customerTotalSale,
-    String? customerTotalOverdue,
-
-    List<CustomerTransection>? customerTransection,
+      String? customerTotalSale, 
+      String? customerTotalOverdue, 
+      List<CustomerTransection>? customerTransection, 
       List<SalesHistory>? salesHistory,}){
     _customerId = customerId;
     _tallyId = tallyId;
@@ -369,7 +369,7 @@ CustomerDetails copyWith({  String? customerId,
   cityName: cityName ?? _cityName,
   contactPerson: contactPerson ?? _contactPerson,
   customerTotalSale: customerTotalSale ?? _customerTotalSale,
-  customerTotalOverdue : customerTotalOverdue ?? _customerTotalOverdue,
+  customerTotalOverdue: customerTotalOverdue ?? _customerTotalOverdue,
   customerTransection: customerTransection ?? _customerTransection,
   salesHistory: salesHistory ?? _salesHistory,
 );
@@ -411,8 +411,6 @@ CustomerDetails copyWith({  String? customerId,
   String? get contactPerson => _contactPerson;
   String? get customerTotalSale => _customerTotalSale;
   String? get customerTotalOverdue => _customerTotalOverdue;
-
-
   List<CustomerTransection>? get customerTransection => _customerTransection;
   List<SalesHistory>? get salesHistory => _salesHistory;
 
@@ -456,7 +454,6 @@ CustomerDetails copyWith({  String? customerId,
     map['contact_person'] = _contactPerson;
     map['customer_total_sale'] = _customerTotalSale;
     map['customer_total_overdue'] = _customerTotalOverdue;
-
     if (_customerTransection != null) {
       map['customer_transection'] = _customerTransection?.map((v) => v.toJson()).toList();
     }
@@ -468,11 +465,12 @@ CustomerDetails copyWith({  String? customerId,
 
 }
 
-/// order_id : "43"
-/// order_number : "SALE-0000000001"
-/// grand_total : "1470"
-/// total_item : "3"
-/// created_at : "03-02-2023"
+/// order_id : "17"
+/// order_number : "SALE-0000000017"
+/// grand_total : "1000"
+/// total_item : "1"
+/// created_at : "12:22pm 09 Feb 2023"
+/// pending_amount : ""
 
 SalesHistory salesHistoryFromJson(String str) => SalesHistory.fromJson(json.decode(str));
 String salesHistoryToJson(SalesHistory data) => json.encode(data.toJson());
@@ -482,12 +480,14 @@ class SalesHistory {
       String? orderNumber, 
       String? grandTotal, 
       String? totalItem, 
-      String? createdAt,}){
+      String? createdAt, 
+      String? pendingAmount,}){
     _orderId = orderId;
     _orderNumber = orderNumber;
     _grandTotal = grandTotal;
     _totalItem = totalItem;
     _createdAt = createdAt;
+    _pendingAmount = pendingAmount;
 }
 
   SalesHistory.fromJson(dynamic json) {
@@ -496,28 +496,33 @@ class SalesHistory {
     _grandTotal = json['grand_total'];
     _totalItem = json['total_item'];
     _createdAt = json['created_at'];
+    _pendingAmount = json['pending_amount'];
   }
   String? _orderId;
   String? _orderNumber;
   String? _grandTotal;
   String? _totalItem;
   String? _createdAt;
+  String? _pendingAmount;
 SalesHistory copyWith({  String? orderId,
   String? orderNumber,
   String? grandTotal,
   String? totalItem,
   String? createdAt,
+  String? pendingAmount,
 }) => SalesHistory(  orderId: orderId ?? _orderId,
   orderNumber: orderNumber ?? _orderNumber,
   grandTotal: grandTotal ?? _grandTotal,
   totalItem: totalItem ?? _totalItem,
   createdAt: createdAt ?? _createdAt,
+  pendingAmount: pendingAmount ?? _pendingAmount,
 );
   String? get orderId => _orderId;
   String? get orderNumber => _orderNumber;
   String? get grandTotal => _grandTotal;
   String? get totalItem => _totalItem;
   String? get createdAt => _createdAt;
+  String? get pendingAmount => _pendingAmount;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -526,17 +531,18 @@ SalesHistory copyWith({  String? orderId,
     map['grand_total'] = _grandTotal;
     map['total_item'] = _totalItem;
     map['created_at'] = _createdAt;
+    map['pending_amount'] = _pendingAmount;
     return map;
   }
 
 }
 
-/// id : "1"
-/// transection_amount : "3000"
-/// transection_mode : "cc"
-/// transection_type : "2"
+/// id : "26"
+/// transection_amount : "1000"
+/// transection_mode : "Cash"
+/// transection_type : "1"
 /// transection_status : "success"
-/// transection_date : "31-01-2023"
+/// transection_date : "12:23pm 09 Feb 2023"
 
 CustomerTransection customerTransectionFromJson(String str) => CustomerTransection.fromJson(json.decode(str));
 String customerTransectionToJson(CustomerTransection data) => json.encode(data.toJson());
