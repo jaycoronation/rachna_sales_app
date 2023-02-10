@@ -212,7 +212,6 @@ class _EditProfilePageState extends BaseState<EditProfilePage> {
                             style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: white),),
                         ),
                       ),
-
                     ],
                   ),
                 ),
@@ -229,7 +228,6 @@ class _EditProfilePageState extends BaseState<EditProfilePage> {
     widget is EditProfilePage;
   }
 
-
   void showDesignationActionDialog() {
 
     for(var i= 0; i < listDesignation.length; i++) {
@@ -239,7 +237,7 @@ class _EditProfilePageState extends BaseState<EditProfilePage> {
     for (var i=0; i < listSelectedDesignation.length; i++) {
       for (var n=0; n < listDesignation.length; n++) {
         if(listSelectedDesignation[i].designationId == listDesignation[n].designationId) {
-          print(listSelectedDesignation[i].designationId.toString() + "==" +listDesignation[n].designationId.toString());
+          // print(listSelectedDesignation[i].designationId.toString() + "==" +listDesignation[n].designationId.toString());
           listDesignation[n].isSelected = true;
         }
       }
@@ -350,16 +348,16 @@ class _EditProfilePageState extends BaseState<EditProfilePage> {
                     width: MediaQuery.of(context).size.width,
                     child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          primary: kBlue, //button's fill color
-                          onPrimary: kBlue, //specify the color of the button's text and icons as well as the overlay colors used to indicate the hover, focus, and pressed states
-                          elevation: 0.0, //buttons Material shadow
-                          padding: const EdgeInsets.only(top: 15.0, bottom: 15.0), //specify the button's Padding
-                          side: const BorderSide(color: kBlue, width: 1.0, style: BorderStyle.solid), //set border for the button
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(kButtonCornerRadius)), // set the buttons shape. Make its birders rounded etc
-                          tapTargetSize: MaterialTapTargetSize.padded, // set the MaterialTapTarget size. can set to: values, padded and shrinkWrap properties
-                          animationDuration: const Duration(milliseconds: 100), //the buttons animations duration
-                          enableFeedback: true, //to set the feedback to true or false
-                          alignment: Alignment.center, //set the button's child Alignment
+                          primary: kBlue,
+                          onPrimary: kBlue,
+                          elevation: 0.0,
+                          padding: const EdgeInsets.only(top: 15.0, bottom: 15.0),
+                          side: const BorderSide(color: kBlue, width: 1.0, style: BorderStyle.solid),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(kButtonCornerRadius)),
+                          tapTargetSize: MaterialTapTargetSize.padded,
+                          animationDuration: const Duration(milliseconds: 100),
+                          enableFeedback: true,
+                          alignment: Alignment.center,
                         ),
                         onPressed:() async {
                             _designationFilteredId = "";
@@ -387,8 +385,8 @@ class _EditProfilePageState extends BaseState<EditProfilePage> {
                             }
                           }*/
 
-                        } , //set both onPressed and onLongPressed to null to see the disabled properties
-                        onLongPress: () => {}, //set both onPressed and onLongPressed to null to see the disabled properties
+                        },
+                        onLongPress: () => {},
                         child: const Text("Apply", textAlign: TextAlign.center,
                           style: TextStyle(fontSize: 16, color: white, fontWeight: FontWeight.w600),
                         )
@@ -648,7 +646,6 @@ class _EditProfilePageState extends BaseState<EditProfilePage> {
     };
 
     final response = await http.post(url, body: jsonBody);
-
     final statusCode = response.statusCode;
 
     final body = response.body;
@@ -673,16 +670,14 @@ class _EditProfilePageState extends BaseState<EditProfilePage> {
 
         for (var i = 0; i < dataResponse.employeeDetails!.designation!.length; i++) {
           if (_designationFilteredId.isNotEmpty) {
-            _designationFilteredId = _designationFilteredId + "," + dataResponse.employeeDetails!.designation![i].designationId.toString();
-            _designationFilteredSelectedName = _designationFilteredSelectedName + "," + dataResponse.employeeDetails!.designation![i].designationName.toString();
+            _designationFilteredId = "$_designationFilteredId,${dataResponse.employeeDetails!.designation![i].designationId}";
+            _designationFilteredSelectedName = "$_designationFilteredSelectedName,${dataResponse.employeeDetails!.designation![i].designationName}";
           }else {
             _designationFilteredId = checkValidString(dataResponse.employeeDetails?.designation![i].designationId);
             _designationFilteredSelectedName = checkValidString(dataResponse.employeeDetails?.designation![i].designationName);
-
           }
         }
         _designationController.text = _designationFilteredSelectedName;
-        print("_designationFilteredId==>" + _designationFilteredId);
 
       });
 

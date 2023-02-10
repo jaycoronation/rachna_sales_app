@@ -16,6 +16,7 @@ import '../../network/api_end_point.dart';
 import '../../utils/app_utils.dart';
 import '../../utils/base_class.dart';
 import '../../widget/loading.dart';
+import '../../widget/no_data.dart';
 import '../../widget/no_internet.dart';
 
 class EmployeeListPage extends StatefulWidget {
@@ -278,138 +279,146 @@ class _EmployeeListPageState extends BaseState<EmployeeListPage> {
                 ],
               ),
             ),
-            ListView.builder(
-                scrollDirection: Axis.vertical,
-                physics: const NeverScrollableScrollPhysics(),
-                primary: false,
-                shrinkWrap: true,
-                itemCount: listEmployee.length,
-                itemBuilder: (ctx, index) => Container(
-                  color: white,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 10, right: 10, top: 8, bottom: 5),
-                    child: GestureDetector(
-                      onTap: () {
-                        EmployeeList getSet = listEmployee[index];
-                        _redirectToAddEmployee(context, getSet, true);
-                      },
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Stack(
+              children: [
+                listEmployee.isNotEmpty ?
+                ListView.builder(
+                    scrollDirection: Axis.vertical,
+                    physics: const NeverScrollableScrollPhysics(),
+                    primary: false,
+                    shrinkWrap: true,
+                    itemCount: listEmployee.length,
+                    itemBuilder: (ctx, index) => Container(
+                      color: white,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10, top: 8, bottom: 5),
+                        child: GestureDetector(
+                          onTap: () {
+                            EmployeeList getSet = listEmployee[index];
+                            _redirectToAddEmployee(context, getSet, true);
+                          },
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Container(
-                                margin: const EdgeInsets.only(left: 10),
-                                child: Text(checkValidString(listEmployee[index].empName),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  textAlign: TextAlign.end,
-                                  style: const TextStyle(fontSize: 15, color: black, fontWeight: FontWeight.w700),
-                                ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Container(
+                                    margin: const EdgeInsets.only(left: 10),
+                                    child: Text(checkValidString(listEmployee[index].empName),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      textAlign: TextAlign.end,
+                                      style: const TextStyle(fontSize: 15, color: black, fontWeight: FontWeight.w700),
+                                    ),
+                                  ),
+                                  Container(
+                                    margin: const EdgeInsets.only(right: 15),
+                                    child: RichText(
+                                      textAlign: TextAlign.center,
+                                      text: TextSpan(
+                                        text: '₹ ',
+                                        style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: kBlue),
+                                        children: <TextSpan>[
+                                          TextSpan(text: checkValidString(listEmployee[index].empTotalSale.toString()),
+                                              style: const TextStyle(fontSize: 18, color: kBlue, fontWeight: FontWeight.w800),
+                                              recognizer: TapGestureRecognizer()..onTap = () => {
+                                              }),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
+                              const Gap(5),
                               Container(
-                                margin: const EdgeInsets.only(right: 15),
+                                margin: const EdgeInsets.only(left: 10, bottom: 5),
                                 child: RichText(
                                   textAlign: TextAlign.center,
                                   text: TextSpan(
-                                    text: '₹ ',
-                                    style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: kBlue),
+                                    text: 'Total Sale : ',
+                                    style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w400, color: kGray),
                                     children: <TextSpan>[
-                                      TextSpan(text: checkValidString(listEmployee[index].empTotalSale.toString()),
-                                          style: const TextStyle(fontSize: 18, color: kBlue, fontWeight: FontWeight.w800),
+                                      TextSpan(text: '₹ ',
+                                          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: black),
                                           recognizer: TapGestureRecognizer()..onTap = () => {
-                                          }),
+                                      }),
+                                      TextSpan(text: checkValidString(listEmployee[index].empTotalSale.toString()),
+                                          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: black),
+                                          recognizer: TapGestureRecognizer()..onTap = () => {
+                                      }),
                                     ],
                                   ),
                                 ),
                               ),
-                            ],
-                          ),
-                          const Gap(5),
-                          Container(
-                            margin: const EdgeInsets.only(left: 10, bottom: 5),
-                            child: RichText(
-                              textAlign: TextAlign.center,
-                              text: TextSpan(
-                                text: 'Total Sale : ',
-                                style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w400, color: kGray),
-                                children: <TextSpan>[
-                                  TextSpan(text: '₹ ',
-                                      style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: black),
-                                      recognizer: TapGestureRecognizer()..onTap = () => {
-                                  }),
-                                  TextSpan(text: checkValidString(listEmployee[index].empTotalSale.toString()),
-                                      style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: black),
-                                      recognizer: TapGestureRecognizer()..onTap = () => {
-                                  }),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Container(
+                                    width: 120,
+                                    decoration: BoxDecoration(
+                                        border: Border.all(width: 1, color: kBlue),
+                                        borderRadius: const BorderRadius.all(
+                                          Radius.circular(22.0),
+                                        ),
+                                        color: kLightestPurple,
+                                        shape: BoxShape.rectangle
+                                    ),
+                                    alignment: Alignment.bottomLeft,
+                                    margin: const EdgeInsets.only(top:3, bottom: 3, left: 10),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Image.asset("assets/images/ic_customer_employee.png", height: 14, width: 14,),
+                                        Container(
+                                          margin: const EdgeInsets.only(top:6, bottom: 6, left: 6),
+                                          child: const Text("Customer:25", style: TextStyle(fontWeight: FontWeight.w400, color: kBlue, fontSize: 12)
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(Icons.delete_outline_outlined, color: black, size: 24,),
+                                    iconSize: 24,
+                                    alignment: Alignment.center,
+                                    onPressed: () async {
+                                      deleteCustomer(listEmployee[index], index);
+                                    },
+                                  ),
                                 ],
                               ),
-                            ),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
                               Container(
-                                width: 120,
-                                decoration: BoxDecoration(
-                                    border: Border.all(width: 1, color: kBlue),
-                                    borderRadius: const BorderRadius.all(
-                                      Radius.circular(22.0),
-                                    ),
-                                    color: kLightestPurple,
-                                    shape: BoxShape.rectangle
-                                ),
-                                alignment: Alignment.bottomLeft,
-                                margin: const EdgeInsets.only(top:3, bottom: 3, left: 10),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Image.asset("assets/images/ic_customer_employee.png", height: 14, width: 14,),
-                                    Container(
-                                      margin: const EdgeInsets.only(top:6, bottom: 6, left: 6),
-                                      child: const Text("Customer:25", style: TextStyle(fontWeight: FontWeight.w400, color: kBlue, fontSize: 12)
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              IconButton(
-                                icon: const Icon(Icons.delete_outline_outlined, color: black, size: 24,),
-                                iconSize: 24,
-                                alignment: Alignment.center,
-                                onPressed: () async {
-                                  deleteCustomer(listEmployee[index], index);
-                                },
-                              ),
+                                  margin: const EdgeInsets.only(top: 10, left: 10, right: 10),
+                                  height: index == listEmployee.length-1 ? 0 : 0.8, color: kLightPurple),
                             ],
                           ),
-                          Container(
-                              margin: const EdgeInsets.only(top: 10, left: 10, right: 10),
-                              height: index == listEmployee.length-1 ? 0 : 0.8, color: kLightPurple),
-                        ],
+                        ),
                       ),
+                    ))
+            : const SizedBox(height: 60,
+        child: MyNoDataWidget(msg: "", subMsg: "No employees found")),
+                if (_isLoadingMore == true)
+                  Container(
+                    padding: const EdgeInsets.only(top: 10, bottom: 10),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(width: 30,
+                            height: 30, child: Lottie.asset('assets/images/loader_new.json', repeat: true, animate: true, frameRate: FrameRate.max)),
+                        const Text(
+                            ' Loading more...',
+                            style: TextStyle(color: black, fontWeight: FontWeight.w400, fontSize: 16)
+                        )
+                      ],
                     ),
                   ),
-                )),
-            if (_isLoadingMore == true)
-              Container(
-                padding: const EdgeInsets.only(top: 10, bottom: 10),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(width: 30,
-                        height: 30, child: Lottie.asset('assets/images/loader_new.json', repeat: true, animate: true, frameRate: FrameRate.max)),
-                    const Text(
-                        ' Loading more...',
-                        style: TextStyle(color: black, fontWeight: FontWeight.w400, fontSize: 16)
-                    )
-                  ],
-                ),
-              ),
+              ],
+            ),
+
           ]
       ),
     );

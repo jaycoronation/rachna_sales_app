@@ -466,7 +466,7 @@ class _SelectProductPageState extends BaseState<SelectProductPageOld> {
         ),
         Container(
             margin: const EdgeInsets.only(top: 20, left: 10, right: 10),
-            height: index == 8-1 ? 0 : 0.8, color: kLightPurple),
+            height: index == listData.length-1 ? 0 : 0.8, color: kLightPurple),
       ],
     );
 

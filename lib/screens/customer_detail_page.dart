@@ -130,7 +130,7 @@ class _CustomerDetailPageState extends BaseState<CustomerDetailPage> with Ticker
                     Expanded(
                       child: Container(
                         margin: const EdgeInsets.only(left: 22, right: 5),
-                        child: Text(checkValidString(customerDetailResponseModel.customerDetails!.customerName.toString().trim()),
+                        child: Text(checkValidString(toDisplayCase(customerDetailResponseModel.customerDetails!.customerName.toString().trim())),
                           overflow: TextOverflow.ellipsis,
                           maxLines: 3,
                           textAlign: TextAlign.start,
@@ -156,7 +156,7 @@ class _CustomerDetailPageState extends BaseState<CustomerDetailPage> with Ticker
                 Container(
                   alignment: Alignment.topLeft,
                   padding: const EdgeInsets.only(left: 22),
-                  child: Text(checkValidString(customerDetailResponseModel.customerDetails!.customerName.toString()),
+                  child: Text(checkValidString(toDisplayCase(customerDetailResponseModel.customerDetails!.customerName.toString())),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 3,
                       textAlign: TextAlign.start,

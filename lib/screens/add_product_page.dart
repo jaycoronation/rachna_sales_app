@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:chip_list/chip_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pretty_http_logger/pretty_http_logger.dart';
@@ -33,41 +34,46 @@ class _AddProductPageState extends BaseState<AddProductPage> {
   List<CategoryDetails> _tempListCategories = List<CategoryDetails>.empty(growable: true);
   var categoryIdApi = "";
 
-  TextEditingController _itemNameController = TextEditingController();
-  TextEditingController _itemPriceController = TextEditingController();
-  TextEditingController _itemGroupController = TextEditingController();
-  TextEditingController _itemUnitController = TextEditingController();
-  TextEditingController _itemAlterUnitController = TextEditingController();
-  TextEditingController _itemConversionController = TextEditingController();
-  TextEditingController _itemDenominatorController = TextEditingController();
-  TextEditingController _descriptionController = TextEditingController();
-  TextEditingController _valuationController = TextEditingController();
-  TextEditingController _hsnController = TextEditingController();
-  TextEditingController _gstController = TextEditingController();
+  TextEditingController itemNameController = TextEditingController();
+  TextEditingController itemPriceController = TextEditingController();
+  TextEditingController itemGroupController = TextEditingController();
+  TextEditingController itemUnitController = TextEditingController();
+  TextEditingController itemAlterUnitController = TextEditingController();
+  TextEditingController itemConversionController = TextEditingController();
+  TextEditingController itemDenominatorController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
+  TextEditingController valuationController = TextEditingController();
+  TextEditingController hsnController = TextEditingController();
+  TextEditingController gstController = TextEditingController();
   TextEditingController _companyIDController = TextEditingController();
   TextEditingController _tallyIDController = TextEditingController();
-  TextEditingController _categoryController = TextEditingController();
+  TextEditingController categoryController = TextEditingController();
 
   FocusNode inputNode = FocusNode();
+  List<String> listUoms = List<String>.empty(growable: true);
+  int _currentIndex = -1;
 
   @override
   void initState() {
     super.initState();
 
+    listUoms = ["Bottle", "Box", "Bunch", "Bundle", "Capsule", "Day", "Dozen", "feet", "ft", "GM", "Gunta", "Hour", "Inch", "KG", "KM", "Litre", "Meter", "Minute",
+      "ML", "mm", "Month", "Night", "Ounce", "Packet", "Pair", "pieces", "Plate", "Pound", "Quintal", "Service", "Set", "sets", "sq. ft.", "sq. meter.", "Tablet", "Ton",
+      "Tour", "Work", "Year"];
+
     if ((widget as AddProductPage).isFromList) {
+      itemNameController.text = checkValidString((widget as AddProductPage).getSet.stockName).toString();
+      itemPriceController.text = checkValidString((widget as AddProductPage).getSet.stockPrice).toString();
+      itemGroupController.text = checkValidString((widget as AddProductPage).getSet.tcsCategory).toString();
+      itemUnitController.text = checkValidString((widget as AddProductPage).getSet.baseUnits).toString();
+      itemAlterUnitController.text = checkValidString((widget as AddProductPage).getSet.additionalUnits).toString();
+      itemConversionController.text = checkValidString((widget as AddProductPage).getSet.itemConversion).toString();
 
-      _itemNameController.text = checkValidString((widget as AddProductPage).getSet.stockName).toString();
-      _itemPriceController.text = checkValidString((widget as AddProductPage).getSet.stockPrice).toString();
-      _itemGroupController.text = checkValidString((widget as AddProductPage).getSet.tcsCategory).toString();
-      _itemUnitController.text = checkValidString((widget as AddProductPage).getSet.baseUnits).toString();
-      _itemAlterUnitController.text = checkValidString((widget as AddProductPage).getSet.additionalUnits).toString();
-      _itemConversionController.text = checkValidString((widget as AddProductPage).getSet.itemConversion).toString();
-
-      _itemDenominatorController.text = checkValidString((widget as AddProductPage).getSet.itemDenominator).toString();
-      _descriptionController.text = checkValidString((widget as AddProductPage).getSet.description).toString();
-      _valuationController.text = checkValidString((widget as AddProductPage).getSet.valuationMethod).toString();
-      _hsnController.text = checkValidString((widget as AddProductPage).getSet.hsnId).toString();
-      // _gstController.text = checkValidString((widget as AddProductPage).getSet).toString();
+      itemDenominatorController.text = checkValidString((widget as AddProductPage).getSet.itemDenominator).toString();
+      descriptionController.text = checkValidString((widget as AddProductPage).getSet.description).toString();
+      valuationController.text = checkValidString((widget as AddProductPage).getSet.valuationMethod).toString();
+      hsnController.text = checkValidString((widget as AddProductPage).getSet.hsnId).toString();
+      // gstController.text = checkValidString((widget as AddProductPage).getSet).toString();
 
       categoryIdApi = checkValidString((widget as AddProductPage).getSet.categoryId).toString();
     }
@@ -84,7 +90,7 @@ class _AddProductPageState extends BaseState<AddProductPage> {
     return Scaffold(
       backgroundColor: appBG,
       resizeToAvoidBottomInset: true,
-      appBar:AppBar(
+      appBar: AppBar(
         systemOverlayStyle: SystemUiOverlayStyle.dark,
         toolbarHeight: 55,
         automaticallyImplyLeading: false,
@@ -120,13 +126,13 @@ class _AddProductPageState extends BaseState<AddProductPage> {
                         alignment: Alignment.topLeft,
                         padding: const EdgeInsets.only(left: 22, top: 10, bottom: 15),
                         child: Text((widget as AddProductPage).isFromList ? "Update Product" : "Add Product",
-                            style: TextStyle(fontWeight: FontWeight.w700, color: white, fontSize: 20)),
+                            style: const TextStyle(fontWeight: FontWeight.w700, color: white, fontSize: 20)),
                       ),
                       Container(
                         margin: const EdgeInsets.only(top:20, left: 20, right: 20),
                         child: TextField(
                           cursorColor: black,
-                          controller: _itemNameController,
+                          controller: itemNameController,
                           keyboardType: TextInputType.text,
                           style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
                           decoration: const InputDecoration(
@@ -139,7 +145,7 @@ class _AddProductPageState extends BaseState<AddProductPage> {
                         margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
                         child: TextField(
                           cursorColor: black,
-                          controller: _itemPriceController,
+                          controller: itemPriceController,
                           keyboardType: TextInputType.number,
                           style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
                           decoration: const InputDecoration(
@@ -155,7 +161,7 @@ class _AddProductPageState extends BaseState<AddProductPage> {
                         margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
                         child: TextField(
                           cursorColor: black,
-                          controller: _itemGroupController,
+                          controller: itemGroupController,
                           keyboardType: TextInputType.text,
                           style: const TextStyle(fontWeight: FontWeight.w600, color: black, fontSize: 16),
                           decoration: const InputDecoration(
@@ -168,7 +174,7 @@ class _AddProductPageState extends BaseState<AddProductPage> {
                         margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
                         child: TextField(
                           cursorColor: black,
-                          controller: _categoryController,
+                          controller: categoryController,
                           keyboardType: TextInputType.text,
                           readOnly: true,
                           style: const TextStyle(fontWeight: FontWeight.w600, color: black, fontSize: 16),
@@ -185,21 +191,25 @@ class _AddProductPageState extends BaseState<AddProductPage> {
                         margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
                         child: TextField(
                           cursorColor: black,
-                          controller: _itemUnitController,
+                          controller: itemUnitController,
                           keyboardType: TextInputType.text,
+                          readOnly: true,
                           style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
                           decoration: const InputDecoration(
                             labelText: 'Unit Type',
                             counterText: '',
                             prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
                           ),
+                          onTap: () {
+                            _showUnitTypeDialog(context);
+                          },
                         ),
                       ),
                       Container(
                         margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
                         child: TextField(
                           cursorColor: black,
-                          controller: _itemAlterUnitController,
+                          controller: itemAlterUnitController,
                           keyboardType: TextInputType.text,
                           style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
                           decoration: const InputDecoration(
@@ -213,7 +223,7 @@ class _AddProductPageState extends BaseState<AddProductPage> {
                         margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
                         child: TextField(
                           cursorColor: black,
-                          controller: _itemConversionController,
+                          controller: itemConversionController,
                           keyboardType: TextInputType.text,
                           style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
                           decoration: const InputDecoration(
@@ -227,7 +237,7 @@ class _AddProductPageState extends BaseState<AddProductPage> {
                         margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
                         child: TextField(
                           cursorColor: black,
-                          controller: _itemDenominatorController,
+                          controller: itemDenominatorController,
                           keyboardType: TextInputType.text,
                           style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
                           decoration: const InputDecoration(
@@ -241,7 +251,7 @@ class _AddProductPageState extends BaseState<AddProductPage> {
                         margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
                         child: TextField(
                           cursorColor: black,
-                          controller: _descriptionController,
+                          controller: descriptionController,
                           keyboardType: TextInputType.text,
                           style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
                           decoration: const InputDecoration(
@@ -255,7 +265,7 @@ class _AddProductPageState extends BaseState<AddProductPage> {
                         margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
                         child: TextField(
                           cursorColor: black,
-                          controller: _valuationController,
+                          controller: valuationController,
                           keyboardType: TextInputType.text,
                           style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
                           decoration: const InputDecoration(
@@ -269,7 +279,7 @@ class _AddProductPageState extends BaseState<AddProductPage> {
                         margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
                         child: TextField(
                           cursorColor: black,
-                          controller: _hsnController,
+                          controller: hsnController,
                           maxLength: 8,
                           keyboardType: TextInputType.number,
                           style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
@@ -284,9 +294,10 @@ class _AddProductPageState extends BaseState<AddProductPage> {
                         margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
                         child: TextField(
                           cursorColor: black,
-                          controller: _gstController,
-                          maxLength: 15,
+                          controller: gstController,
                           keyboardType: TextInputType.text,
+                          textCapitalization: TextCapitalization.characters,
+                          maxLength: 15,
                           style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
                           decoration: const InputDecoration(
                             labelText: 'GST No',
@@ -324,7 +335,7 @@ class _AddProductPageState extends BaseState<AddProductPage> {
                         ),
                       ),*/
                       Container(
-                        margin: const EdgeInsets.only(top: 40, bottom: 10, left: 20, right: 20),
+                        margin: const EdgeInsets.only(top: 40, bottom: 30, left: 20, right: 20),
                         width: double.infinity,
                         decoration: BoxDecoration(
                             gradient: const LinearGradient(
@@ -337,10 +348,10 @@ class _AddProductPageState extends BaseState<AddProductPage> {
                         child: TextButton(
                           onPressed: () {
                             FocusScope.of(context).requestFocus(FocusNode());
-                            String name = _itemNameController.text.toString();
-                            String price = _itemPriceController.text.toString();
-                            String hsn = _hsnController.text.toString();
-                            String gstNo = _gstController.text.toString();
+                            String name = itemNameController.text.toString();
+                            String price = itemPriceController.text.toString();
+                            String hsn = hsnController.text.toString();
+                            String gstNo = gstController.text.toString();
 
                             if (name.trim().isEmpty) {
                               showSnackBar("Please enter a item name", context);
@@ -350,7 +361,7 @@ class _AddProductPageState extends BaseState<AddProductPage> {
                               showSnackBar('Please enter HSN Code',context);
                               /* } else if (amount.trim().isEmpty) {
                               showToast("Please enter amount");*/
-                            }else if (gstNo.isNotEmpty && !isValidGSTNo(gstNo.trim())) {
+                            }else if (gstNo.trim().isNotEmpty && !isValidGSTNo(gstNo.trim())) {
                               showSnackBar('Please enter valid GST number',context);
                             } else {
                               if(isInternetConnected) {
@@ -364,7 +375,6 @@ class _AddProductPageState extends BaseState<AddProductPage> {
                             style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: white),),
                         ),
                       ),
-
                     ],
                   ),
                 ),
@@ -379,6 +389,64 @@ class _AddProductPageState extends BaseState<AddProductPage> {
   void castStatefulWidget() {
     // TODO: implement castStatefulWidget
     widget is AddProductPage;
+  }
+
+  void _showUnitTypeDialog(context) {
+    showModalBottomSheet(
+        isScrollControlled: true,
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))),
+        context: context,
+        builder: (BuildContext context) {
+          return StatefulBuilder(
+            builder: (context, setState) {
+              return SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.55,
+                  child: Column(
+                      children: [
+                        Container(
+                            width: 60,
+                            margin: const EdgeInsets.only(top: 12),
+                            child: const Divider(height: 1.5, thickness: 1.5, color: kBlue,)),
+                        Container(
+                          margin: const EdgeInsets.only(top: 12),
+                          padding: const EdgeInsets.fromLTRB(14, 8, 14, 8),
+                          child: const Text("Select Unit Type", style: TextStyle(color: black, fontWeight: FontWeight.bold, fontSize: 15)),
+                        ),
+                        Container(height: 6),
+                        listUoms.isNotEmpty ?
+                        Expanded(
+                          child: SingleChildScrollView(
+                            child: ChipList(
+                              listOfChipNames: listUoms,
+                              scrollPhysics: const AlwaysScrollableScrollPhysics(),
+                              supportsMultiSelect: true,
+                              activeBgColorList: [kBlue],
+                              inactiveBgColorList: [white],
+                              activeTextColorList: [white],
+                              inactiveTextColorList: [black],
+                              inactiveBorderColorList: [white],
+                              activeBorderColorList: [kBlue],
+                              listOfChipIndicesCurrentlySeclected: [_currentIndex],
+                              shouldWrap: true,
+                              extraOnToggle: (val) {
+                                print(listUoms[val].toString());
+                                setState(() {
+                                  _currentIndex = val;
+                                  itemUnitController.text = listUoms[val].toString().trim();
+                                });
+                                Navigator.pop(context);
+                              },
+                            ),
+                          ),
+                        ) :
+                        const Expanded(
+                          child: Center(child: Text("No UOM added!'", style: TextStyle(color: black, fontSize: 20, fontWeight: FontWeight.bold))),
+                          //Center(child: MyNoDataWidget(msg: 'No UOM added!', imageName: "ic-no-category.png", colorCode: const Color(0xFFedab7f),subMsg: "Hit the below button to\nstart adding categories.", onTap: refreshData, btnTitle: "Start Adding")),
+                        ),
+                      ]));
+            },
+          );
+        });
   }
 
   void _showCategoriesDialog(context) {
@@ -417,11 +485,11 @@ class _AddProductPageState extends BaseState<AddProductPage> {
                               onTap: () {
                                 setState(() {
                                   if (_tempListCategories.isNotEmpty) {
-                                    _categoryController.text = checkValidString(toDisplayCase(_tempListCategories[index].categoryName.toString()));
+                                    categoryController.text = checkValidString(toDisplayCase(_tempListCategories[index].categoryName.toString()));
                                     categoryIdApi = checkValidString(_tempListCategories[index].categoryId.toString());
                                     // _validateCategory = true;
                                   } else {
-                                    _categoryController.text = checkValidString(toDisplayCase(listCategories[index].categoryName.toString()));
+                                    categoryController.text = checkValidString(toDisplayCase(listCategories[index].categoryName.toString()));
                                     categoryIdApi = checkValidString(listCategories[index].categoryId.toString());
                                     // _validateCategory = true;
                                   }
@@ -454,7 +522,7 @@ class _AddProductPageState extends BaseState<AddProductPage> {
         Container(
           padding: const EdgeInsets.only(left: 20.0, right: 20, top: 8, bottom: 8),
           alignment: Alignment.centerLeft,
-          child: listData[index].categoryName == _categoryController.text.toString()
+          child: listData[index].categoryName == categoryController.text.toString()
               ? Text(
             checkValidString(toDisplayCase(listData[index].categoryName.toString())),
             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: kBlue),
@@ -487,17 +555,17 @@ class _AddProductPageState extends BaseState<AddProductPage> {
     Map<String, String> jsonBody = {
     'TallyID': "1",
     'CmpID': "RBC",
-    'ItemName': _itemNameController.value.text.trim(),
-    'ItemPrice': _itemPriceController.value.text.trim(),
-    'ItemGroup': _itemGroupController.value.text.trim(),
-    'ItemUnit': _itemUnitController.value.text.trim(),
-    'ItemAlterUnit': _itemAlterUnitController.value.text.trim(),
-    'ItemConversion': _itemConversionController.value.text.trim(),
-    'ItemDenominator': _itemDenominatorController.value.text.trim(),
-    'description': _descriptionController.value.text.trim(),
-    'valuationmethod': _valuationController.value.text.trim(),
-    'hsncode': _hsnController.value.text.trim(),
-    'GSTPer': _gstController.value.text.trim(),
+    'ItemName': itemNameController.value.text.trim(),
+    'ItemPrice': itemPriceController.value.text.trim(),
+    'ItemGroup': itemGroupController.value.text.trim(),
+    'ItemUnit': itemUnitController.value.text.trim(),
+    'ItemAlterUnit': itemAlterUnitController.value.text.trim(),
+    'ItemConversion': itemConversionController.value.text.trim(),
+    'ItemDenominator': itemDenominatorController.value.text.trim(),
+    'description': descriptionController.value.text.trim(),
+    'valuationmethod': valuationController.value.text.trim(),
+    'hsncode': hsnController.value.text.trim(),
+    'GSTPer': gstController.value.text.trim(),
     'from_app' : FROM_APP,
       'stock_id': (widget as AddProductPage).isFromList ? (widget as AddProductPage).getSet.stockId.toString() : "",
       'category_id': categoryIdApi

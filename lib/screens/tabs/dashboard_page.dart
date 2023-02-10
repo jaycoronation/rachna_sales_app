@@ -58,6 +58,9 @@ class _DashboardPageState extends BaseState<DashboardPage> {
     }else {
       noInterNet(context);
     }
+    setState(() {
+
+    });
   }
 
   @override
@@ -79,8 +82,7 @@ class _DashboardPageState extends BaseState<DashboardPage> {
                   side: const BorderSide(color: kLightPurple),
                   borderRadius: BorderRadius.circular(12.0),
                 ),
-                child:
-                sessionManager.getProfilePic().toString().isNotEmpty ? FadeInImage.assetNetwork(
+                child: sessionManager.getProfilePic().toString().isNotEmpty ? FadeInImage.assetNetwork(
                       image: sessionManager.getProfilePic().toString(),
                       fit: BoxFit.cover,
                       width: 50,
@@ -96,26 +98,6 @@ class _DashboardPageState extends BaseState<DashboardPage> {
           },
         ),
         actions: [
-          /*Container(
-            padding: const EdgeInsets.only(right: 8, top: 9, bottom: 9),
-            child: GestureDetector(
-              onTap: () {
-                logoutFromApp();
-              },
-              child: Container(
-                height: 36,
-                width: 36,
-                decoration: BoxDecoration(
-                    border: Border.all(width: 1, color: kLightPurple),
-                    borderRadius: const BorderRadius.all(Radius.circular(14.0),),
-                    color: kLightestPurple,
-                    shape: BoxShape.rectangle
-                ),
-                alignment: Alignment.center,
-                child: const Icon(Icons.logout, color: kBlue, size: 20,),
-              ),
-            ),
-          ),*/
           Container(
             padding: const EdgeInsets.only(right: 12, top: 9, bottom: 9),
             child: GestureDetector(
@@ -507,8 +489,7 @@ class _DashboardPageState extends BaseState<DashboardPage> {
                       },
                       child: Container(
                         decoration: BoxDecoration(
-                            border: Border.all(
-                                color: kLightPurple, // Set border color
+                            border: Border.all(color: kLightPurple, // Set border color
                                 width: 1.0),
                             color: kLightestPurple,
                             borderRadius: const BorderRadius.all(Radius.circular(12))),
@@ -794,90 +775,13 @@ class _DashboardPageState extends BaseState<DashboardPage> {
     }
   }
 
-  void logoutFromApp() {
-    showModalBottomSheet<void>(
-      context: context,
-      shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(topLeft: Radius.circular(12), topRight: Radius.circular(12))
-      ),
-      builder: (BuildContext context) {
-        return Wrap(
-          children: [
-            Container(
-              decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.only(topLeft: Radius.circular(12), topRight: Radius.circular(12)),
-                  color: white),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                    height: 2,
-                    width: 40,
-                    alignment: Alignment.center,
-                    color: kBlue,
-                    margin: const EdgeInsets.only(top: 10, bottom: 10),
-                  ),
-                  Container(
-                      margin: const EdgeInsets.only(top: 10, bottom: 10),
-                      child: const Text('Logout from Sales App', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: black))
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(top: 10, bottom: 15),
-                    child: const Text('Are you sure you want to logout from app?', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400, color: black)),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(left: 10, right: 10, bottom: 30),
-                    child: Container(
-                      margin: const EdgeInsets.only(left: 15, right: 15),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child:
-                            Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(width: 0.4, color: kBlue),
-                                borderRadius: BorderRadius.all(Radius.circular(kButtonCornerRadius)),
-                              ),
-                              margin: const EdgeInsets.only(right: 10),
-                              child: TextButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child:const Text('No', style:TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: kBlue,))
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: DecoratedBox(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(kButtonCornerRadius),
-                                color:kBlue,
-                              ),
-                              child: TextButton(
-                                onPressed: () async {
-                                  Navigator.pop(context);
-                                  SessionManagerMethods.clear();
-                                  Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const LoginPage()), (Route<dynamic> route) => false);
-                                },
-                                child:
-                                const Text('Yes',style:TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: white)),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        );
-      },
-    );
+  @override
+  void castStatefulWidget() {
+    // TODO: implement castStatefulWidget
+    widget is DashboardPage;
   }
 
+  //API Call Functions...
   void _makeCallDashboardData() async {
     setState(() {
       _isLoading = true;
@@ -916,12 +820,6 @@ class _DashboardPageState extends BaseState<DashboardPage> {
       });
 
     }
-  }
-
-  @override
-  void castStatefulWidget() {
-    // TODO: implement castStatefulWidget
-    widget is DashboardPage;
   }
 
 }

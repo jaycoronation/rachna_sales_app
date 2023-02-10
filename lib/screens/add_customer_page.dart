@@ -24,40 +24,40 @@ class AddCustomerPage extends StatefulWidget {
 class _AddCustomerPageState extends BaseState<AddCustomerPage> {
   bool _isLoading = false;
 
-  TextEditingController _customerNameController = TextEditingController();
-  TextEditingController _addressLine1Controller = TextEditingController();
-  TextEditingController _addressLine2Controller = TextEditingController();
-  TextEditingController _addressLine3Controller = TextEditingController();
-  TextEditingController _addressLine4Controller = TextEditingController();
-  TextEditingController _addressLine5Controller = TextEditingController();
+  TextEditingController customerNameController = TextEditingController();
+  TextEditingController addressLine1Controller = TextEditingController();
+  TextEditingController addressLine2Controller = TextEditingController();
+  TextEditingController addressLine3Controller = TextEditingController();
+  TextEditingController addressLine4Controller = TextEditingController();
+  TextEditingController addressLine5Controller = TextEditingController();
 
-  TextEditingController _areaNameController = TextEditingController();
-  TextEditingController _cityController = TextEditingController();
-  TextEditingController _pincodeController = TextEditingController();
-  TextEditingController _stateController = TextEditingController();
-  TextEditingController _countryController = TextEditingController();
+  TextEditingController areaNameController = TextEditingController();
+  TextEditingController cityController = TextEditingController();
+  TextEditingController pinCodeController = TextEditingController();
+  TextEditingController stateController = TextEditingController();
+  TextEditingController countryController = TextEditingController();
 
-  TextEditingController _contactPersonController = TextEditingController();
-  TextEditingController _GSTTypeController = TextEditingController();
-  TextEditingController _parentController = TextEditingController();
-  TextEditingController _GSTApplicableController = TextEditingController();
-  TextEditingController _creditDaysController = TextEditingController();
+  TextEditingController contactPersonController = TextEditingController();
+  TextEditingController GSTTypeController = TextEditingController();
+  TextEditingController parentController = TextEditingController();
+  TextEditingController GSTApplicableController = TextEditingController();
+  TextEditingController creditDaysController = TextEditingController();
 
-  TextEditingController _bankDetailController = TextEditingController();
-  TextEditingController _ledgerEmailController = TextEditingController();
-  TextEditingController _ledgerPhoneController = TextEditingController();
-  TextEditingController _ledgerContactController = TextEditingController();
-  TextEditingController _ledgerMobileController = TextEditingController();
+  TextEditingController bankDetailController = TextEditingController();
+  TextEditingController ledgerEmailController = TextEditingController();
+  TextEditingController ledgerPhoneController = TextEditingController();
+  TextEditingController ledgerContactController = TextEditingController();
+  TextEditingController ledgerMobileController = TextEditingController();
 
-  TextEditingController _ledgerBankNameController = TextEditingController();
-  TextEditingController _ledgerBankACNoController = TextEditingController();
-  TextEditingController _ledgerBankIFSCCodeController = TextEditingController();
-  TextEditingController _ledgerBankSwiftCodeController = TextEditingController();
+  TextEditingController ledgerBankNameController = TextEditingController();
+  TextEditingController ledgerBankACNoController = TextEditingController();
+  TextEditingController ledgerBankIFSCCodeController = TextEditingController();
+  TextEditingController ledgerBankSwiftCodeController = TextEditingController();
 
-  TextEditingController _GSTINNoController = TextEditingController();
-  TextEditingController _creditLimitController = TextEditingController();
-  TextEditingController _companyIDController = TextEditingController();
-  TextEditingController _tallyIDController = TextEditingController();
+  TextEditingController GSTINNoController = TextEditingController();
+  TextEditingController creditLimitController = TextEditingController();
+  TextEditingController companyIDController = TextEditingController();
+  TextEditingController tallyIDController = TextEditingController();
 
   FocusNode inputNode = FocusNode();
 
@@ -66,40 +66,40 @@ class _AddCustomerPageState extends BaseState<AddCustomerPage> {
     super.initState();
 
     if ((widget as AddCustomerPage).isFromList == true) {
-      _customerNameController.text = checkValidString((widget as AddCustomerPage).getSet.customerName).toString();
-      _addressLine1Controller.text = checkValidString((widget as AddCustomerPage).getSet.addressLine1).toString();
-      _addressLine2Controller.text = checkValidString((widget as AddCustomerPage).getSet.addressLine2).toString();
-      _addressLine3Controller.text = checkValidString((widget as AddCustomerPage).getSet.addressLine3).toString();
-      _addressLine4Controller.text = checkValidString((widget as AddCustomerPage).getSet.addressLine4).toString();
-      _addressLine5Controller.text = checkValidString((widget as AddCustomerPage).getSet.addressLine5).toString();
+      customerNameController.text = checkValidString((widget as AddCustomerPage).getSet.customerName).toString();
+      addressLine1Controller.text = checkValidString((widget as AddCustomerPage).getSet.addressLine1).toString();
+      addressLine2Controller.text = checkValidString((widget as AddCustomerPage).getSet.addressLine2).toString();
+      addressLine3Controller.text = checkValidString((widget as AddCustomerPage).getSet.addressLine3).toString();
+      addressLine4Controller.text = checkValidString((widget as AddCustomerPage).getSet.addressLine4).toString();
+      addressLine5Controller.text = checkValidString((widget as AddCustomerPage).getSet.addressLine5).toString();
 
-      _areaNameController.text = checkValidString((widget as AddCustomerPage).getSet.areaName).toString();
-      _cityController.text = checkValidString((widget as AddCustomerPage).getSet.cityName).toString();
-      _pincodeController.text = checkValidString((widget as AddCustomerPage).getSet.pincode).toString();
-      _stateController.text = checkValidString((widget as AddCustomerPage).getSet.stateName).toString();
-      _countryController.text = checkValidString((widget as AddCustomerPage).getSet.countryName).toString();
+      areaNameController.text = checkValidString((widget as AddCustomerPage).getSet.areaName).toString();
+      cityController.text = checkValidString((widget as AddCustomerPage).getSet.cityName).toString();
+      pinCodeController.text = checkValidString((widget as AddCustomerPage).getSet.pincode).toString();
+      stateController.text = checkValidString((widget as AddCustomerPage).getSet.stateName).toString();
+      countryController.text = checkValidString((widget as AddCustomerPage).getSet.countryName).toString();
 
-      _contactPersonController.text = checkValidString((widget as AddCustomerPage).getSet.contactPerson).toString();
-      _GSTTypeController.text = checkValidString((widget as AddCustomerPage).getSet.gstType).toString();
-      _parentController.text = checkValidString((widget as AddCustomerPage).getSet.parent).toString();
-      _GSTApplicableController.text = checkValidString((widget as AddCustomerPage).getSet.gstApplicable).toString();
-      _creditDaysController.text = checkValidString((widget as AddCustomerPage).getSet.billCreditPeriod).toString();
+      contactPersonController.text = checkValidString((widget as AddCustomerPage).getSet.contactPerson).toString();
+      GSTTypeController.text = checkValidString((widget as AddCustomerPage).getSet.gstType).toString();
+      parentController.text = checkValidString((widget as AddCustomerPage).getSet.parent).toString();
+      GSTApplicableController.text = checkValidString((widget as AddCustomerPage).getSet.gstApplicable).toString();
+      creditDaysController.text = checkValidString((widget as AddCustomerPage).getSet.billCreditPeriod).toString();
 
-      _bankDetailController.text = checkValidString((widget as AddCustomerPage).getSet.bankDetails).toString();
-      _ledgerEmailController.text = checkValidString((widget as AddCustomerPage).getSet.emailCc).toString();
-      _ledgerPhoneController.text = checkValidString((widget as AddCustomerPage).getSet.ledgerPhone).toString();
-      _ledgerContactController.text = checkValidString((widget as AddCustomerPage).getSet.ledgerContact).toString();
-      _ledgerMobileController.text = checkValidString((widget as AddCustomerPage).getSet.ledgerMobile).toString();
+      bankDetailController.text = checkValidString((widget as AddCustomerPage).getSet.bankDetails).toString();
+      ledgerEmailController.text = checkValidString((widget as AddCustomerPage).getSet.emailCc).toString();
+      ledgerPhoneController.text = checkValidString((widget as AddCustomerPage).getSet.ledgerPhone).toString();
+      ledgerContactController.text = checkValidString((widget as AddCustomerPage).getSet.ledgerContact).toString();
+      ledgerMobileController.text = checkValidString((widget as AddCustomerPage).getSet.ledgerMobile).toString();
 
-      _ledgerBankNameController.text = checkValidString((widget as AddCustomerPage).getSet.ledBankName).toString();
-      _ledgerBankACNoController.text = checkValidString((widget as AddCustomerPage).getSet.ledBankAcNo).toString();
-      _ledgerBankIFSCCodeController.text = checkValidString((widget as AddCustomerPage).getSet.ledBankIfscCode).toString();
-      _ledgerBankSwiftCodeController.text = checkValidString((widget as AddCustomerPage).getSet.ledBankSwiftCode).toString();
+      ledgerBankNameController.text = checkValidString((widget as AddCustomerPage).getSet.ledBankName).toString();
+      ledgerBankACNoController.text = checkValidString((widget as AddCustomerPage).getSet.ledBankAcNo).toString();
+      ledgerBankIFSCCodeController.text = checkValidString((widget as AddCustomerPage).getSet.ledBankIfscCode).toString();
+      ledgerBankSwiftCodeController.text = checkValidString((widget as AddCustomerPage).getSet.ledBankSwiftCode).toString();
 
-      _GSTINNoController.text = checkValidString((widget as AddCustomerPage).getSet.customerGst).toString();
-      _creditLimitController.text = checkValidString((widget as AddCustomerPage).getSet.creditLimit).toString();
-      _companyIDController.text = checkValidString((widget as AddCustomerPage).getSet.companyId).toString();
-      _tallyIDController.text = checkValidString((widget as AddCustomerPage).getSet.tallyId).toString();
+      GSTINNoController.text = checkValidString((widget as AddCustomerPage).getSet.customerGst).toString();
+      creditLimitController.text = checkValidString((widget as AddCustomerPage).getSet.creditLimit).toString();
+      companyIDController.text = checkValidString((widget as AddCustomerPage).getSet.companyId).toString();
+      tallyIDController.text = checkValidString((widget as AddCustomerPage).getSet.tallyId).toString();
 
     }
 
@@ -110,7 +110,7 @@ class _AddCustomerPageState extends BaseState<AddCustomerPage> {
     return Scaffold(
       backgroundColor: appBG,
       resizeToAvoidBottomInset: true,
-      appBar:AppBar(
+      appBar: AppBar(
         systemOverlayStyle: SystemUiOverlayStyle.dark,
         toolbarHeight: 55,
         automaticallyImplyLeading: false,
@@ -152,8 +152,8 @@ class _AddCustomerPageState extends BaseState<AddCustomerPage> {
                         margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
                         child: TextField(
                           cursorColor: black,
-                          controller: _customerNameController,
-                          keyboardType: TextInputType.text,
+                          controller: customerNameController,
+                          keyboardType: TextInputType.name,
                           style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
                           decoration: const InputDecoration(
                               labelText: 'Name',
@@ -165,7 +165,7 @@ class _AddCustomerPageState extends BaseState<AddCustomerPage> {
                         margin: const EdgeInsets.only(top:20, left: 20, right: 20),
                         child: TextField(
                           cursorColor: black,
-                          controller: _addressLine1Controller,
+                          controller: addressLine1Controller,
                           keyboardType: TextInputType.text,
                           style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
                           decoration: const InputDecoration(
@@ -178,7 +178,7 @@ class _AddCustomerPageState extends BaseState<AddCustomerPage> {
                         margin: const EdgeInsets.only(top:20, left: 20, right: 20),
                         child: TextField(
                           cursorColor: black,
-                          controller: _addressLine2Controller,
+                          controller: addressLine2Controller,
                           keyboardType: TextInputType.text,
                           style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
                           decoration: const InputDecoration(
@@ -191,7 +191,7 @@ class _AddCustomerPageState extends BaseState<AddCustomerPage> {
                         margin: const EdgeInsets.only(top:20, left: 20, right: 20),
                         child: TextField(
                           cursorColor: black,
-                          controller: _addressLine3Controller,
+                          controller: addressLine3Controller,
                           keyboardType: TextInputType.text,
                           style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
                           decoration: const InputDecoration(
@@ -204,7 +204,7 @@ class _AddCustomerPageState extends BaseState<AddCustomerPage> {
                         margin: const EdgeInsets.only(top:20, left: 20, right: 20),
                         child: TextField(
                           cursorColor: black,
-                          controller: _addressLine4Controller,
+                          controller: addressLine4Controller,
                           keyboardType: TextInputType.text,
                           style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
                           decoration: const InputDecoration(
@@ -217,7 +217,7 @@ class _AddCustomerPageState extends BaseState<AddCustomerPage> {
                         margin: const EdgeInsets.only(top:20, left: 20, right: 20),
                         child: TextField(
                           cursorColor: black,
-                          controller: _addressLine5Controller,
+                          controller: addressLine5Controller,
                           keyboardType: TextInputType.text,
                           style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
                           decoration: const InputDecoration(
@@ -230,7 +230,7 @@ class _AddCustomerPageState extends BaseState<AddCustomerPage> {
                         margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
                         child: TextField(
                           cursorColor: black,
-                          controller: _areaNameController,
+                          controller: areaNameController,
                           keyboardType: TextInputType.text,
                           style: const TextStyle(fontWeight: FontWeight.w600, color: black, fontSize: 16),
                           decoration: const InputDecoration(
@@ -243,7 +243,7 @@ class _AddCustomerPageState extends BaseState<AddCustomerPage> {
                         margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
                         child: TextField(
                           cursorColor: black,
-                          controller: _cityController,
+                          controller: cityController,
                           keyboardType: TextInputType.text,
                           style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
                           decoration: const InputDecoration(
@@ -257,7 +257,7 @@ class _AddCustomerPageState extends BaseState<AddCustomerPage> {
                         margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
                         child: TextField(
                           cursorColor: black,
-                          controller: _pincodeController,
+                          controller: pinCodeController,
                           keyboardType: TextInputType.number,
                           maxLength: 6,
                           style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
@@ -275,7 +275,7 @@ class _AddCustomerPageState extends BaseState<AddCustomerPage> {
                         margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
                         child: TextField(
                           cursorColor: black,
-                          controller: _countryController,
+                          controller: countryController,
                           keyboardType: TextInputType.text,
                           style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
                           decoration: const InputDecoration(
@@ -289,8 +289,8 @@ class _AddCustomerPageState extends BaseState<AddCustomerPage> {
                         margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
                         child: TextField(
                           cursorColor: black,
-                          controller: _contactPersonController,
-                          keyboardType: TextInputType.text,
+                          controller: contactPersonController,
+                          keyboardType: TextInputType.name,
                           style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
                           decoration: const InputDecoration(
                             labelText: 'Contact Person',
@@ -303,7 +303,7 @@ class _AddCustomerPageState extends BaseState<AddCustomerPage> {
                         margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
                         child: TextField(
                           cursorColor: black,
-                          controller: _GSTTypeController,
+                          controller: GSTTypeController,
                           keyboardType: TextInputType.text,
                           readOnly: true,
                           style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
@@ -321,7 +321,7 @@ class _AddCustomerPageState extends BaseState<AddCustomerPage> {
                         margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
                         child: TextField(
                           cursorColor: black,
-                          controller: _stateController,
+                          controller: stateController,
                           keyboardType: TextInputType.text,
                           style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
                           decoration: const InputDecoration(
@@ -335,7 +335,7 @@ class _AddCustomerPageState extends BaseState<AddCustomerPage> {
                         margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
                         child: TextField(
                           cursorColor: black,
-                          controller: _parentController,
+                          controller: parentController,
                           keyboardType: TextInputType.text,
                           style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
                           decoration: const InputDecoration(
@@ -349,7 +349,7 @@ class _AddCustomerPageState extends BaseState<AddCustomerPage> {
                         margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
                         child: TextField(
                           cursorColor: black,
-                          controller: _GSTApplicableController,
+                          controller: GSTApplicableController,
                           keyboardType: TextInputType.text,
                           readOnly: true,
                           style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
@@ -367,7 +367,7 @@ class _AddCustomerPageState extends BaseState<AddCustomerPage> {
                         margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
                         child: TextField(
                           cursorColor: black,
-                          controller: _creditDaysController,
+                          controller: creditDaysController,
                           keyboardType: TextInputType.number,
                           maxLength: 3,
                           style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
@@ -385,7 +385,7 @@ class _AddCustomerPageState extends BaseState<AddCustomerPage> {
                         margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
                         child: TextField(
                           cursorColor: black,
-                          controller: _bankDetailController,
+                          controller: bankDetailController,
                           keyboardType: TextInputType.text,
                           style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
                           decoration: const InputDecoration(
@@ -399,7 +399,7 @@ class _AddCustomerPageState extends BaseState<AddCustomerPage> {
                         margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
                         child: TextField(
                           cursorColor: black,
-                          controller: _ledgerEmailController,
+                          controller: ledgerEmailController,
                           keyboardType: TextInputType.emailAddress,
                           style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
                           decoration: const InputDecoration(
@@ -412,7 +412,7 @@ class _AddCustomerPageState extends BaseState<AddCustomerPage> {
                         margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
                         child: TextField(
                           cursorColor: black,
-                          controller: _ledgerPhoneController,
+                          controller: ledgerPhoneController,
                           keyboardType: TextInputType.number,
                           maxLength: 10,
                           style: const TextStyle(fontWeight: FontWeight.w600, color: black, fontSize: 16),
@@ -431,7 +431,7 @@ class _AddCustomerPageState extends BaseState<AddCustomerPage> {
                         margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
                         child: TextField(
                           cursorColor: black,
-                          controller: _ledgerContactController,
+                          controller: ledgerContactController,
                           keyboardType: TextInputType.name,
                           style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
                           decoration: const InputDecoration(
@@ -445,7 +445,7 @@ class _AddCustomerPageState extends BaseState<AddCustomerPage> {
                         margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
                         child: TextField(
                           cursorColor: black,
-                          controller: _ledgerMobileController,
+                          controller: ledgerMobileController,
                           keyboardType: TextInputType.number,
                           maxLength: 10,
                           style: const TextStyle(fontWeight: FontWeight.w600, color: black, fontSize: 16),
@@ -464,8 +464,8 @@ class _AddCustomerPageState extends BaseState<AddCustomerPage> {
                         margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
                         child: TextField(
                           cursorColor: black,
-                          controller: _ledgerBankNameController,
-                          keyboardType: TextInputType.name,
+                          controller: ledgerBankNameController,
+                          keyboardType: TextInputType.text,
                           style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
                           decoration: const InputDecoration(
                             labelText: 'Ledger Bank Name',
@@ -478,8 +478,8 @@ class _AddCustomerPageState extends BaseState<AddCustomerPage> {
                         margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
                         child: TextField(
                           cursorColor: black,
-                          controller: _ledgerBankACNoController,
-                          keyboardType: TextInputType.name,
+                          controller: ledgerBankACNoController,
+                          keyboardType: TextInputType.number,
                           maxLength: 17,
                           style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
                           decoration: const InputDecoration(
@@ -487,14 +487,18 @@ class _AddCustomerPageState extends BaseState<AddCustomerPage> {
                             counterText: '',
                             prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
                           ),
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
                         ),
                       ),
                       Container(
                         margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
                         child: TextField(
                           cursorColor: black,
-                          controller: _ledgerBankIFSCCodeController,
+                          controller: ledgerBankIFSCCodeController,
                           keyboardType: TextInputType.text,
+                          textCapitalization: TextCapitalization.characters,
                           style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
                           decoration: const InputDecoration(
                             labelText: 'Ledger IFSC Code',
@@ -507,7 +511,7 @@ class _AddCustomerPageState extends BaseState<AddCustomerPage> {
                         margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
                         child: TextField(
                           cursorColor: black,
-                          controller: _ledgerBankSwiftCodeController,
+                          controller: ledgerBankSwiftCodeController,
                           keyboardType: TextInputType.text,
                           textCapitalization: TextCapitalization.characters,
                           style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
@@ -522,7 +526,7 @@ class _AddCustomerPageState extends BaseState<AddCustomerPage> {
                         margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
                         child: TextField(
                           cursorColor: black,
-                          controller: _GSTINNoController,
+                          controller: GSTINNoController,
                           keyboardType: TextInputType.text,
                           textCapitalization: TextCapitalization.characters,
                           maxLength: 15,
@@ -538,21 +542,25 @@ class _AddCustomerPageState extends BaseState<AddCustomerPage> {
                         margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
                         child: TextField(
                           cursorColor: black,
-                          controller: _creditLimitController,
+                          controller: creditLimitController,
                           keyboardType: TextInputType.number,
+                          maxLength: 10,
                           style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
                           decoration: const InputDecoration(
                             labelText: 'Credit Limit',
                             counterText: '',
                             prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
                           ),
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
                         ),
                       ),
                       /*Container(
                         margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
                         child: TextField(
                           cursorColor: black,
-                          controller: _companyIDController,
+                          controller: companyIDController,
                           keyboardType: TextInputType.text,
                           style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
                           decoration: const InputDecoration(
@@ -566,7 +574,7 @@ class _AddCustomerPageState extends BaseState<AddCustomerPage> {
                         margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
                         child: TextField(
                           cursorColor: black,
-                          controller: _tallyIDController,
+                          controller: tallyIDController,
                           keyboardType: TextInputType.text,
                           style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
                           decoration: const InputDecoration(
@@ -577,7 +585,7 @@ class _AddCustomerPageState extends BaseState<AddCustomerPage> {
                         ),
                       ),*/
                       Container(
-                        margin: const EdgeInsets.only(top: 30, bottom: 20, left: 20, right: 20),
+                        margin: const EdgeInsets.only(top: 30, bottom: 30, left: 20, right: 20),
                         width: double.infinity,
                         decoration: BoxDecoration(
                             gradient: const LinearGradient(
@@ -590,30 +598,35 @@ class _AddCustomerPageState extends BaseState<AddCustomerPage> {
                         child: TextButton(
                           onPressed: () {
                             FocusScope.of(context).requestFocus(FocusNode());
-                            String name = _customerNameController.text.toString();
-                            String addressLine1 = _addressLine1Controller.text.toString();
-                            String addressLine2 = _addressLine2Controller.text.toString();
-                            String area = _areaNameController.text.toString();
-                            String city = _cityController.text.toString();
-                            String pinCode = _pincodeController.text.toString();
-                            String country = _countryController.text.toString();
-                            String state = _stateController.text.toString();
-                            String gstNo = _GSTINNoController.text.toString();
-                            String creditDays = _creditDaysController.text.toString();
+                            String name = customerNameController.text.toString();
+                            String addressLine1 = addressLine1Controller.text.toString();
+                            String addressLine2 = addressLine2Controller.text.toString();
+                            String area = areaNameController.text.toString();
+                            String city = cityController.text.toString();
+                            String pinCode = pinCodeController.text.toString();
+                            String country = countryController.text.toString();
+                            String state = stateController.text.toString();
+                            String creditDays = creditDaysController.text.toString();
+                            String ledgerEmail = ledgerEmailController.text.toString();
+                            String ledgerPhone = ledgerPhoneController.text.toString();
+                            String ledgerMobile = ledgerMobileController.text.toString();
+                            String ledgerIfsc = ledgerBankIFSCCodeController.text.toString();
+                            String swiftCode = ledgerBankSwiftCodeController.text.toString();
+                            String gstNo = GSTINNoController.text.toString();
 
                             if (name.trim().isEmpty) {
                               showSnackBar("Please enter a name", context);
-                            }
-                            else if (_ledgerEmailController.text.isNotEmpty && !isValidEmail(_ledgerEmailController.text.trim())) {
+                            } else if (ledgerEmail.isNotEmpty && !isValidEmail(ledgerEmail.trim())) {
                               showSnackBar("Please enter valid email", context);
-                            }
-                            else if (_ledgerPhoneController.text.trim().length > 0 && _ledgerPhoneController.text.trim().length != 8) {
+                            } else if (ledgerPhone.trim().isNotEmpty && ledgerPhone.trim().length != 8) {
                               showSnackBar('Please enter valid phone number',context);
-                            }
-                            else if (_ledgerMobileController.text.trim().length > 0 && _ledgerMobileController.text.trim().length != 10) {
-                              showSnackBar('Please enter valid phone number',context);
-                            }
-                            else if (gstNo.isNotEmpty && !isValidGSTNo(gstNo.trim())) {
+                            } else if (ledgerMobile.trim().isNotEmpty && ledgerMobile.trim().length != 10) {
+                              showSnackBar('Please enter valid mobile number',context);
+                            } else if (ledgerIfsc.trim().isNotEmpty && !isValidIFSCCode(ledgerIfsc.trim())) {
+                              showSnackBar('Please enter valid IFSC number',context);
+                            } else if (swiftCode.trim().isNotEmpty && !isValidSwiftCode(swiftCode.trim())) {
+                              showSnackBar('Please enter valid SWIFT Code',context);
+                            } else if (gstNo.trim().isNotEmpty && !isValidGSTNo(gstNo.trim())) {
                               showSnackBar('Please enter valid GST number',context);
                             }
                             // else if (creditDays.trim().isNotEmpty && int.parse(creditDays.trim()) > 365) {
@@ -688,9 +701,7 @@ class _AddCustomerPageState extends BaseState<AddCustomerPage> {
                 child: Column(
                   children: [
                     Container(height: 2, width: 40, color: kBlue, margin: const EdgeInsets.only(bottom: 12)),
-                    const Text(
-                      "Select GST Type",
-                      textAlign: TextAlign.center,
+                    const Text("Select GST Type", textAlign: TextAlign.center,
                       style: TextStyle(color: black, fontWeight: FontWeight.bold, fontSize: 16),
                     ),
                     Container(height: 12),
@@ -698,7 +709,7 @@ class _AddCustomerPageState extends BaseState<AddCustomerPage> {
                       onTap: () async {
                         Navigator.pop(context);
                         setState(() {
-                          _GSTTypeController.text = "Regular";
+                          GSTTypeController.text = "Regular";
                         });
                       },
                       child: Container(
@@ -719,7 +730,7 @@ class _AddCustomerPageState extends BaseState<AddCustomerPage> {
                       onTap: () async {
                         Navigator.pop(context);
                         setState(() {
-                          _GSTTypeController.text = "Unregistered";
+                          GSTTypeController.text = "Unregistered";
                         });
                       },
                       child: Container(
@@ -757,8 +768,7 @@ class _AddCustomerPageState extends BaseState<AddCustomerPage> {
                 child: Column(
                   children: [
                     Container(height: 2, width: 40, color: kBlue, margin: const EdgeInsets.only(bottom: 12)),
-                    const Text(
-                      "Select GST Applicable",
+                    const Text("Select GST Applicable",
                       textAlign: TextAlign.center,
                       style: TextStyle(color: black, fontWeight: FontWeight.bold, fontSize: 16),
                     ),
@@ -767,14 +777,13 @@ class _AddCustomerPageState extends BaseState<AddCustomerPage> {
                       onTap: () async {
                         Navigator.pop(context);
                         setState(() {
-                          _GSTApplicableController.text = "Yes";
+                          GSTApplicableController.text = "Yes";
                         });
                       },
                       child: Container(
                         padding: const EdgeInsets.only(left: 18, right: 18, top: 15, bottom: 15),
                         alignment: Alignment.topLeft,
-                        child: const Text(
-                          "Yes",
+                        child: const Text("Yes",
                           textAlign: TextAlign.start,
                           style: TextStyle(fontSize: 15, color: black, fontWeight: FontWeight.normal),
                         ),
@@ -788,14 +797,13 @@ class _AddCustomerPageState extends BaseState<AddCustomerPage> {
                       onTap: () async {
                         Navigator.pop(context);
                         setState(() {
-                          _GSTApplicableController.text = "No";
+                          GSTApplicableController.text = "No";
                         });
                       },
                       child: Container(
                         alignment: Alignment.topLeft,
                         padding: const EdgeInsets.only(left: 18, right: 18, top: 15, bottom: 15),
-                        child: const Text(
-                          "No",
+                        child: const Text("No",
                           textAlign: TextAlign.start,
                           style: TextStyle(fontSize: 15, color: black, fontWeight: FontWeight.normal),
                         ),
@@ -821,36 +829,36 @@ class _AddCustomerPageState extends BaseState<AddCustomerPage> {
     final url = Uri.parse(BASE_URL + addCustomer);
 
     Map<String, String> jsonBody = {
-      'PartyName': _customerNameController.value.text.trim(),
-      'Address1': _addressLine1Controller.value.text.trim(),
-      'Address2': _addressLine2Controller.value.text.trim(),
-      'Address3': _addressLine3Controller.value.text.trim(),
-      'Address4': _addressLine4Controller.value.text.trim(),
-      'Address5': _addressLine5Controller.value.text.trim(),
-      'CityName': _cityController.value.text.trim(),
-      'PinCode': _pincodeController.value.text.trim(),
-      'Country': _countryController.value.text.trim(),
-      'ContactPerson': _contactPersonController.value.text.trim(),
-      'Parent': _parentController.value.text.trim(),
-      'GSTApplicable': _GSTApplicableController.value.text.trim(),
-      'CreditDays': _creditDaysController.value.text.trim(),
-      'BankDetail': _bankDetailController.value.text.trim(),
-      'LedgerEmail': _ledgerEmailController.value.text.trim(),
-      'LedgerPhone': _ledgerPhoneController.value.text.trim(),
-      'LedgerContact': _ledgerContactController.value.text.trim(),
-      'LedgerMobile': _ledgerMobileController.value.text.trim(),
-      'LedBankName': _ledgerBankNameController.value.text.trim(),
-      'LedBankACNo': _ledgerBankACNoController.value.text.trim(),
-      'LedBankIFSCCode': _ledgerBankIFSCCodeController.value.text.trim(),
-      'LedBankSwiftCode': _ledgerBankSwiftCodeController.value.text.trim(),
-      'CreditLimit': _creditLimitController.value.text.trim(),
+      'PartyName': customerNameController.value.text.trim(),
+      'Address1': addressLine1Controller.value.text.trim(),
+      'Address2': addressLine2Controller.value.text.trim(),
+      'Address3': addressLine3Controller.value.text.trim(),
+      'Address4': addressLine4Controller.value.text.trim(),
+      'Address5': addressLine5Controller.value.text.trim(),
+      'CityName': cityController.value.text.trim(),
+      'PinCode': pinCodeController.value.text.trim(),
+      'Country': countryController.value.text.trim(),
+      'ContactPerson': contactPersonController.value.text.trim(),
+      'Parent': parentController.value.text.trim(),
+      'GSTApplicable': GSTApplicableController.value.text.trim(),
+      'CreditDays': creditDaysController.value.text.trim(),
+      'BankDetail': bankDetailController.value.text.trim(),
+      'LedgerEmail': ledgerEmailController.value.text.trim(),
+      'LedgerPhone': ledgerPhoneController.value.text.trim(),
+      'LedgerContact': ledgerContactController.value.text.trim(),
+      'LedgerMobile': ledgerMobileController.value.text.trim(),
+      'LedBankName': ledgerBankNameController.value.text.trim(),
+      'LedBankACNo': ledgerBankACNoController.value.text.trim(),
+      'LedBankIFSCCode': ledgerBankIFSCCodeController.value.text.trim(),
+      'LedBankSwiftCode': ledgerBankSwiftCodeController.value.text.trim(),
+      'CreditLimit': creditLimitController.value.text.trim(),
       'CmpID': "RBC",
-      'TallyID': _tallyIDController.value.text.trim(),
+      'TallyID': tallyIDController.value.text.trim(),
       'from_app' : FROM_APP,
-      'AreaName': _areaNameController.value.text.trim(),
-      'State': _stateController.value.text.trim(),
-      'GSTType' : _GSTTypeController.value.text.trim(),
-      'GSTINNo' : _GSTINNoController.value.text.trim(),
+      'AreaName': areaNameController.value.text.trim(),
+      'State': stateController.value.text.trim(),
+      'GSTType' : GSTTypeController.value.text.trim(),
+      'GSTINNo' : GSTINNoController.value.text.trim(),
       'customer_id' : '',
     };
 
@@ -889,37 +897,37 @@ class _AddCustomerPageState extends BaseState<AddCustomerPage> {
     final url = Uri.parse(BASE_URL + addCustomer);
 
     Map<String, String> jsonBody = {
-      'PartyName': _customerNameController.value.text.trim(),
-      'Address1': _addressLine1Controller.value.text.trim(),
-      'Address2': _addressLine2Controller.value.text.trim(),
-      'Address3': _addressLine3Controller.value.text.trim(),
-      'Address4': _addressLine4Controller.value.text.trim(),
-      'Address5': _addressLine5Controller.value.text.trim(),
-      'CityName': _cityController.value.text.trim(),
-      'PinCode': _pincodeController.value.text.trim(),
-      'Country': _countryController.value.text.trim(),
-      'ContactPerson': _contactPersonController.value.text.trim(),
-      'Parent': _parentController.value.text.trim(),
-      'GSTApplicable': _GSTApplicableController.value.text.trim(),
-      'CreditDays': _creditDaysController.value.text.trim(),
-      'BankDetail': _bankDetailController.value.text.trim(),
-      'LedgerEmail': _ledgerEmailController.value.text.trim(),
-      'LedgerPhone': _ledgerPhoneController.value.text.trim(),
-      'LedgerContact': _ledgerContactController.value.text.trim(),
-      'LedgerMobile': _ledgerMobileController.value.text.trim(),
-      'LedBankName': _ledgerBankNameController.value.text.trim(),
-      'LedBankACNo': _ledgerBankACNoController.value.text.trim(),
-      'LedBankIFSCCode': _ledgerBankIFSCCodeController.value.text.trim(),
-      'LedBankSwiftCode': _ledgerBankSwiftCodeController.value.text.trim(),
-      'CreditLimit': _creditLimitController.value.text.trim(),
+      'PartyName': customerNameController.value.text.trim(),
+      'Address1': addressLine1Controller.value.text.trim(),
+      'Address2': addressLine2Controller.value.text.trim(),
+      'Address3': addressLine3Controller.value.text.trim(),
+      'Address4': addressLine4Controller.value.text.trim(),
+      'Address5': addressLine5Controller.value.text.trim(),
+      'CityName': cityController.value.text.trim(),
+      'PinCode': pinCodeController.value.text.trim(),
+      'Country': countryController.value.text.trim(),
+      'ContactPerson': contactPersonController.value.text.trim(),
+      'Parent': parentController.value.text.trim(),
+      'GSTApplicable': GSTApplicableController.value.text.trim(),
+      'CreditDays': creditDaysController.value.text.trim(),
+      'BankDetail': bankDetailController.value.text.trim(),
+      'LedgerEmail': ledgerEmailController.value.text.trim(),
+      'LedgerPhone': ledgerPhoneController.value.text.trim(),
+      'LedgerContact': ledgerContactController.value.text.trim(),
+      'LedgerMobile': ledgerMobileController.value.text.trim(),
+      'LedBankName': ledgerBankNameController.value.text.trim(),
+      'LedBankACNo': ledgerBankACNoController.value.text.trim(),
+      'LedBankIFSCCode': ledgerBankIFSCCodeController.value.text.trim(),
+      'LedBankSwiftCode': ledgerBankSwiftCodeController.value.text.trim(),
+      'CreditLimit': creditLimitController.value.text.trim(),
       'CmpID': "RBC",
       'TallyID': "1",
       'from_app' : FROM_APP,
       'customer_id' : checkValidString((widget as AddCustomerPage).getSet.customerId.toString()),
-      'AreaName': _areaNameController.value.text.trim(),
-      'State': _stateController.value.text.trim(),
-      'GSTType' : _GSTTypeController.value.text.trim(),
-      'GSTINNo' : _GSTINNoController.value.text.trim()
+      'AreaName': areaNameController.value.text.trim(),
+      'State': stateController.value.text.trim(),
+      'GSTType' : GSTTypeController.value.text.trim(),
+      'GSTINNo' : GSTINNoController.value.text.trim()
     };
 
     final response = await http.post(url, body: jsonBody);
@@ -945,8 +953,7 @@ class _AddCustomerPageState extends BaseState<AddCustomerPage> {
       });
     }
   }
-
-
+  
   @override
   void castStatefulWidget() {
     // TODO: implement castStatefulWidget

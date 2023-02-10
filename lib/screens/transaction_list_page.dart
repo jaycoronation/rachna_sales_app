@@ -259,13 +259,16 @@ class _TransactionListPageState extends BaseState<TransactionListPage> {
                                 color: black,
                               ),
                               onTap: () {
-                                setState(() {
-                                  isCustomerListReload = false;
-                                  searchController.text = "";
-                                  searchText = "";
-                                });
+                                if(searchController.text.isNotEmpty) {
+                                  setState(() {
+                                    isCustomerListReload = false;
+                                    searchController.text = "";
+                                    searchText = "";
+                                  });
 
-                                _getTransactionListData(true);
+                                  _getTransactionListData(true);
+                                }
+
                               },
                             )
                         ),

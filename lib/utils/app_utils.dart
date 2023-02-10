@@ -154,6 +154,19 @@ bool isValidGSTNo(String ? input) {
   }
 }
 
+bool isValidIFSCCode(String ? input) {
+  try {
+    return RegExp(r'^[A-Za-z]{4}[a-zA-Z0-9]{7}$')
+        .hasMatch(input!);
+  } catch (e) {
+    if (kDebugMode) {
+      print(e);
+    }
+    return false;
+  }
+}
+
+
 bool isValidSwiftCode(String ? input) {
   try {
     return RegExp(r'^[A-Z]{6}[A-Z0-9]{2}([A-Z0-9]{3})?$')

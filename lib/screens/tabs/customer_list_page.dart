@@ -1,10 +1,10 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pretty_http_logger/pretty_http_logger.dart';
@@ -18,6 +18,7 @@ import '../../network/api_end_point.dart';
 import '../../utils/app_utils.dart';
 import '../../utils/base_class.dart';
 import '../../widget/loading.dart';
+import '../../widget/no_data.dart';
 import '../../widget/no_internet.dart';
 
 class CustomerListPage extends StatefulWidget {
@@ -94,17 +95,6 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
         automaticallyImplyLeading: false,
         title: const Text(""),
         actions: [
-         /* GestureDetector(
-            onTap: () {
-            },
-            child: Container(
-              height: 45,
-              width: 45,
-              alignment: Alignment.center,
-              child: const Icon(Icons.search, color: white, size: 28,),
-            ),
-          ),*/
-
           Container(
             margin: const EdgeInsets.only(top: 12, bottom: 12, right: 3),
             child: GestureDetector(
@@ -117,7 +107,7 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
                 width: 36,
                 decoration: BoxDecoration(
                     border: Border.all(width: 1, color: kLightestPurple),
-                    borderRadius: const BorderRadius.all(Radius.circular(14.0),),
+                    borderRadius: const BorderRadius.all(Radius.circular(14.0)),
                     color: white,
                     shape: BoxShape.rectangle
                 ),
@@ -151,7 +141,7 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
                     )
                 );
 
-                if(result !=null)
+                if(result != null)
                 {
                   DateTime? startDate = result.start;
                   DateTime? endDate = result.end;
@@ -165,7 +155,7 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
                   dateStartSelectionChanged = startDateFormat;
                   dateEndSelectionChanged = endDateFormat;
 
-                  if(isInternetConnected) {
+                  if (isInternetConnected) {
                     _getCustomerListData(true);
                   }else {
                     noInterNet(context);
@@ -259,13 +249,15 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
                                     color: black,
                                   ),
                                   onTap: () {
-                                    setState(() {
-                                      isCustomerListReload = false;
-                                      searchController.text = "";
-                                      searchText = "";
-                                    });
 
-                                    _getCustomerListData(true);
+                                    if (searchController.text.isNotEmpty) {
+                                      setState(() {
+                                        isCustomerListReload = false;
+                                        searchController.text = "";
+                                        searchText = "";
+                                      });
+                                      _getCustomerListData(true);
+                                    }
                                   },
                                 )
                             ),
@@ -415,6 +407,7 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
             Stack(
               alignment: Alignment.center,
               children: [
+                listCustomer.isNotEmpty ?
                 ListView.builder(
                     scrollDirection: Axis.vertical,
                     physics: const NeverScrollableScrollPhysics(),
@@ -433,79 +426,52 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
                             // _redirectToAddCustomer(context, getSet, true);
                           },
                           child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              Container(
+                                margin: const EdgeInsets.only(left: 10, right: 5, bottom: 8),
+                                child: Text(checkValidString(toDisplayCase(listCustomer[index].customerName.toString().trim())),
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 3,
+                                  textAlign: TextAlign.start,
+                                  style: const TextStyle(fontSize: 15, color: black, fontWeight: FontWeight.w700),
+                                ),
+                              ),
+  /*                            Container(
+                                margin: const EdgeInsets.only(left: 10, right: 5),
+                                child: const Text("Pending amount : ",
+                                  overflow: TextOverflow.ellipsis,
+                                  textAlign: TextAlign.start,
+                                  style: TextStyle(fontSize: 14, color: black, fontWeight: FontWeight.w400),
+                                ),
+                              ),*/
                               Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Expanded(
-                                              child: Container(
-                                                margin: const EdgeInsets.only(left: 10,right: 5),
-                                                child: Text(checkValidString(listCustomer[index].customerName.toString().trim()),
-                                                  overflow: TextOverflow.ellipsis,
-                                                  maxLines: 3,
-                                                  textAlign: TextAlign.start,
-                                                  style: const TextStyle(fontSize: 15, color: black, fontWeight: FontWeight.w700),
-                                                ),
-                                              ),
-                                            ),
-                                            /*Container(
-                                              margin: const EdgeInsets.only(right: 10),
-                                              alignment: Alignment.bottomLeft,
-                                              child: RichText(
-                                                textAlign: TextAlign.center,
-                                                text: TextSpan(
-                                                  text: '₹ ',
-                                                  style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: black),
-                                                  children: <TextSpan>[
-                                                    TextSpan(text: checkValidString(listCustomer[index].customerTotalSale.toString()),
-                                                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: black),
-                                                        recognizer: TapGestureRecognizer()..onTap = () => {
-                                                        }),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),*/
-                                          ],
-                                        ),
-                                        const Gap(5),
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Container(
-                                              margin: const EdgeInsets.only(left: 10,),
-                                              child: RichText(
-                                                textAlign: TextAlign.center,
-                                                text: TextSpan(
-                                                  text: 'Total Sale : ',
-                                                  style:  const TextStyle(fontSize: 13, fontWeight: FontWeight.w400, color: kGray),
-                                                  children: <TextSpan>[
-                                                    TextSpan(text:checkValidString(getPrice(listCustomer[index].customerTotalSale.toString())),
-                                                        style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: black),
-                                                        recognizer: TapGestureRecognizer()..onTap = () => {
-                                                        }),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                            IconButton(
-                                              icon: const Icon(Icons.delete_outline_outlined, color: black, size: 24,),
-                                              iconSize: 24,
-                                              alignment: Alignment.center,
-                                              onPressed: () async {
-                                                _deleteCustomer(listCustomer[index], index);
-                                              },
-                                            ),
-                                          ],
-                                        ),
-                                      ],
+                                  Container(
+                                    margin: const EdgeInsets.only(left: 10,),
+                                    child: RichText(
+                                      textAlign: TextAlign.center,
+                                      text: TextSpan(
+                                        text: 'Total Sale : ',
+                                        style:  const TextStyle(fontSize: 13, fontWeight: FontWeight.w400, color: kGray),
+                                        children: <TextSpan>[
+                                          TextSpan(text:checkValidString(getPrice(listCustomer[index].customerTotalSale.toString())),
+                                              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: black),
+                                              recognizer: TapGestureRecognizer()..onTap = () => {
+                                              }),
+                                        ],
+                                      ),
                                     ),
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(Icons.delete_outline_outlined, color: black, size: 24,),
+                                    iconSize: 24,
+                                    alignment: Alignment.center,
+                                    onPressed: () async {
+                                      _deleteCustomer(listCustomer[index], index);
+                                    },
                                   ),
                                 ],
                               ),
@@ -516,11 +482,13 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
                           ),
                         ),
                       ),
-                    )),
+                    ))
+                : const SizedBox(height: 60,
+                    child: MyNoDataWidget(msg: "", subMsg: "No customer found")),
                 Visibility(
                     visible: _isLoadingMore,
                     child: Positioned(
-                      bottom: 80,
+                      bottom: Platform.isAndroid ? 80 : 110,
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -545,8 +513,7 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
   }
 
   void pagination() {
-    if(!_isLastPage && !_isLoadingMore)
-    {
+    if(!_isLastPage && !_isLoadingMore) {
       if ((_scrollViewController.position.pixels == _scrollViewController.position.maxScrollExtent)) {
         setState(() {
           _isLoadingMore = true;

@@ -33,9 +33,9 @@ class MyNoDataWidget extends StatelessWidget {
                     ),
                     const Gap(6),
                     */
-                    Text(msg, style: const TextStyle(color: black, fontSize: 20, fontWeight: FontWeight.bold,),),
+                    Text(msg, style: const TextStyle(color: black, fontSize: 20, fontWeight: FontWeight.bold)),
                     const Gap(6),
-                    Text(subMsg, style: const TextStyle(color: black, fontSize: 18, fontWeight: FontWeight.w500,), textAlign: TextAlign.center,)
+                    Text(subMsg, style: const TextStyle(color: black, fontSize: 18, fontWeight: FontWeight.w500), textAlign: TextAlign.center,)
                   ],
                 ),
               ),

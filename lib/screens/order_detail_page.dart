@@ -433,14 +433,12 @@ class _OrderDetailPageState extends BaseState<OrderDetailPage> {
 
       // print("orderItems?.length====>" + orderDetailResponseModel.order!.orderItems!.length.toString());
 
-
       listOrderItems = [];
       if(orderDetailResponseModel.order != null) {
         if(orderDetailResponseModel.order!.orderItems!.isNotEmpty) {
           listOrderItems = orderDetailResponseModel.order!.orderItems ?? [];
         }
       }
-      showSnackBar(dataResponse.message, context);
 
       setState(() {
         _isLoading = false;

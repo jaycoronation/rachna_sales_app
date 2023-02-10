@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -137,12 +138,9 @@ class _SelectCustomerListPageState extends BaseState<SelectCustomerListPage> {
           children: [
             Container(
               color: kBlue,
-              child: Container(
-                color: kBlue,
-                alignment: Alignment.topLeft,
-                padding: const EdgeInsets.only(left: 22, top: 10, bottom: 10),
-                child: const Text("Customers", style: TextStyle(fontWeight: FontWeight.w700, color: white,fontSize: 20)),
-              ),
+              alignment: Alignment.topLeft,
+              padding: const EdgeInsets.only(left: 22, top: 10, bottom: 10),
+              child: const Text("Customers", style: TextStyle(fontWeight: FontWeight.w700, color: white,fontSize: 20)),
             ),
             Container(
               color: kLightestPurple,
@@ -173,7 +171,18 @@ class _SelectCustomerListPageState extends BaseState<SelectCustomerListPage> {
                           borderRadius: BorderRadius.circular(8),
                         ),
                         hintStyle: const TextStyle(fontWeight: FontWeight.w400, color: kBlue, fontSize: 14),
-                        prefixIcon: const Icon(Icons.search, size: 26, color: kBlue,)
+                        prefixIcon: const Icon(Icons.search, size: 26, color: kBlue,),
+                        suffixIcon: InkWell(
+                          child: const Icon(Icons.close, size: 26, color: black,),
+                          onTap: () {
+                            if (searchController.text.isNotEmpty) {
+                              setState(() {
+                                searchController.clear();
+                                _templistCustomer.clear();
+                              });
+                            }
+                          },
+                        )
                     ),
                     onChanged: (text) {
                       if(text.isNotEmpty) {
@@ -191,51 +200,59 @@ class _SelectCustomerListPageState extends BaseState<SelectCustomerListPage> {
               ),
             ),
             Expanded(
-              child: ListView.builder(
-                  scrollDirection: Axis.vertical,
-                  physics: const ScrollPhysics(),
-                  primary: false,
-                  shrinkWrap: true,
-                  itemCount: (_templistCustomer.isNotEmpty) ? _templistCustomer.length : listCustomer.length,
-                  itemBuilder: (ctx, index) => InkWell(
-                    hoverColor: Colors.white.withOpacity(0.0),
-                    onTap: () async {
-                      if (_templistCustomer.isNotEmpty) {
-                        Navigator.pop(context, _templistCustomer[index]);
-                      }else {
-                        Navigator.pop(context, listCustomer[index]);
-                      }
-                    },
-                    child: Container(
-                      color: white,
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: (_templistCustomer.isNotEmpty)
-                            ? _showBottomSheetForCustomerList(
-                            index, _templistCustomer)
-                            : _showBottomSheetForCustomerList(
-                            index, listCustomer),
-                      ),
-                    ),
-                  )),
-            ),
-            if (_isLoadingMore == true)
-              Container(
-                padding: const EdgeInsets.only(top: 10, bottom: 10),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                        width: 30,
-                        height: 30,
-                        child: Lottie.asset('assets/images/loader_new.json', repeat: true, animate: true, frameRate: FrameRate.max)),
-                    const Text(' Loading more...',
-                        style: TextStyle(color: black, fontWeight: FontWeight.w400, fontSize: 16)
-                    )
-                  ],
-                ),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  ListView.builder(
+                    controller: _scrollViewController,
+                      scrollDirection: Axis.vertical,
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      primary: false,
+                      shrinkWrap: true,
+                      itemCount: (_templistCustomer.isNotEmpty) ? _templistCustomer.length : listCustomer.length,
+                      itemBuilder: (ctx, index) => Container(
+                        color: white,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 15, right: 15, bottom: 5),
+                          child: GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: () {
+                              if (_templistCustomer.isNotEmpty) {
+                                Navigator.pop(context, _templistCustomer[index]);
+                              }else {
+                                Navigator.pop(context, listCustomer[index]);
+                              }
+                            },
+                            child: (_templistCustomer.isNotEmpty)
+                                ? _showBottomSheetForCustomerList(
+                                index, _templistCustomer)
+                                : _showBottomSheetForCustomerList(
+                                index, listCustomer),
+                          ),
+                        ),
+                      )),
+                  Visibility(
+                      visible: _isLoadingMore,
+                      child: Positioned(
+                        bottom: Platform.isAndroid ? 0 : 20,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                                width: 30,
+                                height: 30,
+                                child: Lottie.asset('assets/images/loader_new.json', repeat: true, animate: true, frameRate: FrameRate.max)),
+                            const Text(
+                                ' Loading more...',
+                                style: TextStyle(color: black, fontWeight: FontWeight.w400, fontSize: 16)
+                            )
+                          ],
+                        ),
+                      )),
+                ],
               ),
+            ),
           ],
         ),
       ),
@@ -249,14 +266,14 @@ class _SelectCustomerListPageState extends BaseState<SelectCustomerListPage> {
   }
 
   List<CustomerList> _buildSearchListForCustomers(String customerSearchTerm) {
-    List<CustomerList> _searchList = [];
+    List<CustomerList> searchList = [];
     for (int i = 0; i < listCustomer.length; i++) {
       String name = listCustomer[i].customerName.toString().trim();
       if (name.toLowerCase().contains(customerSearchTerm.toLowerCase())) {
-        _searchList.add(listCustomer[i]);
+        searchList.add(listCustomer[i]);
       }
     }
-    return _searchList;
+    return searchList;
   }
 
   Widget _showBottomSheetForCustomerList(int index, List<CustomerList> listData) {
@@ -277,7 +294,7 @@ class _SelectCustomerListPageState extends BaseState<SelectCustomerListPage> {
               child: Text(listCustomer[index].customerName.toString().isNotEmpty ? getInitials(listCustomer[index].customerName.toString()) : "",
                 maxLines: 1,
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 11, color: kBlue, fontWeight: FontWeight.w400),
+                style: const TextStyle(fontSize: 11, color: kBlue, fontWeight: FontWeight.w400),
               ),
             ),
             Column(
@@ -302,7 +319,6 @@ class _SelectCustomerListPageState extends BaseState<SelectCustomerListPage> {
                     style: const TextStyle(fontSize: 13, color: black, fontWeight: FontWeight.w400),
                   ),
                 ),
-
                 /*Container(
                                       margin: const EdgeInsets.only(left: 10,),
                                       alignment: Alignment.center,
@@ -316,8 +332,8 @@ class _SelectCustomerListPageState extends BaseState<SelectCustomerListPage> {
           ],
         ),
         Container(
-            margin: const EdgeInsets.only(left: 5, right: 5),
-            height: index == 8-1 ? 0 : 0.8, color: kLightPurple),
+            margin: const EdgeInsets.only(left: 5, right: 5, top: 5),
+            height: index == listCustomer.length-1 ? 0 : 0.8, color: kLightPurple),
       ],
     );
   }
@@ -342,7 +358,7 @@ class _SelectCustomerListPageState extends BaseState<SelectCustomerListPage> {
       'from_app': FROM_APP,
       'limit': _pageResult.toString(),
       'page': _pageIndex.toString(),
-      'search': ''
+      'search': searchText
     };
 
     final response = await http.post(url, body: jsonBody);
@@ -366,13 +382,13 @@ class _SelectCustomerListPageState extends BaseState<SelectCustomerListPage> {
 
       if (customerListResponse.customerList != null) {
 
-        List<CustomerList>? _tempList = [];
-        _tempList = customerListResponse.customerList;
-        listCustomer.addAll(_tempList!);
+        List<CustomerList>? tempList = [];
+        tempList = customerListResponse.customerList;
+        listCustomer.addAll(tempList!);
 
-        if (_tempList.isNotEmpty) {
+        if (tempList.isNotEmpty) {
           _pageIndex += 1;
-          if (_tempList.isEmpty || _tempList.length % _pageResult != 0) {
+          if (tempList.isEmpty || tempList.length % _pageResult != 0) {
             _isLastPage = true;
           }
         }
@@ -381,7 +397,6 @@ class _SelectCustomerListPageState extends BaseState<SelectCustomerListPage> {
       setState(() {
         _isLoading = false;
         _isLoadingMore = false;
-        // isAddedOrRemovedProduct = true;
       });
 
     }else {

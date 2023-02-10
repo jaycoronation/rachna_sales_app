@@ -18,7 +18,6 @@ import '../network/api_end_point.dart';
 import '../utils/app_utils.dart';
 import '../utils/base_class.dart';
 import '../widget/loading.dart';
-import 'add_payement_detail_page.dart';
 
 class AddOrderPage extends StatefulWidget {
   final Order getSet;
@@ -93,7 +92,7 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
     return Scaffold(
       backgroundColor: appBG,
       resizeToAvoidBottomInset: true,
-      appBar:AppBar(
+      appBar: AppBar(
         systemOverlayStyle: SystemUiOverlayStyle.dark,
         toolbarHeight: 55,
         automaticallyImplyLeading: false,
@@ -163,7 +162,7 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
               ),
             ],
           ) :
-            Stack(
+          Stack(
               children: [
                 Container(
                   color: kLightestPurple,
@@ -175,8 +174,7 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
                           shape: BoxShape.rectangle
                       ),
                       margin: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 40),
-                      child:
-                      TextField(
+                      child: TextField(
                         keyboardType: TextInputType.text,
                         textCapitalization: TextCapitalization.sentences,
                         textAlign: TextAlign.start,
@@ -213,7 +211,7 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: Container(
-                    margin: EdgeInsets.only(top: 90 ),
+                    margin: const EdgeInsets.only(top: 90),
                     padding: const EdgeInsets.all(10),
                     alignment: Alignment.center,
                     width: MediaQuery.of(context).size.width / 3,
@@ -231,388 +229,397 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
                 ),
               ],
             ),
-            Gap(15),
-            Visibility(
-              visible: checkValidString(customerDetail.customerName).toString().isNotEmpty,
-              child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Container(
-                  alignment: Alignment.center,
-                  margin: const EdgeInsets.only(left:15,top: 15, bottom: 15),
-                  decoration: BoxDecoration(
-                      color: kLightestPurple,
-                      borderRadius: BorderRadius.circular(22)
-                  ),
-                  width: 40,
-                  height: 40,
-                  child: Text(customerDetail.customerName.toString().isNotEmpty ? getInitials(customerDetail.customerName.toString().trim()) : "",
-                    maxLines: 1,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 11, color: kBlue, fontWeight: FontWeight.w400),
-                  ),
+          const Gap(15),
+          Visibility(
+            visible: checkValidString(customerDetail.customerName).toString().isNotEmpty,
+            child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Container(
+                alignment: Alignment.center,
+                margin: const EdgeInsets.only(left:15,top: 15, bottom: 15),
+                decoration: BoxDecoration(
+                    color: kLightestPurple,
+                    borderRadius: BorderRadius.circular(22)
                 ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.only(left: 10),
-                      child: Text(checkValidString(customerDetail.customerName),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.start,
-                        style: const TextStyle(fontSize: 14, color: black, fontWeight: FontWeight.w600),
-                      ),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(left: 10, right: 10),
-                      child: Text("${checkValidString(customerDetail.addressLine1)}\n${checkValidString(customerDetail.addressLine2)}",
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 3,
-                        textAlign: TextAlign.start,
-                        style: const TextStyle(fontSize: 13, color: black, fontWeight: FontWeight.w400),
-                      ),
-                    ),
-                  ],
+                width: 40,
+                height: 40,
+                child: Text(customerDetail.customerName.toString().isNotEmpty ? getInitials(customerDetail.customerName.toString().trim()) : "",
+                  maxLines: 1,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(fontSize: 11, color: kBlue, fontWeight: FontWeight.w400),
                 ),
-              ],
-          )
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                    alignment: Alignment.topLeft,
-                    margin: const EdgeInsets.only(left: 20, top: 20, bottom: 10),
-                    child: const Text("Order Items", style: TextStyle(fontWeight: FontWeight.w600, color: kBlue, fontSize: 15))),
-                GestureDetector(
-                  onTap: () {
-                    _redirectToAddItem(context, listProduct, false);
-                  },
-                  child: Container(
-                      margin: const EdgeInsets.only(right: 20, top: 20, bottom: 10),
-                      decoration: BoxDecoration(
-                          color: white,
-                          border: Border.all(width: 1, color: kBlue),
-                          borderRadius: const BorderRadius.all(Radius.circular(8.0)),
-                          shape: BoxShape.rectangle
-                      ),
-                      alignment: Alignment.topRight,
-                      padding: const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
-                      child: const Text("Add Item", style: TextStyle(fontWeight: FontWeight.w400, color: kBlue, fontSize: 14))),
-                ),
-              ],
-            ),
-            ListView.builder(
-                scrollDirection: Axis.vertical,
-                physics: const NeverScrollableScrollPhysics(),
-                primary: false,
-                shrinkWrap: true,
-                itemCount: listProduct.length,
-                itemBuilder: (ctx, index) => Container(
-                  color: white,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 10, right: 10, top: 8, bottom: 5),
-                    child: GestureDetector(
-                      onTap: () {
-                      },
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    margin: const EdgeInsets.only(left:10, bottom: 6, top: 5),
-                                    child: Text(checkValidString(listProduct[index].stockName),
-                                        maxLines: 2,
-                                        overflow: TextOverflow.clip,
-                                        textAlign: TextAlign.start,
-                                        style: const TextStyle(fontWeight: FontWeight.w400, color: black, fontSize: 13)
-                                    ),
-                                  ),
-                                  Container(
-                                    margin: const EdgeInsets.only(left: 10),
-                                    child: Text("MRP ${checkValidString(listProduct[index].stockPrice)}",
-                                        textAlign: TextAlign.start,
-                                        style: const TextStyle(fontWeight: FontWeight.w400, color: black, fontSize: 13)
-                                    ),
-                                  ),
-                                  Container(
-                                      margin: const EdgeInsets.only( top: 5),
-                                      child: TextButton(onPressed: () {
-                                        setState(() {
-                                          listProduct.remove(listProduct[index]);
-                                        });
-                                      },
-                                        child: const Text("Remove",
-                                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400, color: kBlue),),
-                                      )
-                                  ),
-                                ],
-                              ),
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  Container(
-                                    alignment: Alignment.topRight,
-                                    margin: const EdgeInsets.only(bottom: 6),
-                                    child: Row(
-                                      children: [
-                                        IconButton(
-                                          onPressed: () {
-
-                                            if (listProduct[index].quantity == 1)
-                                              {
-                                                _deleteProduct(index);
-                                              }
-                                            else
-                                              {
-                                                listProduct[index].quantity = listProduct[index].quantity - 1;
-                                              }
-                                            getPriceCalculated();
-
-                                            getItemCalculation(listProduct[index], index);
-                                          },
-                                          icon: Image.asset('assets/images/ic_blue_minus.png', height: 24, width: 24),
-                                        ),
-                                        Text(listProduct[index].quantity.toString(),
-                                            style: const TextStyle(fontWeight: FontWeight.w400, color: black, fontSize: 13)),
-                                        IconButton(
-                                          onPressed: () {
-                                            listProduct[index].quantity = listProduct[index].quantity + 1;
-                                            getPriceCalculated();
-                                            getItemCalculation(listProduct[index], index);
-                                          },
-                                          icon:Image.asset('assets/images/ic_blue_add.png', height: 24, width: 24),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                  Container(
-                                    alignment: Alignment.center,
-                                    margin: const EdgeInsets.only(right: 10, bottom: 20),
-                                    child: Text("${checkValidString(getPrice(listProduct[index].itemPrice.toString()))}",
-                                        maxLines: 2,
-                                        style: const TextStyle(fontWeight: FontWeight.w600, color: black, fontSize: 13)
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          Container(
-                              margin: const EdgeInsets.only(left: 10, right: 10),
-                              height:index == listProduct.length-1 ? 0 : 0.8, color: kLightPurple),
-                        ],
-                      ),
-                    ),
-                  ),
-                )),
-            Visibility(
-              visible: listProduct.length > 0,
-                child: Container(
-                alignment: Alignment.topLeft,
-                margin: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 10),
-                child: Text("Sub Total : $subTotal", style: const TextStyle(fontWeight: FontWeight.w700, color: black, fontSize: 16)))),
-            Container(
-              color: kLightestPurple,
-              child: Column(
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                      decoration: BoxDecoration(
-                          color: white,
-                          border: Border.all(width: 1, color: kLightPurple),
-                          borderRadius: const BorderRadius.all(Radius.circular(8.0)),
-                          shape: BoxShape.rectangle
-                      ),
-                      margin: const EdgeInsets.only(left: 20, right: 20, top: 20),
-                      child: TextField(
-                        controller: discountController,
-                        keyboardType: TextInputType.number,
-                        textAlign: TextAlign.start,
-                        cursorColor: black,
-                        style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 15, color: black,),
-                        onSubmitted: (value) {
-                          setState((){
-                            if (value.isNotEmpty)
-                            {
-                              print("subTotal == $subTotal");
-                              print("value == $value");
-                              subTotal = subTotal - double.parse(value.isNotEmpty ? value : "0");
-                            }
-                            else
-                            {
-                              getPriceCalculated();
-                            }
-                          });
-                        },
-                        onChanged: (value) {
-                          if (value.isEmpty)
-                            {
-                              getPriceCalculated();
-                            }
-                        },
-                        decoration: InputDecoration(
-                          hintText: "Discount",
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(color: kLightPurple, width: 0),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(color: kLightPurple, width: 0),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          hintStyle: const TextStyle(fontWeight: FontWeight.w400, color: kBlue, fontSize: 14),
-                        ),
-                        inputFormatters: [
-                          FilteringTextInputFormatter. digitsOnly
-                        ],
-                      )
+                    margin: const EdgeInsets.only(left: 10),
+                    child: Text(checkValidString(customerDetail.customerName),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.start,
+                      style: const TextStyle(fontSize: 14, color: black, fontWeight: FontWeight.w600),
+                    ),
                   ),
                   Container(
-                      decoration: BoxDecoration(
-                          color: white,
-                          border: Border.all(width: 1, color: kLightPurple),
-                          borderRadius: const BorderRadius.all(Radius.circular(8.0)),
-                          shape: BoxShape.rectangle
-                      ),
-                      margin: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 20),
-                      child: TextField(
-                        controller: adjustmentController,
-                        keyboardType: TextInputType.number,
-                        cursorColor: black,
-                        style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 15, color: black,),
-                        decoration: InputDecoration(
-                          suffixIcon: Container(
-                            width: 70,
-                            alignment: Alignment.centerRight,
-                            child: Row(
-                              children: [
-                                GestureDetector(
-                                  onTap: (){
-                                    setState(() {
-                                      isAdjPlus = true;
-                                    });
-                                    getPriceCalculated();
-                                  },
-                                    child: Icon(Icons.add,color: isAdjPlus ? kBlue : black,)
-                                ),
-                                const Gap(6),
-                                GestureDetector(
-                                  onTap: (){
-                                    setState(() {
-                                      isAdjPlus = false;
-                                    });
-                                    getPriceCalculated();
-                                  },
-                                    child: Icon(Icons.remove,color: !isAdjPlus ? kBlue : black)),
-                              ],
-                            ),
-                          ),
-                          hintText: "Adjustments",
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(color: kLightPurple, width: 0),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(color: kLightPurple, width: 0),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          hintStyle: const TextStyle(fontWeight: FontWeight.w400, color: kBlue, fontSize: 14
-                          ),
-                        ),
-                        onChanged: (value) {
-                          if (value.isEmpty) {
-                            getPriceCalculated();
-                          }
-                        },
-                        onSubmitted: (value) {
-                          if (value.isEmpty)
-                          {
-                            getPriceCalculated();
-                          }
-                     /*     if (isAdjPlus)
-                            {
-                              subTotal = subTotal + double.parse(value.isNotEmpty ? value : "0.0");
-                            }
-                          else
-                            {
-                              subTotal = subTotal - double.parse(value.isNotEmpty ? value : "0.0");
-                            }*/
-                        },
-                      )
-                  ),
-                  Container(
-                      decoration: BoxDecoration(
-                          color: white,
-                          border: Border.all(width: 1, color: kLightPurple),
-                          borderRadius: const BorderRadius.all(Radius.circular(8.0)),
-                          shape: BoxShape.rectangle
-                      ),
-                      margin: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
-                      child: TextField(
-                        controller: remarkController,
-                        keyboardType: TextInputType.text,
-                        textCapitalization: TextCapitalization.sentences,
-                        textAlign: TextAlign.start,
-                        cursorColor: black,
-                        style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 15, color: black,),
-                        decoration: InputDecoration(
-                          hintText: "Remark",
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(color: kLightPurple, width: 0),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(color: kLightPurple, width: 0),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          hintStyle: const TextStyle(fontWeight: FontWeight.w400, color: kBlue, fontSize: 14),
-                        ),
-                        onChanged: (text) {
-                        },
-                      )
+                    margin: const EdgeInsets.only(left: 10, right: 10),
+                    child: Text("${checkValidString(customerDetail.addressLine1)}\n${checkValidString(customerDetail.addressLine2)}",
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 3,
+                      textAlign: TextAlign.start,
+                      style: const TextStyle(fontSize: 13, color: black, fontWeight: FontWeight.w400),
+                    ),
                   ),
                 ],
               ),
-            ),
-            Container(
-              margin: const EdgeInsets.only(top: 30, bottom: 20, left: 20, right: 20),
-              width: double.infinity,
-              decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [kLightGradient, kDarkGradient],
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
-                  ),
-                  borderRadius: BorderRadius.circular(8)
-              ),
-              child: TextButton(
-                onPressed: () {
-                  FocusScope.of(context).requestFocus(FocusNode());
-
-                  if (!isValidCustomer) {
-                    showSnackBar("Please select customer", context);
-                  } else if (!isValidProduct) {
-                    showSnackBar("Please select product", context);
-                  } else {
-                    if (isInternetConnected) {
-                      _saveOrderCall();
-                    } else {
-                      noInterNet(context);
-                    }
-                  }
+            ],
+        )
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                  alignment: Alignment.topLeft,
+                  margin: const EdgeInsets.only(left: 20, top: 20, bottom: 10),
+                  child: const Text("Order Items", style: TextStyle(fontWeight: FontWeight.w600, color: kBlue, fontSize: 15))),
+              GestureDetector(
+                onTap: () {
+                  _redirectToAddItem(context, listProduct, false);
                 },
-                child: const Text("Submit",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: white),),
+                child: Container(
+                    margin: const EdgeInsets.only(right: 20, top: 20, bottom: 10),
+                    decoration: BoxDecoration(
+                        color: white,
+                        border: Border.all(width: 1, color: kBlue),
+                        borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+                        shape: BoxShape.rectangle
+                    ),
+                    alignment: Alignment.topRight,
+                    padding: const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
+                    child: const Text("Add Item", style: TextStyle(fontWeight: FontWeight.w400, color: kBlue, fontSize: 14))),
               ),
+            ],
+          ),
+          ListView.builder(
+              scrollDirection: Axis.vertical,
+              physics: const NeverScrollableScrollPhysics(),
+              primary: false,
+              shrinkWrap: true,
+              itemCount: listProduct.length,
+              itemBuilder: (ctx, index) => Container(
+                color: white,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 10, right: 10, top: 8, bottom: 5),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                margin: const EdgeInsets.only(left:10, bottom: 6, top: 5),
+                                child: Text(checkValidString(listProduct[index].stockName),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.clip,
+                                    textAlign: TextAlign.start,
+                                    style: const TextStyle(fontWeight: FontWeight.w400, color: black, fontSize: 13)
+                                ),
+                              ),
+                              Container(
+                                margin: const EdgeInsets.only(left: 10),
+                                child: Text("MRP ${checkValidString(listProduct[index].stockPrice)}",
+                                    textAlign: TextAlign.start,
+                                    style: const TextStyle(fontWeight: FontWeight.w400, color: black, fontSize: 13)
+                                ),
+                              ),
+                              Container(
+                                  margin: const EdgeInsets.only( top: 5),
+                                  child: TextButton(onPressed: () {
+                                    _removeProduct(index);
+
+                                    getPriceCalculated();
+                                    getItemCalculation(listProduct[index], index);
+                                    setState(() {
+                                      // listProduct.remove(listProduct[index]);
+                                      if(listProduct.isEmpty) {
+                                        isValidProduct = false;
+                                      }
+                                    });
+                                  },
+                                    child: const Text("Remove",
+                                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400, color: kBlue),),
+                                  )
+                              ),
+                            ],
+                          ),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Container(
+                                alignment: Alignment.topRight,
+                                margin: const EdgeInsets.only(bottom: 6),
+                                child: Row(
+                                  children: [
+                                    IconButton(
+                                      onPressed: () {
+
+                                        if (listProduct[index].quantity == 1)
+                                        {
+                                          _removeProduct(index);
+                                        }
+                                        else
+                                        {
+                                          listProduct[index].quantity = listProduct[index].quantity - 1;
+                                        }
+
+                                        getPriceCalculated();
+                                        getItemCalculation(listProduct[index], index);
+
+                                      },
+                                      icon: Image.asset('assets/images/ic_blue_minus.png', height: 24, width: 24),
+                                    ),
+                                    Text(listProduct[index].quantity.toString(),
+                                        style: const TextStyle(fontWeight: FontWeight.w400, color: black, fontSize: 13)),
+                                    IconButton(
+                                      onPressed: () {
+                                        listProduct[index].quantity = listProduct[index].quantity + 1;
+                                        getPriceCalculated();
+                                        getItemCalculation(listProduct[index], index);
+                                      },
+                                      icon:Image.asset('assets/images/ic_blue_add.png', height: 24, width: 24),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                alignment: Alignment.center,
+                                margin: const EdgeInsets.only(right: 10, bottom: 20),
+                                child: Text("${checkValidString(getPrice(listProduct[index].itemPrice.toString()))}",
+                                    maxLines: 2,
+                                    style: const TextStyle(fontWeight: FontWeight.w600, color: black, fontSize: 13)
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      Container(
+                          margin: const EdgeInsets.only(left: 10, right: 10),
+                          height:index == listProduct.length-1 ? 0 : 0.8, color: kLightPurple),
+                    ],
+                  ),
+                ),
+              )),
+          Visibility(
+            visible: listProduct.isNotEmpty,
+              child: Container(
+              alignment: Alignment.topLeft,
+              margin: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 10),
+              child: Text("Sub Total : ${getPrice(subTotal.toString())}",
+                  style: const TextStyle(fontWeight: FontWeight.w700, color: black, fontSize: 16)))),
+          Container(
+            color: kLightestPurple,
+            child: Column(
+              children: [
+                Container(
+                    decoration: BoxDecoration(
+                        color: white,
+                        border: Border.all(width: 1, color: kLightPurple),
+                        borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+                        shape: BoxShape.rectangle
+                    ),
+                    margin: const EdgeInsets.only(left: 20, right: 20, top: 20),
+                    child: TextField(
+                      controller: discountController,
+                      keyboardType: TextInputType.number,
+                      textAlign: TextAlign.start,
+                      cursorColor: black,
+                      style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 15, color: black,),
+                      onSubmitted: (value) {
+                        setState(() {
+                          if (value.isNotEmpty)
+                          {
+                            print("subTotal == $subTotal");
+                            print("value == $value");
+                            subTotal = subTotal - double.parse(value.isNotEmpty ? value : "0");
+                          }
+                          else
+                          {
+                            getPriceCalculated();
+                          }
+                        });
+                      },
+                      onChanged: (value) {
+                        if (value.isEmpty) {
+                          getPriceCalculated();
+                        }
+                      },
+                      decoration: InputDecoration(
+                        hintText: "Discount",
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(color: kLightPurple, width: 0),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(color: kLightPurple, width: 0),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        hintStyle: const TextStyle(fontWeight: FontWeight.w400, color: kBlue, fontSize: 14),
+                      ),
+                      inputFormatters: [
+                        FilteringTextInputFormatter. digitsOnly
+                      ],
+                    )
+                ),
+                Container(
+                    decoration: BoxDecoration(
+                        color: white,
+                        border: Border.all(width: 1, color: kLightPurple),
+                        borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+                        shape: BoxShape.rectangle
+                    ),
+                    margin: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 20),
+                    child: TextField(
+                      controller: adjustmentController,
+                      keyboardType: TextInputType.number,
+                      cursorColor: black,
+                      style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 15, color: black,),
+                      decoration: InputDecoration(
+                        suffixIcon: Container(
+                          width: 70,
+                          alignment: Alignment.centerRight,
+                          child: Row(
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    isAdjPlus = true;
+                                  });
+                                  getPriceCalculated();
+                                },
+                                  child: Icon(Icons.add,color: isAdjPlus ? kBlue : black,)
+                              ),
+                              const Gap(6),
+                              GestureDetector(
+                                onTap: (){
+                                  setState(() {
+                                    isAdjPlus = false;
+                                  });
+                                  getPriceCalculated();
+                                },
+                                  child: Icon(Icons.remove,color: !isAdjPlus ? kBlue : black)),
+                            ],
+                          ),
+                        ),
+                        hintText: "Adjustments",
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(color: kLightPurple, width: 0),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(color: kLightPurple, width: 0),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        hintStyle: const TextStyle(fontWeight: FontWeight.w400, color: kBlue, fontSize: 14
+                        ),
+                      ),
+                      onChanged: (value) {
+                        if (value.isEmpty) {
+                          getPriceCalculated();
+                        }
+                      },
+                      onSubmitted: (value) {
+                        if (value.isEmpty)
+                        {
+                          getPriceCalculated();
+                        }
+                   /*     if (isAdjPlus)
+                          {
+                            subTotal = subTotal + double.parse(value.isNotEmpty ? value : "0.0");
+                          }
+                        else
+                          {
+                            subTotal = subTotal - double.parse(value.isNotEmpty ? value : "0.0");
+                          }*/
+                      },
+                    )
+                ),
+                Container(
+                    decoration: BoxDecoration(
+                        color: white,
+                        border: Border.all(width: 1, color: kLightPurple),
+                        borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+                        shape: BoxShape.rectangle
+                    ),
+                    margin: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
+                    child: TextField(
+                      controller: remarkController,
+                      keyboardType: TextInputType.text,
+                      textCapitalization: TextCapitalization.sentences,
+                      textAlign: TextAlign.start,
+                      cursorColor: black,
+                      style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 15, color: black,),
+                      decoration: InputDecoration(
+                        hintText: "Remark",
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(color: kLightPurple, width: 0),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(color: kLightPurple, width: 0),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        hintStyle: const TextStyle(fontWeight: FontWeight.w400, color: kBlue, fontSize: 14),
+                      ),
+                      onChanged: (text) {
+                      },
+                    )
+                ),
+              ],
             ),
+          ),
+          Container(
+            margin: const EdgeInsets.only(top: 30, bottom: 20, left: 20, right: 20),
+            width: double.infinity,
+            decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [kLightGradient, kDarkGradient],
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                ),
+                borderRadius: BorderRadius.circular(8)
+            ),
+            child: TextButton(
+              onPressed: () {
+                FocusScope.of(context).requestFocus(FocusNode());
+
+                print("listProduct--->" + listProduct.length.toString());
+                if(listProduct.isEmpty) {
+                  isValidProduct = false;
+                }
+
+                if (!isValidCustomer) {
+                  showSnackBar("Please select customer", context);
+                } else if (!isValidProduct) {
+                  showSnackBar("Please select product", context);
+                } else {
+                  if (isInternetConnected) {
+                    _saveOrderCall();
+                  } else {
+                    noInterNet(context);
+                  }
+                }
+              },
+              child: const Text("Submit",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: white),),
+            ),
+          ),
         ],
       ),
           ),
@@ -636,17 +643,15 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
     setState(() {
       subTotal = 0.0;
 
-      for(var i = 0; i < listProduct.length; i++) {
+      for (var i = 0; i < listProduct.length; i++) {
         // print("subTotal ==== " + subTotal.toString());
         if (listProduct[i].quantity == 1) {
           subTotal = subTotal + double.parse(listProduct[i].stockPrice.toString());
-        }
-        else {
+        } else {
           var total = double.parse(listProduct[i].stockPrice.toString()) * listProduct[i].quantity;
           subTotal = subTotal + total;
         }
       }
-
 
 
       if (discountController.value.text.isNotEmpty) {
@@ -776,7 +781,6 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
   }
 */
   void _makeJsonData() async {
-
     List<Products> listProductsTemp = List<Products>.empty(growable: true);
     for (int i = 0; i < listProduct.length; i++) {
       listProductsTemp.add(listProduct[i]);
@@ -797,7 +801,7 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
     widget is AddOrderPage;
   }
 
-  void _deleteProduct(int index) {
+  void _removeProduct(int index) {
     showModalBottomSheet<void>(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -864,15 +868,16 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
                                   listProduct.removeAt(index);
 
                                   getPriceCalculated();
-
                                   getItemCalculation(listProduct[index], index);
 
                                   setState(() {
-
+                                    if(listProduct.isEmpty) {
+                                      isValidProduct = false;
+                                    }
                                   });
                                 },
                                 child:
-                                const Text('Yes',style:TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: white)),
+                                const Text('Yes', style:TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: white)),
                               ),
                             ),
                           ),

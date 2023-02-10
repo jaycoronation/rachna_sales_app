@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dot_navigation_bar/dot_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -154,7 +156,7 @@ class _TabNavigationPageState extends State<TabNavigation> {
               ],
             ),
             Positioned(
-              bottom: 0,
+              bottom: Platform.isAndroid ? 0 : 35,
               child: Container(
                 margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                 width: MediaQuery.of(context).size.width,

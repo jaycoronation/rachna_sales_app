@@ -25,12 +25,13 @@ class AddEmployeePage extends StatefulWidget {
 class _AddEmployeePageState extends BaseState<AddEmployeePage> {
   bool _isLoading = false;
 
-  TextEditingController _nameController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _phoneNumController = TextEditingController();
-  TextEditingController _pwController = TextEditingController();
-  TextEditingController _designationController = TextEditingController();
-  TextEditingController _parentController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController phoneNumController = TextEditingController();
+  TextEditingController pwController = TextEditingController();
+  TextEditingController designationController = TextEditingController();
+  TextEditingController parentController = TextEditingController();
+
   var listDesignation = List<DesignationList>.empty(growable: true);
   List<Designations> selectedDesignationList = [];
   String _designationFilteredId = "";
@@ -42,6 +43,7 @@ class _AddEmployeePageState extends BaseState<AddEmployeePage> {
 
   FocusNode inputNode = FocusNode();
   bool _passwordVisible = true;
+
   final TextEditingController textControllerForEmployee = TextEditingController();
   List<EmployeeList> _tempListOfEmployee = [];
 
@@ -51,26 +53,26 @@ class _AddEmployeePageState extends BaseState<AddEmployeePage> {
 
     if (isInternetConnected) {
       _makeCallDesignationData();
-    }else {
+    } else {
       noInterNet(context);
     }
 
     if ((widget as AddEmployeePage).isFromList == true) {
-      _nameController.text = checkValidString((widget as AddEmployeePage).getSet.empName).toString();
-      _emailController.text = checkValidString((widget as AddEmployeePage).getSet.empEmail).toString();
-      _phoneNumController.text = checkValidString((widget as AddEmployeePage).getSet.empPhone).toString();
-      _pwController.text = checkValidString((widget as AddEmployeePage).getSet.empPassword).toString();
+      nameController.text = checkValidString((widget as AddEmployeePage).getSet.empName).toString();
+      emailController.text = checkValidString((widget as AddEmployeePage).getSet.empEmail).toString();
+      phoneNumController.text = checkValidString((widget as AddEmployeePage).getSet.empPhone).toString();
+      pwController.text = checkValidString((widget as AddEmployeePage).getSet.empPassword).toString();
 
       strSelectedEmployeeId = checkValidString((widget as AddEmployeePage).getSet.empId).toString();
       strSelectedEmployeeName = checkValidString((widget as AddEmployeePage).getSet.empName).toString();
-      _parentController.text = strSelectedEmployeeName;
+      parentController.text = strSelectedEmployeeName;
 
       selectedDesignationList = (widget as AddEmployeePage).getSet.designations!;
 
       for (var j=0; j < selectedDesignationList.length; j++) {
         _designationFilteredId = ("$_designationFilteredId,${selectedDesignationList[j].designationsId}");
         _designationSelectedName = ("$_designationSelectedName,${selectedDesignationList[j].designationName}");
-        _designationController.text = _designationSelectedName;
+        designationController.text = _designationSelectedName;
       }
     }
 
@@ -81,7 +83,7 @@ class _AddEmployeePageState extends BaseState<AddEmployeePage> {
     return Scaffold(
       backgroundColor: appBG,
       resizeToAvoidBottomInset: true,
-      appBar:AppBar(
+      appBar: AppBar(
         systemOverlayStyle: SystemUiOverlayStyle.dark,
         toolbarHeight: 55,
         automaticallyImplyLeading: false,
@@ -123,7 +125,7 @@ class _AddEmployeePageState extends BaseState<AddEmployeePage> {
                         margin: const EdgeInsets.only(top:20, left: 20, right: 20),
                         child: TextField(
                           cursorColor: black,
-                          controller: _nameController,
+                          controller: nameController,
                           keyboardType: TextInputType.name,
                           style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
                           decoration: const InputDecoration(
@@ -136,7 +138,7 @@ class _AddEmployeePageState extends BaseState<AddEmployeePage> {
                         margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
                         child: TextField(
                           cursorColor: black,
-                          controller: _emailController,
+                          controller: emailController,
                           readOnly: true,
                           keyboardType: TextInputType.emailAddress,
                           style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
@@ -150,7 +152,7 @@ class _AddEmployeePageState extends BaseState<AddEmployeePage> {
                         margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
                         child: TextField(
                           cursorColor: black,
-                          controller: _phoneNumController,
+                          controller: phoneNumController,
                           readOnly: true,
                           keyboardType: TextInputType.number,
                           maxLength: 10,
@@ -172,12 +174,12 @@ class _AddEmployeePageState extends BaseState<AddEmployeePage> {
                           onTap: () {
                             showDesignationActionDialog();
                           },
-                          controller: _designationController,
+                          controller: designationController,
                           readOnly: true,
                           cursorColor: black,
                           decoration: const InputDecoration(
                             labelText: 'Designation',
-                            suffixIcon: Icon(Icons.keyboard_arrow_down_sharp, color: kGray, ),
+                            suffixIcon: Icon(Icons.keyboard_arrow_down_sharp, color: kGray,),
                           ),
                           style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
                         ),
@@ -193,7 +195,7 @@ class _AddEmployeePageState extends BaseState<AddEmployeePage> {
                             showEmployeeListActionDialog();
                           },
                           cursorColor: black,
-                          controller: _parentController,
+                          controller: parentController,
                           readOnly: true,
                           style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
                           decoration: const InputDecoration(
@@ -206,7 +208,7 @@ class _AddEmployeePageState extends BaseState<AddEmployeePage> {
                         margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
                         child: TextField(
                           cursorColor: black,
-                          controller: _pwController,
+                          controller: pwController,
                           obscureText: _passwordVisible,
                           keyboardType: TextInputType.visiblePassword,
                           style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
@@ -238,12 +240,12 @@ class _AddEmployeePageState extends BaseState<AddEmployeePage> {
                         child: TextButton(
                           onPressed: () {
                             FocusScope.of(context).requestFocus(FocusNode());
-                            String name = _nameController.text.toString();
-                            String email = _emailController.text.toString();
-                            String phone = _phoneNumController.text.toString();
-                            String designation = _designationController.text.toString();
-                            String parent = _parentController.text.toString();
-                            String password = _pwController.text.toString();
+                            String name = nameController.text.toString();
+                            String email = emailController.text.toString();
+                            String phone = phoneNumController.text.toString();
+                            String designation = designationController.text.toString();
+                            String parent = parentController.text.toString();
+                            String password = pwController.text.toString();
 
                             if(name.trim().isEmpty) {
                               showSnackBar("Please enter a name", context);
@@ -411,7 +413,7 @@ class _AddEmployeePageState extends BaseState<AddEmployeePage> {
                                   }
                                 }
                               }
-                              _designationController.text = _designationSelectedName;
+                              designationController.text = _designationSelectedName;
                               Navigator.pop(context);
                             } ,
                             onLongPress: () => {}, //set both onPressed and onLongPressed to null to see the disabled properties
@@ -530,12 +532,12 @@ class _AddEmployeePageState extends BaseState<AddEmployeePage> {
                             onTap: () {
                               if(_tempListOfEmployee != null && _tempListOfEmployee.length > 0) {
                                 setState(() {
-                                  _parentController.text = _tempListOfEmployee[index].empName.toString();
+                                  parentController.text = _tempListOfEmployee[index].empName.toString();
                                   strSelectedEmployeeId = _tempListOfEmployee[index].empId.toString();
                                 });
                               } else {
                                 setState(() {
-                                  _parentController.text = listEmployee[index].empName.toString();
+                                  parentController.text = listEmployee[index].empName.toString();
                                   strSelectedEmployeeId = listEmployee[index].empId.toString();
                                 });
                               }
@@ -568,7 +570,7 @@ class _AddEmployeePageState extends BaseState<AddEmployeePage> {
                           Navigator.pop(context);
                           for(var i = 0; i < listEmployee.length; i++) {
                             if(listEmployee[i].empId == strSelectedEmployeeId) {
-                              _parentController.text = listEmployee[i].empName.toString();
+                              parentController.text = listEmployee[i].empName.toString();
                             }
                           }
                         } , //set both onPressed and onLongPressed to null to see the disabled properties
@@ -632,7 +634,7 @@ class _AddEmployeePageState extends BaseState<AddEmployeePage> {
        /* Container(
           padding: const EdgeInsets.only(left: 20.0,right: 20,top: 8,bottom: 8),
           alignment: Alignment.centerLeft,
-          child: listData[index].empName == _parentController.text.toString() ? Text(listData[index].empName.toString(),
+          child: listData[index].empName == parentController.text.toString() ? Text(listData[index].empName.toString(),
             style: const TextStyle(fontSize: 18,fontWeight: FontWeight.bold,color: kBlue),)
               : Text(listData[index].empName.toString(),
             style: const TextStyle(fontSize: 18,fontWeight: FontWeight.w500,color: Colors.black),),
@@ -732,10 +734,10 @@ class _AddEmployeePageState extends BaseState<AddEmployeePage> {
     final url = Uri.parse(BASE_URL + addEmployee);
 
     Map<String, String> jsonBody = {
-      'emp_name': _nameController.value.text.trim(),
-      'emp_email': _emailController.value.text.trim(),
-      'emp_phone': _phoneNumController.value.text.trim(),
-      'emp_password': _pwController.value.text.trim(),
+      'emp_name': nameController.value.text.trim(),
+      'emp_email': emailController.value.text.trim(),
+      'emp_phone': phoneNumController.value.text.trim(),
+      'emp_password': pwController.value.text.trim(),
       'designation_id': _designationFilteredId,
       'parent_id': strSelectedEmployeeId,
       'from_app' : FROM_APP,
@@ -775,10 +777,10 @@ class _AddEmployeePageState extends BaseState<AddEmployeePage> {
     final url = Uri.parse(BASE_URL + addEmployee);
 
     Map<String, String> jsonBody = {
-      'emp_name': _nameController.value.text.trim(),
-      'emp_email': _emailController.value.text.trim(),
-      'emp_phone': _phoneNumController.value.text.trim(),
-      'emp_password': _pwController.value.text.trim(),
+      'emp_name': nameController.value.text.trim(),
+      'emp_email': emailController.value.text.trim(),
+      'emp_phone': phoneNumController.value.text.trim(),
+      'emp_password': pwController.value.text.trim(),
       'designation_id': _designationFilteredId,
       'parent_id': strSelectedEmployeeId,
       'from_app' : FROM_APP,
