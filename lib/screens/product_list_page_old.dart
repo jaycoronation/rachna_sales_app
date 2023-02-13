@@ -58,7 +58,8 @@ class _ProductListPageState extends BaseState<ProductListPageOld> {
         appBar: AppBar(
           systemOverlayStyle: SystemUiOverlayStyle.dark,
           automaticallyImplyLeading: false,
-          title: const Text(""),
+          title:  const Text("Product List",
+            style: TextStyle(fontSize: 18, color: white, fontWeight: FontWeight.w600)),
           leading: GestureDetector(
               onTap:() {
                 Navigator.pop(context);

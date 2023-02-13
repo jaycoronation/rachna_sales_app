@@ -94,7 +94,8 @@ class _AddProductPageState extends BaseState<AddProductPage> {
         systemOverlayStyle: SystemUiOverlayStyle.dark,
         toolbarHeight: 55,
         automaticallyImplyLeading: false,
-        title: const Text(""),
+        title: Text((widget as AddProductPage).isFromList ? "Update Product" : "Add Product",
+            style: const TextStyle(fontSize: 18, color: white, fontWeight: FontWeight.w600)),
         leading: GestureDetector(
             onTap:() {
               Navigator.pop(context);
@@ -121,13 +122,13 @@ class _AddProductPageState extends BaseState<AddProductPage> {
                 child: IntrinsicHeight(
                   child: Column(
                     children: [
-                      Container(
+    /*                  Container(
                         color: kBlue,
                         alignment: Alignment.topLeft,
                         padding: const EdgeInsets.only(left: 22, top: 10, bottom: 15),
                         child: Text((widget as AddProductPage).isFromList ? "Update Product" : "Add Product",
                             style: const TextStyle(fontWeight: FontWeight.w700, color: white, fontSize: 20)),
-                      ),
+                      ),*/
                       Container(
                         margin: const EdgeInsets.only(top:20, left: 20, right: 20),
                         child: TextField(

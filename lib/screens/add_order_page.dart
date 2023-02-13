@@ -96,7 +96,8 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
         systemOverlayStyle: SystemUiOverlayStyle.dark,
         toolbarHeight: 55,
         automaticallyImplyLeading: false,
-        title: const Text(""),
+        title: const Text("Add Order",
+            style: TextStyle(fontSize: 18, color: white, fontWeight: FontWeight.w600)),
         leading: GestureDetector(
             onTap:() {
               Navigator.pop(context);
@@ -118,13 +119,13 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
           : SingleChildScrollView(
             child: Column(
         children: [
-            Container(
+/*            Container(
               color: kBlue,
               alignment: Alignment.topLeft,
               padding: const EdgeInsets.only(left: 22, top: 10, bottom: 15),
               child: const Text("Add Order",
                   style: TextStyle(fontWeight: FontWeight.w700, color: white, fontSize: 20)),
-            ),
+            ),*/
           isFromDetail ?
           Stack(
             children: [

@@ -42,64 +42,29 @@ class SessionManagerMethods {
 
   static Future<bool?> clear() async => await _prefsOneTime?.clear();
 
-  // Store url....
-  late final String store_url = "store_url";
+  // Total Orders....
+  late final String totalOrders = "total_order";
 
-  Future<void> setStoreUrl(String apiName)
+  Future<void> setTotalOrders(String apiTotalOrders)
   async {
-    await SessionManagerMethods.setString(store_url, apiName);
+    await SessionManagerMethods.setString(totalOrders, apiTotalOrders);
   }
 
-  String? getStoreUrl() {
-    return SessionManagerMethods.getString(store_url);
+  String? getTotalOrders() {
+    return SessionManagerMethods.getString(totalOrders);
   }
 
-  //======================
-  final String isCreateName = "create_name";
 
-  Future<void> setIsCreate(bool apiIsCreate)
+  // Total Overdues....
+  late final String overdues = "overdues";
+
+  Future<void> setOverdues(String apiOverdues)
   async {
-    await SessionManagerMethods.setBool(isCreateName, apiIsCreate);
+    await SessionManagerMethods.setString(overdues, apiOverdues);
   }
 
-  bool? getIsCreate() {
-    return SessionManagerMethods.getBool(isCreateName);
-  }
-
-  //======================
-  final String isSelectCategory = "select_category";
-
-  Future<void> setIsSelectCategory(bool apiIsSelectCategory)
-  async {
-    await SessionManagerMethods.setBool(isSelectCategory, apiIsSelectCategory);
-  }
-
-  bool? getIsSelectCategory() {
-    return SessionManagerMethods.getBool(isSelectCategory);
-  }
-
-  //======================
-  final String isSelectSubscription = "select_subscription";
-
-  Future<void> setIsSelectSubscription(bool apiIsSelectSubscription)
-  async {
-    await SessionManagerMethods.setBool(isSelectSubscription, apiIsSelectSubscription);
-  }
-
-  bool? getIsSelectSubscription() {
-    return SessionManagerMethods.getBool(isSelectSubscription);
-  }
-
-  //======================
-  final String subscriptionPlanId = "subscription_plan_id";
-
-  Future<void> setSubscriptionPlanId(String apiSubscriptionPlanId)
-  async {
-    await SessionManagerMethods.setString(subscriptionPlanId, apiSubscriptionPlanId);
-  }
-
-  String? getSubscriptionPlanId() {
-    return SessionManagerMethods.getString(subscriptionPlanId);
+  String? getOverdues() {
+    return SessionManagerMethods.getString(overdues);
   }
 
   //======================

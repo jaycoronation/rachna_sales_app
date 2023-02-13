@@ -80,7 +80,7 @@ class _TabNavigationPageState extends State<TabNavigation> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: (){
+      onWillPop: () {
         if (_currentIndex != 0)
         {
           print("Is running if condition");
@@ -208,7 +208,6 @@ class _TabNavigationPageState extends State<TabNavigation> {
       ),
     );
   }
-
 
 /* @override
   Widget build(BuildContext context) {

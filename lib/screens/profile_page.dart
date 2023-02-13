@@ -117,8 +117,18 @@ class _ProfilePageState extends BaseState<ProfilePage> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Gap(10),
+                          const Gap(10),
                           Column(
+                            children: [
+                              const Text("Total Orders",
+                                  style: TextStyle(fontWeight: FontWeight.w400, color: black, fontSize: 14)),
+                              const Gap(3),
+                              Text(sessionManagerMethod.getTotalOrders().toString().isNotEmpty
+                                  ? getPrice(sessionManagerMethod.getTotalOrders().toString()) : "-",
+                                  style: const TextStyle(fontWeight: FontWeight.w500, color: kBlue, fontSize: 14))
+                            ],
+                          ),
+/*                          Column(
                             children: [
                               Text("Incentive",
                                   style: const TextStyle(fontWeight: FontWeight.w400, color: black, fontSize: 14)),
@@ -126,7 +136,7 @@ class _ProfilePageState extends BaseState<ProfilePage> {
                               Text(getPrice(incetive),
                                   style: const TextStyle(fontWeight: FontWeight.w500, color: kBlue, fontSize: 14))
                             ],
-                          ),
+                          ),*/
                           const VerticalDivider(
                             color: kGray,
                             width: 1,
@@ -134,95 +144,99 @@ class _ProfilePageState extends BaseState<ProfilePage> {
                           ),
                           Column(
                             children: [
-                              Text("Outstanding",
-                                  style: const TextStyle(fontWeight: FontWeight.w400, color: black, fontSize: 14)),
-                              Gap(3),
-                              Text(getPrice(outstanding),
-                                  style: const TextStyle(fontWeight: FontWeight.w500, color: kBlue, fontSize: 14))
-                            ],
-                          ),
-                          const VerticalDivider(
-                            color: kGray,
-                            width: 1,
-                            thickness: 1,
-                          ),
-                          Column(
-                            children: [
-                              Text("Total Sales",
-                                  style: const TextStyle(fontWeight: FontWeight.w400, color: black, fontSize: 14)),
-                              Gap(3),
+                              const Text("Total Sales",
+                                  style: TextStyle(fontWeight: FontWeight.w400, color: black, fontSize: 14)),
+                              const Gap(3),
                               Text(getPrice(totalSales),
                                   style: const TextStyle(fontWeight: FontWeight.w500, color: kBlue, fontSize: 14))
                             ],
                           ),
-                          Gap(10),
+            /*              Column(
+                            children: [
+                              const Text("Outstanding",
+                                  style: TextStyle(fontWeight: FontWeight.w400, color: black, fontSize: 14)),
+                              const Gap(3),
+                              Text(getPrice(outstanding),
+                                  style: const TextStyle(fontWeight: FontWeight.w500, color: kBlue, fontSize: 14))
+                            ],
+                          ),*/
+                          const VerticalDivider(
+                            color: kGray,
+                            width: 1,
+                            thickness: 1,
+                          ),
+                          Column(
+                            children: [
+                              const Text("Overdues",
+                                  style: TextStyle(fontWeight: FontWeight.w400, color: black, fontSize: 14)),
+                              const Gap(3),
+                              Text(sessionManagerMethod.getOverdues().toString().isNotEmpty
+                                  ? getPrice(sessionManagerMethod.getOverdues().toString()) : "-",
+                                  style: const TextStyle(fontWeight: FontWeight.w500, color: kBlue, fontSize: 14))
+                            ],
+                          ),
+                          const Gap(10),
                         ],
                       ),
                     ),
-                    Gap(10),
-                    Divider(
-                      indent: 8,
-                      endIndent: 8,
-                      color: kBlue,
-                      height: 1,
-                    ),
-                    Gap(25),
+                    const Gap(10),
+                    const Divider(indent: 8, endIndent: 8, color: kBlue, height: 1,),
+                    const Gap(25),
                     Row(
                       children: [
                         Container(
-                            margin: EdgeInsets.only(left: 10, right: 10),
+                            margin: const EdgeInsets.only(left: 10, right: 10),
                             child: Image.asset('assets/images/ic_settings.png', height: 40, width: 40,)),
                         Container(
-                          margin: EdgeInsets.only(left: 5),
-                          child: Text("Settings",
+                          margin: const EdgeInsets.only(left: 5),
+                          child: const Text("Settings",
                             textAlign: TextAlign.left,
                             style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400, color: black),),
                         ),
-                        Spacer(),
+                        const Spacer(),
                         Container(
                             alignment: Alignment.centerRight,
-                            margin: EdgeInsets.only(right: 10),
+                            margin: const EdgeInsets.only(right: 10),
                             child: Image.asset('assets/images/ic_right_arrow.png', height: 16, width: 16,)),
-
                       ],
                     ),
-                    Gap(25),
+                    const Gap(25),
                     Row(
                       // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Container(
-                            margin: EdgeInsets.only(left: 10, right: 10),
+                            margin: const EdgeInsets.only(left: 10, right: 10),
                             child: Image.asset('assets/images/ic_notification.png', height: 40, width: 40,)),
                         Container(
-                          margin: EdgeInsets.only(left: 5),
-                          child: Text("Notification",
+                          margin: const EdgeInsets.only(left: 5),
+                          child: const Text("Notification",
                             textAlign: TextAlign.left,
                             style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400, color: black),),
                         ),
-                        Spacer(),
+                        const Spacer(),
                         Container(
                             alignment: Alignment.centerRight,
-                            margin: EdgeInsets.only(right: 10),
+                            margin: const EdgeInsets.only(right: 10),
                             child: Image.asset('assets/images/ic_right_arrow.png', height: 16, width: 16,)),
                       ],
                     ),
-                    Gap(25),
+                    const Gap(25),
                     Row(
                       // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Container(
-                            margin: EdgeInsets.only(left: 10, right: 10),
+                            margin: const EdgeInsets.only(left: 10, right: 10),
                             child: Image.asset('assets/images/ic_information.png', height: 40, width: 40,)),
                         Container(
-                          margin: EdgeInsets.only(left: 5),
-                          child: Text("Information",
+                          margin: const EdgeInsets.only(left: 5),
+                          child: const Text("Information",
                             textAlign: TextAlign.left,
                             style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400, color: black),),
                         ),
-                        Spacer(),
+                        const Spacer(),
                         Container(
                             alignment: Alignment.centerRight,
-                            margin: EdgeInsets.only(right: 10),
+                            margin: const EdgeInsets.only(right: 10),
                             child: Image.asset('assets/images/ic_right_arrow.png', height: 16, width: 16,)),
                       ],
                     ),
@@ -235,7 +249,7 @@ class _ProfilePageState extends BaseState<ProfilePage> {
                         // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Container(
-                              margin: EdgeInsets.only(left: 10, right: 10),
+                              margin: const EdgeInsets.only(left: 10, right: 10),
                               child: Image.asset('assets/images/ic_logout.png', height: 40, width: 40,)),
                           Container(
                             margin: const EdgeInsets.only(left: 5),
@@ -246,9 +260,8 @@ class _ProfilePageState extends BaseState<ProfilePage> {
                           const Spacer(),
                           Container(
                               alignment: Alignment.centerRight,
-                              margin: EdgeInsets.only(right: 10),
+                              margin: const EdgeInsets.only(right: 10),
                               child: Image.asset('assets/images/ic_right_arrow.png', height: 16, width: 16,)),
-
                         ],
                       ),
                     ),
@@ -388,7 +401,7 @@ class _ProfilePageState extends BaseState<ProfilePage> {
   Future<void> _redirectToProfile(BuildContext context) async {
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => EditProfilePage()),
+      MaterialPageRoute(builder: (context) => const EditProfilePage()),
     );
 
     print("result ===== $result");
@@ -435,10 +448,9 @@ class _ProfilePageState extends BaseState<ProfilePage> {
         sessionManager.setParentId(checkValidString(dataResponse.employeeDetails?.parent));
 
         totalCustomerCount = checkValidString(dataResponse.employeeDetails?.totalCustomers);
-        incetive = checkValidString(dataResponse.employeeDetails?.incentive);
+        // incetive = checkValidString(dataResponse.employeeDetails?.incentive);
         outstanding = checkValidString(dataResponse.employeeDetails?.outstanding);
         totalSales = checkValidString(dataResponse.employeeDetails?.totalSales);
-
       });
 
       setState(() {

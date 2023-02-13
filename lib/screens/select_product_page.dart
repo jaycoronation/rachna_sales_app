@@ -103,7 +103,8 @@ class _SelectProductPageState extends BaseState<SelectProductPage> {
         appBar: AppBar(
           systemOverlayStyle: SystemUiOverlayStyle.dark,
           automaticallyImplyLeading: false,
-          title: const Text(""),
+          title: const Text("Select Item",
+              style: TextStyle(fontSize: 18, color: white, fontWeight: FontWeight.w600)),
           leading: GestureDetector(
               onTap:() {
                 Navigator.pop(context);
@@ -160,12 +161,12 @@ class _SelectProductPageState extends BaseState<SelectProductPage> {
         body: _isLoading ? const LoadingWidget()
             : Column(
           children: [
-            Container(
+            /*Container(
               color: kBlue,
               alignment: Alignment.topLeft,
               padding: const EdgeInsets.only(left: 22, top: 10, bottom: 20),
               child: const Text("Select Item", style: TextStyle(fontWeight: FontWeight.w700, color: white,fontSize: 20)),
-            ),
+            ),*/
             Stack(
               children: [
                 Container(

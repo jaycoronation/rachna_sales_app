@@ -100,7 +100,7 @@ class _EmployeeListPageState extends BaseState<EmployeeListPage> {
               height: 45,
               width: 45,
               alignment: Alignment.center,
-              child: const Icon(Icons.filter_alt_outlined, color: white, size: 28,),
+              child: const Icon(Icons.calendar_today_outlined, color: white, size: 28,),
             ),
           ),
           GestureDetector(
@@ -197,7 +197,7 @@ class _EmployeeListPageState extends BaseState<EmployeeListPage> {
                                                     text: '₹ ',
                                                     style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: kGreen),
                                                     children: <TextSpan>[
-                                                      TextSpan(text: checkValidString(employeeListResponse.totalSale.toString()),
+                                                      TextSpan(text: checkValidString(convertToComaSeparated(employeeListResponse.totalSale.toString())),
                                                           style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: kGreen),
                                                           recognizer: TapGestureRecognizer()..onTap = () => {
                                                           }),
@@ -321,7 +321,7 @@ class _EmployeeListPageState extends BaseState<EmployeeListPage> {
                                         text: '₹ ',
                                         style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: kBlue),
                                         children: <TextSpan>[
-                                          TextSpan(text: checkValidString(listEmployee[index].empTotalSale.toString()),
+                                          TextSpan(text: checkValidString(convertToComaSeparated(listEmployee[index].empTotalSale.toString())),
                                               style: const TextStyle(fontSize: 18, color: kBlue, fontWeight: FontWeight.w800),
                                               recognizer: TapGestureRecognizer()..onTap = () => {
                                               }),
@@ -344,7 +344,7 @@ class _EmployeeListPageState extends BaseState<EmployeeListPage> {
                                           style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: black),
                                           recognizer: TapGestureRecognizer()..onTap = () => {
                                       }),
-                                      TextSpan(text: checkValidString(listEmployee[index].empTotalSale.toString()),
+                                      TextSpan(text: checkValidString(convertToComaSeparated(listEmployee[index].empTotalSale.toString())),
                                           style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: black),
                                           recognizer: TapGestureRecognizer()..onTap = () => {
                                       }),

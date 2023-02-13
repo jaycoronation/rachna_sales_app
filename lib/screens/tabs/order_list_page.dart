@@ -96,7 +96,8 @@ class _OrderListPageState extends BaseState<OrderListPage> {
       appBar: AppBar(
         systemOverlayStyle: SystemUiOverlayStyle.dark,
         automaticallyImplyLeading: false,
-        title: const Text(""),
+        title: const Text("Orders",
+          style: TextStyle(fontSize: 18, color: white, fontWeight: FontWeight.w600)),
         actions: [
   /*        GestureDetector(
             onTap: () {
@@ -129,13 +130,13 @@ class _OrderListPageState extends BaseState<OrderListPage> {
             ),
           ),
           Container(
-            margin: const EdgeInsets.only(top: 11, bottom: 11, left:  8, right: 22),
+            margin: const EdgeInsets.only(top: 11, bottom: 11, left:  15, right: 22),
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTap: () {
                 _showFilterDialog();
               },
-              child: const Icon(Icons.filter_alt_outlined, color: white, size: 30,),
+              child: const Icon(Icons.calendar_today_outlined, color: white, size: 28,),
             ),
           ),
         ],
@@ -160,11 +161,11 @@ class _OrderListPageState extends BaseState<OrderListPage> {
               color: kBlue,
               child: Column(
                 children: [
-                  Container(
-                    alignment: Alignment.topLeft,
-                    padding: const EdgeInsets.only(left: 22),
-                    child: const Text("Orders", style: TextStyle(fontWeight: FontWeight.w700, color: white,fontSize: 20)),
-                  ),
+                  // Container(
+                  //   alignment: Alignment.topLeft,
+                  //   padding: const EdgeInsets.only(left: 22),
+                  //   child: const Text("Orders", style: TextStyle(fontWeight: FontWeight.w700, color: white,fontSize: 20)),
+                  // ),
                   Stack(
                     children: [
                       SizedBox(
@@ -290,7 +291,7 @@ class _OrderListPageState extends BaseState<OrderListPage> {
                                                     text: '₹ ',
                                                     style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: kGreen),
                                                     children: <TextSpan>[
-                                                      TextSpan(text: totalAmount.toString(),
+                                                      TextSpan(text: checkValidString(convertToComaSeparated(totalAmount.toString())),
                                                           style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: kGreen),
                                                           recognizer: TapGestureRecognizer()..onTap = () => {
                                                           }),
@@ -326,7 +327,7 @@ class _OrderListPageState extends BaseState<OrderListPage> {
                                                     text: '₹ ',
                                                     style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: kGreen),
                                                     children: <TextSpan>[
-                                                      TextSpan(text: todaySale.toString(),
+                                                      TextSpan(text: checkValidString(convertToComaSeparated(todaySale.toString())),
                                                           style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: kGreen),
                                                           recognizer: TapGestureRecognizer()..onTap = () => {
                                                           }),
@@ -550,7 +551,7 @@ class _OrderListPageState extends BaseState<OrderListPage> {
                                           style: const TextStyle(fontSize: 15, color: black, fontWeight: FontWeight.w700),
                                         ),
                                         const Gap(5),
-                                        Container(width: 2, height: 15, color: black,),
+                                        Container(width: 2, height: 15, color: black),
                                         const Gap(5),
                                         Expanded(
                                           child: Text(checkValidString(listOrder[index].customerName),
@@ -572,7 +573,7 @@ class _OrderListPageState extends BaseState<OrderListPage> {
                                         text: '₹ ',
                                         style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: kBlue),
                                         children: <TextSpan>[
-                                          TextSpan(text: checkValidString(listOrder[index].grandTotal.toString()),
+                                          TextSpan(text: checkValidString(convertToComaSeparated(listOrder[index].grandTotal.toString())),
                                               style: const TextStyle(fontSize: 18, color: kBlue, fontWeight: FontWeight.w700),
                                               recognizer: TapGestureRecognizer()..onTap = () => {
                                               }),
@@ -647,8 +648,7 @@ class _OrderListPageState extends BaseState<OrderListPage> {
                               width: 30,
                               height: 30,
                               child: Lottie.asset('assets/images/loader_new.json', repeat: true, animate: true, frameRate: FrameRate.max)),
-                          const Text(
-                              ' Loading more...',
+                          const Text(' Loading more...',
                               style: TextStyle(color: black, fontWeight: FontWeight.w400, fontSize: 16)
                           )
                         ],
@@ -732,7 +732,7 @@ class _OrderListPageState extends BaseState<OrderListPage> {
                                               print(currentDate);
                                               print("==========");
 
-                                              String fromDateTillMonth = "01-" + DateFormat('MM-yyyy').format(dateParse);
+                                              String fromDateTillMonth = "01-${DateFormat('MM-yyyy').format(dateParse)}";
                                               print("==========");
                                               print(fromDateTillMonth);
 
@@ -751,10 +751,10 @@ class _OrderListPageState extends BaseState<OrderListPage> {
                                               var dateParse = DateTime.parse(yearTillDate);
 
                                               String currentYear = DateFormat('yyyy').format(dateParse);
-                                              String fromDateTillYear = "01-04-" + DateFormat('yyyy').format(dateParse);
+                                              String fromDateTillYear = "01-04-${DateFormat('yyyy').format(dateParse)}";
 
                                               var result = int.parse(currentYear) + 1;
-                                              String toDateTillYear = "31-03-" + result.toString();
+                                              String toDateTillYear = "31-03-$result";
 
                                               print("==========");
                                               print(fromDateTillYear);
@@ -856,7 +856,7 @@ class _OrderListPageState extends BaseState<OrderListPage> {
   Future<void> _redirectToTransaction(BuildContext context, String orderId, String customerId, String customerName, String totalAmount) async {
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => AddPaymentDetailPage(Order(), orderId, customerId, customerName, totalAmount)),
+      MaterialPageRoute(builder: (context) => AddPaymentDetailPage(Order(), orderId, customerId, customerName, totalAmount, false)),
     );
 
     print("result ===== $result");
@@ -953,6 +953,8 @@ class _OrderListPageState extends BaseState<OrderListPage> {
       var orderListResponse = OrderListResponseModel.fromJson(order);
       totalAmount = checkValidString(dataResponse.totalAmount.toString());
       todaySale = checkValidString(dataResponse.todaysSale.toString());
+      
+      sessionManagerMethod.setTotalOrders(dataResponse.totalAmount.toString());
 
       if (orderListResponse.orderList != null) {
         List<OrderList>? _tempList = [];

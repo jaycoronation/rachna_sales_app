@@ -13,21 +13,14 @@ import 'package:salesapp/screens/add_employee_page.dart';
 import 'package:salesapp/screens/add_order_page.dart';
 import 'package:salesapp/screens/add_payement_detail_page.dart';
 import 'package:salesapp/screens/daily_plans_pages.dart';
-import 'package:salesapp/screens/edit_profile_page.dart';
-import 'package:salesapp/screens/login_page.dart';
-import 'package:salesapp/screens/product_list_page.dart';
 import 'package:salesapp/screens/profile_page.dart';
-import 'package:salesapp/screens/select_product_page.dart';
 import 'package:salesapp/screens/transaction_list_page.dart';
 import 'package:salesapp/utils/app_utils.dart';
 
 import '../../constant/color.dart';
-import '../../model/customer_detail_response_model.dart';
-import '../../model/product_item_data_response_model.dart';
 import '../../model/product_item_list_response_model_old.dart';
 import '../../network/api_end_point.dart';
 import '../../utils/base_class.dart';
-import '../../utils/session_manager_methods.dart';
 import '../../widget/loading.dart';
 import '../../widget/no_internet.dart';
 import '../add_product_page.dart';
@@ -48,16 +41,19 @@ class _DashboardPageState extends BaseState<DashboardPage> {
   late num? totalOverdue;
   late num? totalEmployee;
   late num? totalCustomer;
+  List<String> listOptions = List<String>.empty(growable: true);
 
   @override
   void initState() {
     super.initState();
+    listOptions = ["Add Customer", "Add Product", "Add Order", "Add Transaction"];
 
     if(isInternetConnected) {
       _makeCallDashboardData();
     }else {
       noInterNet(context);
     }
+
     setState(() {
 
     });
@@ -94,7 +90,6 @@ class _DashboardPageState extends BaseState<DashboardPage> {
           ),
           onTap: () {
             Navigator.push(context, MaterialPageRoute(builder: (context) => const ProfilePage()));
-
           },
         ),
         actions: [
@@ -102,7 +97,7 @@ class _DashboardPageState extends BaseState<DashboardPage> {
             padding: const EdgeInsets.only(right: 12, top: 9, bottom: 9),
             child: GestureDetector(
               onTap: () {
-                _redirectToAddOrder(context, Order(), false);
+                showOptionActionDialog();
               },
               child: Container(
                 height: 36,
@@ -170,7 +165,7 @@ class _DashboardPageState extends BaseState<DashboardPage> {
                                       text: '₹ ',
                                       style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: white),
                                       children: <TextSpan>[
-                                        TextSpan(text: checkValidString(totalAmount.toString()),
+                                        TextSpan(text: checkValidString(convertToComaSeparated(totalAmount.toString())),
                                             style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: white),
                                             recognizer: TapGestureRecognizer()..onTap = () => {
                                             }),
@@ -204,7 +199,7 @@ class _DashboardPageState extends BaseState<DashboardPage> {
                                       text: '₹ ',
                                       style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: white),
                                       children: <TextSpan>[
-                                        TextSpan(text: totalOverdue.toString(),
+                                        TextSpan(text: checkValidString(convertToComaSeparated(totalOverdue.toString())),
                                             style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: white),
                                             recognizer: TapGestureRecognizer()..onTap = () => {
                                             }),
@@ -553,7 +548,7 @@ class _DashboardPageState extends BaseState<DashboardPage> {
                       ),
                     )))),
               ),
-              Row(
+              /*Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -617,10 +612,10 @@ class _DashboardPageState extends BaseState<DashboardPage> {
                       ),
                     ),
                   ),
-                /*  Flexible(
+                *//*  Flexible(
                     child: Column(
                       children: [
-                        *//*GestureDetector(
+                        *//**//*GestureDetector(
                           onTap: () {
                             _redirectToAddEmployee(context,EmployeeList(), false);
                           },
@@ -649,7 +644,8 @@ class _DashboardPageState extends BaseState<DashboardPage> {
                               ],
                             ),
                           ),
-                        ),*//*
+                        ),*//**/
+              /*
                         GestureDetector(
                           onTap: () {
                             Navigator.push(context, MaterialPageRoute(builder: (context) => const AddPaymentDetailPage()));
@@ -680,8 +676,10 @@ class _DashboardPageState extends BaseState<DashboardPage> {
                       ],
                     ),
                   )*/
+
+              /*
                 ],
-              ),
+              ),*/
               const SizedBox(
                 height: 80,
               ),
@@ -773,6 +771,155 @@ class _DashboardPageState extends BaseState<DashboardPage> {
         isHomeLoad = true;
       });
     }
+  }
+
+  Future<void> _redirectToTransaction(BuildContext context, Order getSet, bool isFromDashboard) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => AddPaymentDetailPage(getSet, "", "", "", "", isFromDashboard)),
+    );
+
+    print("result ===== $result");
+
+    if (result == "success") {
+      _makeCallDashboardData();
+      setState(() {
+        isHomeLoad = true;
+      });
+    }
+  }
+
+  void showOptionActionDialog() {
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: white,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))),
+      elevation: 5,
+      isDismissible: true,
+      builder: (BuildContext context) {
+        return Wrap(
+          children: [
+            Padding(
+                padding: const EdgeInsets.all(14),
+                child: Column(
+                  children: [
+                    Container(height: 2, width: 40, color: kBlue, margin: const EdgeInsets.only(bottom: 12)),
+                    const Text("Add Option",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: black, fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                    Container(height: 12),
+                    InkWell(
+                      onTap: () async {
+                        Navigator.pop(context);
+                        _redirectToAddCustomer(context, CustomerList(), false);
+                      },
+                      child: Row(
+                        children: [
+                          Container(
+                              alignment: Alignment.center,
+                              margin: const EdgeInsets.only(top:6, bottom: 6),
+                              child: Image.asset("assets/images/ic_bg_customer.png", height: 42, width: 45,)
+                          ),
+                          Container(
+                            padding: const EdgeInsets.only(right: 18, top: 15, bottom: 15),
+                            alignment: Alignment.topLeft,
+                            child: const Text("Customer",
+                              textAlign: TextAlign.start,
+                              style: TextStyle(fontSize: 15, color: black, fontWeight: FontWeight.normal),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Divider(
+                      color: kLightestGray,
+                      height: 1,
+                    ),
+                    InkWell(
+                      onTap: () async {
+                        Navigator.pop(context);
+                        _redirectToAddProduct(context, Products(), false);
+                      },
+                      child: Row(
+                        children: [
+                          Container(
+                              alignment: Alignment.center,
+                              margin: const EdgeInsets.only(top:6, bottom: 6),
+                              child: Image.asset("assets/images/ic_products.png", height: 42, width: 45,)
+                          ),
+                          Container(
+                            alignment: Alignment.topLeft,
+                            padding: const EdgeInsets.only(top: 15, bottom: 15),
+                            child: const Text("Product",
+                              textAlign: TextAlign.start,
+                              style: TextStyle(fontSize: 15, color: black, fontWeight: FontWeight.normal),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Divider(
+                      color: kLightestGray,
+                      height: 1,
+                    ),
+                    InkWell(
+                      onTap: () async {
+                        Navigator.pop(context);
+                        _redirectToAddOrder(context, Order(), false);
+                      },
+                      child: Row(
+                        children: [
+                          Container(
+                              alignment: Alignment.center,
+                              margin: const EdgeInsets.only(top:6, bottom: 6),
+                              child: Image.asset("assets/images/ic_orders.png", height: 42, width: 45,)
+                          ),
+                          Container(
+                            alignment: Alignment.topLeft,
+                            padding: const EdgeInsets.only(right: 18, top: 15, bottom: 15),
+                            child: const Text("Order",
+                              textAlign: TextAlign.start,
+                              style: TextStyle(fontSize: 15, color: black, fontWeight: FontWeight.normal),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Divider(
+                      color: kLightestGray,
+                      height: 1,
+                    ),
+                    InkWell(
+                      onTap: () async {
+                        Navigator.pop(context);
+                        _redirectToTransaction(context, Order(), true);
+                      },
+                      child: Row(
+                        children: [
+                          Container(
+                              alignment: Alignment.center,
+                              margin: const EdgeInsets.only(top:6, bottom: 6),
+                              child: Image.asset("assets/images/ic_transaction.png", height: 42, width: 45,)
+                          ),
+                          Container(
+                            alignment: Alignment.topLeft,
+                            padding: const EdgeInsets.only(right: 18, top: 15, bottom: 15),
+                            child: const Text("Transaction",
+                              textAlign: TextAlign.start,
+                              style: TextStyle(fontSize: 15, color: black, fontWeight: FontWeight.normal),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ))
+          ],
+        );
+      },
+    );
   }
 
   @override

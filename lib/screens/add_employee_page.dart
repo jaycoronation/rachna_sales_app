@@ -87,7 +87,8 @@ class _AddEmployeePageState extends BaseState<AddEmployeePage> {
         systemOverlayStyle: SystemUiOverlayStyle.dark,
         toolbarHeight: 55,
         automaticallyImplyLeading: false,
-        title: const Text(""),
+        title: Text((widget as AddEmployeePage).isFromList ? "Update Employee" : "Add Employee",
+            style: const TextStyle(fontSize: 18, color: white, fontWeight: FontWeight.w600)),
         leading: GestureDetector(
             onTap:() {
               Navigator.pop(context);
@@ -114,13 +115,13 @@ class _AddEmployeePageState extends BaseState<AddEmployeePage> {
                 child: IntrinsicHeight(
                   child: Column(
                     children: [
-                      Container(
+              /*        Container(
                         color: kBlue,
                         alignment: Alignment.topLeft,
                         padding: const EdgeInsets.only(left: 22, top: 10, bottom: 15),
                         child: Text((widget as AddEmployeePage).isFromList ? "Update Employee" : "Add Employee",
                             style: const TextStyle(fontWeight: FontWeight.w700, color: white, fontSize: 20)),
-                      ),
+                      ),*/
                       Container(
                         margin: const EdgeInsets.only(top:20, left: 20, right: 20),
                         child: TextField(

@@ -60,6 +60,10 @@ class _AddCustomerPageState extends BaseState<AddCustomerPage> {
   TextEditingController tallyIDController = TextEditingController();
 
   FocusNode inputNode = FocusNode();
+  bool _isHideAddressDetail = true;
+  bool _isHideBankDetail = true;
+  bool _isHide = true;
+  bool _isHideGSTDetail = true;
 
   @override
   void initState() {
@@ -112,10 +116,12 @@ class _AddCustomerPageState extends BaseState<AddCustomerPage> {
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
         systemOverlayStyle: SystemUiOverlayStyle.dark,
-        toolbarHeight: 55,
+        toolbarHeight: 60,
         automaticallyImplyLeading: false,
-        title: const Text(""),
+        title: Text((widget as AddCustomerPage).isFromList ? "Update Customer" : "Add Customer",
+            style: const TextStyle(fontSize: 18, color: white, fontWeight: FontWeight.w600)),
         leading: GestureDetector(
+            behavior: HitTestBehavior.opaque,
             onTap:() {
               Navigator.pop(context);
             },
@@ -141,15 +147,22 @@ class _AddCustomerPageState extends BaseState<AddCustomerPage> {
                 child: IntrinsicHeight(
                   child: Column(
                     children: [
+                      // Container(
+                      //   color: kBlue,
+                      //   alignment: Alignment.topLeft,
+                      //   padding: const EdgeInsets.only(left: 22, top: 10, bottom: 15),
+                      //   child: Text((widget as AddCustomerPage).isFromList ? "Update Customer" : "Add Customer",
+                      //       style: const TextStyle(fontWeight: FontWeight.w700, color: white, fontSize: 20)),
+                      // ),
                       Container(
-                        color: kBlue,
                         alignment: Alignment.topLeft,
-                        padding: const EdgeInsets.only(left: 22, top: 10, bottom: 15),
-                        child: Text((widget as AddCustomerPage).isFromList ? "Update Customer" : "Add Customer",
-                            style: const TextStyle(fontWeight: FontWeight.w700, color: white, fontSize: 20)),
+                        padding: const EdgeInsets.only(top: 20, left: 22, right: 22, bottom: 10),
+                        child: const Text("Basic Details",
+                          style: TextStyle(fontSize: 16, color: black, fontWeight: FontWeight.w600),
+                        ),
                       ),
                       Container(
-                        margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
+                        margin: const EdgeInsets.only(left: 20, right: 20),
                         child: TextField(
                           cursorColor: black,
                           controller: customerNameController,
@@ -162,205 +175,21 @@ class _AddCustomerPageState extends BaseState<AddCustomerPage> {
                         ),
                       ),
                       Container(
-                        margin: const EdgeInsets.only(top:20, left: 20, right: 20),
-                        child: TextField(
-                          cursorColor: black,
-                          controller: addressLine1Controller,
-                          keyboardType: TextInputType.text,
-                          style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
-                          decoration: const InputDecoration(
-                              labelText: 'AddressLine 1',
-                              prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16)
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(top:20, left: 20, right: 20),
-                        child: TextField(
-                          cursorColor: black,
-                          controller: addressLine2Controller,
-                          keyboardType: TextInputType.text,
-                          style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
-                          decoration: const InputDecoration(
-                              labelText: 'AddressLine 2',
-                              prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16)
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(top:20, left: 20, right: 20),
-                        child: TextField(
-                          cursorColor: black,
-                          controller: addressLine3Controller,
-                          keyboardType: TextInputType.text,
-                          style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
-                          decoration: const InputDecoration(
-                              labelText: 'AddressLine 3',
-                              prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16)
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(top:20, left: 20, right: 20),
-                        child: TextField(
-                          cursorColor: black,
-                          controller: addressLine4Controller,
-                          keyboardType: TextInputType.text,
-                          style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
-                          decoration: const InputDecoration(
-                              labelText: 'AddressLine 4',
-                              prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16)
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(top:20, left: 20, right: 20),
-                        child: TextField(
-                          cursorColor: black,
-                          controller: addressLine5Controller,
-                          keyboardType: TextInputType.text,
-                          style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
-                          decoration: const InputDecoration(
-                              labelText: 'AddressLine 5',
-                              prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16)
-                          ),
-                        ),
-                      ),
-                      Container(
                         margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
                         child: TextField(
                           cursorColor: black,
-                          controller: areaNameController,
-                          keyboardType: TextInputType.text,
-                          style: const TextStyle(fontWeight: FontWeight.w600, color: black, fontSize: 16),
-                          decoration: const InputDecoration(
-                              labelText: 'Area Name',
-                              prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16)
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
-                        child: TextField(
-                          cursorColor: black,
-                          controller: cityController,
-                          keyboardType: TextInputType.text,
-                          style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
-                          decoration: const InputDecoration(
-                            labelText: 'City Name',
-                            counterText: '',
-                            prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
-                        child: TextField(
-                          cursorColor: black,
-                          controller: pinCodeController,
+                          controller: creditLimitController,
                           keyboardType: TextInputType.number,
-                          maxLength: 6,
+                          maxLength: 10,
                           style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
                           decoration: const InputDecoration(
-                            labelText: 'Pin Code',
+                            labelText: 'Credit Limit',
                             counterText: '',
                             prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
                           ),
                           inputFormatters: [
                             FilteringTextInputFormatter.digitsOnly
                           ],
-                        ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
-                        child: TextField(
-                          cursorColor: black,
-                          controller: countryController,
-                          keyboardType: TextInputType.text,
-                          style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
-                          decoration: const InputDecoration(
-                            labelText: 'Country',
-                            counterText: '',
-                            prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
-                        child: TextField(
-                          cursorColor: black,
-                          controller: contactPersonController,
-                          keyboardType: TextInputType.name,
-                          style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
-                          decoration: const InputDecoration(
-                            labelText: 'Contact Person',
-                            counterText: '',
-                            prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
-                        child: TextField(
-                          cursorColor: black,
-                          controller: GSTTypeController,
-                          keyboardType: TextInputType.text,
-                          readOnly: true,
-                          style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
-                          decoration: const InputDecoration(
-                            labelText: 'GST Type',
-                            counterText: '',
-                            prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
-                          ),
-                          onTap: () {
-                            showGSTTypeActionDialog();
-                          },
-                        ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
-                        child: TextField(
-                          cursorColor: black,
-                          controller: stateController,
-                          keyboardType: TextInputType.text,
-                          style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
-                          decoration: const InputDecoration(
-                            labelText: 'State',
-                            counterText: '',
-                            prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
-                        child: TextField(
-                          cursorColor: black,
-                          controller: parentController,
-                          keyboardType: TextInputType.text,
-                          style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
-                          decoration: const InputDecoration(
-                            labelText: 'Parent',
-                            counterText: '',
-                            prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
-                        child: TextField(
-                          cursorColor: black,
-                          controller: GSTApplicableController,
-                          keyboardType: TextInputType.text,
-                          readOnly: true,
-                          style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
-                          decoration: const InputDecoration(
-                            labelText: 'GST Applicable',
-                            counterText: '',
-                            prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
-                          ),
-                          onTap: () {
-                            showGSTApplicableActionDialog();
-                          },
                         ),
                       ),
                       Container(
@@ -381,7 +210,274 @@ class _AddCustomerPageState extends BaseState<AddCustomerPage> {
                           ],
                         ),
                       ),
-                      Container(
+                      GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () {
+                          setState(() {
+                            _isHideGSTDetail = !_isHideGSTDetail;
+                          });
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.only(top: 20, left: 22, right: 22, bottom: 10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text("GST Details",
+                                textAlign: TextAlign.start,
+                                style: TextStyle(fontSize: 16, color: black, fontWeight: FontWeight.w600),
+                              ),
+                              _isHideGSTDetail ? const Icon(Icons.keyboard_arrow_down) : const Icon(Icons.keyboard_arrow_up),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Visibility(
+                        visible: !_isHideGSTDetail,
+                        child: Column(
+                          children: [
+                            Container(
+                              margin: const EdgeInsets.only(left: 20, right: 20),
+                              child: TextField(
+                                cursorColor: black,
+                                controller: GSTTypeController,
+                                keyboardType: TextInputType.text,
+                                readOnly: true,
+                                style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
+                                decoration: const InputDecoration(
+                                  labelText: 'GST Type',
+                                  counterText: '',
+                                  prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
+                                ),
+                                onTap: () {
+                                  showGSTTypeActionDialog();
+                                },
+                              ),
+                            ),
+                            Container(
+                              margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
+                              child: TextField(
+                                cursorColor: black,
+                                controller: GSTApplicableController,
+                                keyboardType: TextInputType.text,
+                                readOnly: true,
+                                style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
+                                decoration: const InputDecoration(
+                                  labelText: 'GST Applicable',
+                                  counterText: '',
+                                  prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
+                                ),
+                                onTap: () {
+                                  showGSTApplicableActionDialog();
+                                },
+                              ),
+                            ),
+                            Container(
+                              margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
+                              child: TextField(
+                                cursorColor: black,
+                                controller: GSTINNoController,
+                                keyboardType: TextInputType.text,
+                                textCapitalization: TextCapitalization.characters,
+                                maxLength: 15,
+                                style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
+                                decoration: const InputDecoration(
+                                  labelText: 'GST No',
+                                  counterText: '',
+                                  prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () {
+                          setState(() {
+                            _isHideAddressDetail = !_isHideAddressDetail;
+                          });
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.only(top: 20, left: 22, right: 22, bottom: 10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text("Address Details",
+                                textAlign: TextAlign.start,
+                                style: TextStyle(fontSize: 16, color: black, fontWeight: FontWeight.w600),
+                              ),
+                              _isHideAddressDetail ? const Icon(Icons.keyboard_arrow_down) : const Icon(Icons.keyboard_arrow_up),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Visibility(
+                        visible: !_isHideAddressDetail,
+                        child: Column(
+                          children: [
+                            Container(
+                              margin: const EdgeInsets.only(left: 20, right: 20),
+                              child: TextField(
+                                cursorColor: black,
+                                controller: addressLine1Controller,
+                                keyboardType: TextInputType.text,
+                                style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
+                                decoration: const InputDecoration(
+                                    labelText: 'AddressLine 1',
+                                    prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16)
+                                ),
+                              ),
+                            ),
+                            Container(
+                              margin: const EdgeInsets.only(top:20, left: 20, right: 20),
+                              child: TextField(
+                                cursorColor: black,
+                                controller: addressLine2Controller,
+                                keyboardType: TextInputType.text,
+                                style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
+                                decoration: const InputDecoration(
+                                    labelText: 'AddressLine 2',
+                                    prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16)
+                                ),
+                              ),
+                            ),
+                            Container(
+                              margin: const EdgeInsets.only(top:20, left: 20, right: 20),
+                              child: TextField(
+                                cursorColor: black,
+                                controller: addressLine3Controller,
+                                keyboardType: TextInputType.text,
+                                style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
+                                decoration: const InputDecoration(
+                                    labelText: 'AddressLine 3',
+                                    prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16)
+                                ),
+                              ),
+                            ),
+                            Container(
+                              margin: const EdgeInsets.only(top:20, left: 20, right: 20),
+                              child: TextField(
+                                cursorColor: black,
+                                controller: addressLine4Controller,
+                                keyboardType: TextInputType.text,
+                                style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
+                                decoration: const InputDecoration(
+                                    labelText: 'AddressLine 4',
+                                    prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16)
+                                ),
+                              ),
+                            ),
+                            Container(
+                              margin: const EdgeInsets.only(top:20, left: 20, right: 20),
+                              child: TextField(
+                                cursorColor: black,
+                                controller: addressLine5Controller,
+                                keyboardType: TextInputType.text,
+                                style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
+                                decoration: const InputDecoration(
+                                    labelText: 'AddressLine 5',
+                                    prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16)
+                                ),
+                              ),
+                            ),
+                            Container(
+                              margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
+                              child: TextField(
+                                cursorColor: black,
+                                controller: areaNameController,
+                                keyboardType: TextInputType.text,
+                                style: const TextStyle(fontWeight: FontWeight.w600, color: black, fontSize: 16),
+                                decoration: const InputDecoration(
+                                    labelText: 'Area Name',
+                                    prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16)
+                                ),
+                              ),
+                            ),
+                            Container(
+                              margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
+                              child: TextField(
+                                cursorColor: black,
+                                controller: cityController,
+                                keyboardType: TextInputType.text,
+                                style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
+                                decoration: const InputDecoration(
+                                  labelText: 'City Name',
+                                  counterText: '',
+                                  prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
+                              child: TextField(
+                                cursorColor: black,
+                                controller: pinCodeController,
+                                keyboardType: TextInputType.number,
+                                maxLength: 6,
+                                style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
+                                decoration: const InputDecoration(
+                                  labelText: 'Pin Code',
+                                  counterText: '',
+                                  prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
+                                ),
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly
+                                ],
+                              ),
+                            ),
+                            Container(
+                              margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
+                              child: TextField(
+                                cursorColor: black,
+                                controller: stateController,
+                                keyboardType: TextInputType.text,
+                                style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
+                                decoration: const InputDecoration(
+                                  labelText: 'State',
+                                  counterText: '',
+                                  prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
+                              child: TextField(
+                                cursorColor: black,
+                                controller: countryController,
+                                keyboardType: TextInputType.text,
+                                style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
+                                decoration: const InputDecoration(
+                                  labelText: 'Country',
+                                  counterText: '',
+                                  prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () {
+                          setState(() {
+                            _isHideBankDetail = !_isHideBankDetail;
+                          });
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.only(top: 20, left: 22, right: 22, bottom: 10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text("Bank Details",
+                                textAlign: TextAlign.start,
+                                style: TextStyle(fontSize: 16, color: black, fontWeight: FontWeight.w600),
+                              ),
+                              _isHideBankDetail ? const Icon(Icons.keyboard_arrow_down) : const Icon(Icons.keyboard_arrow_up),
+                            ],
+                          ),
+                        ),
+                      ),
+                      /*  Container(
                         margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
                         child: TextField(
                           cursorColor: black,
@@ -394,165 +490,194 @@ class _AddCustomerPageState extends BaseState<AddCustomerPage> {
                             prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
                           ),
                         ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
-                        child: TextField(
-                          cursorColor: black,
-                          controller: ledgerEmailController,
-                          keyboardType: TextInputType.emailAddress,
-                          style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
-                          decoration: const InputDecoration(
-                              labelText: 'Ledger Email',
-                              prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16)
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
-                        child: TextField(
-                          cursorColor: black,
-                          controller: ledgerPhoneController,
-                          keyboardType: TextInputType.number,
-                          maxLength: 10,
-                          style: const TextStyle(fontWeight: FontWeight.w600, color: black, fontSize: 16),
-                          decoration: const InputDecoration(
-                              labelText: 'Ledger Phone',
-                              prefixText: '079 ',
-                              counterText: '',
-                              prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16)
-                          ),
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly
+                      ),*/
+                      Visibility(
+                        visible: !_isHideBankDetail,
+                        child: Column(
+                          children: [
+                            Container(
+                              margin: const EdgeInsets.only(left: 20, right: 20),
+                              child: TextField(
+                                cursorColor: black,
+                                controller: ledgerEmailController,
+                                keyboardType: TextInputType.emailAddress,
+                                style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
+                                decoration: const InputDecoration(
+                                    labelText: 'Ledger Email',
+                                    prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16)
+                                ),
+                              ),
+                            ),
+                            Container(
+                              margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
+                              child: TextField(
+                                cursorColor: black,
+                                controller: ledgerPhoneController,
+                                keyboardType: TextInputType.number,
+                                maxLength: 10,
+                                style: const TextStyle(fontWeight: FontWeight.w600, color: black, fontSize: 16),
+                                decoration: const InputDecoration(
+                                    labelText: 'Ledger Phone',
+                                    prefixText: '079 ',
+                                    counterText: '',
+                                    prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16)
+                                ),
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly
+                                ],
+                              ),
+                            ),
+                            Container(
+                              margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
+                              child: TextField(
+                                cursorColor: black,
+                                controller: ledgerContactController,
+                                keyboardType: TextInputType.name,
+                                style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
+                                decoration: const InputDecoration(
+                                  labelText: 'Ledger Contact',
+                                  counterText: '',
+                                  prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
+                              child: TextField(
+                                cursorColor: black,
+                                controller: ledgerMobileController,
+                                keyboardType: TextInputType.number,
+                                maxLength: 10,
+                                style: const TextStyle(fontWeight: FontWeight.w600, color: black, fontSize: 16),
+                                decoration: const InputDecoration(
+                                    labelText: 'Ledger Mobile',
+                                    prefixText: '+91 ',
+                                    counterText: '',
+                                    prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16)
+                                ),
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly
+                                ],
+                              ),
+                            ),
+                            Container(
+                              margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
+                              child: TextField(
+                                cursorColor: black,
+                                controller: ledgerBankNameController,
+                                keyboardType: TextInputType.text,
+                                style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
+                                decoration: const InputDecoration(
+                                  labelText: 'Ledger Bank Name',
+                                  counterText: '',
+                                  prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
+                              child: TextField(
+                                cursorColor: black,
+                                controller: ledgerBankACNoController,
+                                keyboardType: TextInputType.number,
+                                maxLength: 17,
+                                style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
+                                decoration: const InputDecoration(
+                                  labelText: 'Ledger Bank AC No.',
+                                  counterText: '',
+                                  prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
+                                ),
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly
+                                ],
+                              ),
+                            ),
+                            Container(
+                              margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
+                              child: TextField(
+                                cursorColor: black,
+                                controller: ledgerBankIFSCCodeController,
+                                keyboardType: TextInputType.text,
+                                textCapitalization: TextCapitalization.characters,
+                                style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
+                                decoration: const InputDecoration(
+                                  labelText: 'Ledger IFSC Code',
+                                  counterText: '',
+                                  prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
+                              child: TextField(
+                                cursorColor: black,
+                                controller: ledgerBankSwiftCodeController,
+                                keyboardType: TextInputType.text,
+                                textCapitalization: TextCapitalization.characters,
+                                style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
+                                decoration: const InputDecoration(
+                                  labelText: 'Ledger Bank Swift Code',
+                                  counterText: '',
+                                  prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
+                                ),
+                              ),
+                            ),
                           ],
                         ),
                       ),
-                      Container(
-                        margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
-                        child: TextField(
-                          cursorColor: black,
-                          controller: ledgerContactController,
-                          keyboardType: TextInputType.name,
-                          style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
-                          decoration: const InputDecoration(
-                            labelText: 'Ledger Contact',
-                            counterText: '',
-                            prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
+                      GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () {
+                          setState(() {
+                            _isHide = !_isHide;
+                          });
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.only(top: 20, left: 22, right: 22, bottom: 10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text("Other Details",
+                                textAlign: TextAlign.start,
+                                style: TextStyle(fontSize: 16, color: black, fontWeight: FontWeight.w600),
+                              ),
+                              _isHide ? const Icon(Icons.keyboard_arrow_down) : const Icon(Icons.keyboard_arrow_up),
+                            ],
                           ),
                         ),
                       ),
-                      Container(
-                        margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
-                        child: TextField(
-                          cursorColor: black,
-                          controller: ledgerMobileController,
-                          keyboardType: TextInputType.number,
-                          maxLength: 10,
-                          style: const TextStyle(fontWeight: FontWeight.w600, color: black, fontSize: 16),
-                          decoration: const InputDecoration(
-                              labelText: 'Ledger Mobile',
-                              prefixText: '+91 ',
-                              counterText: '',
-                              prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16)
-                          ),
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly
-                          ],
-                        ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
-                        child: TextField(
-                          cursorColor: black,
-                          controller: ledgerBankNameController,
-                          keyboardType: TextInputType.text,
-                          style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
-                          decoration: const InputDecoration(
-                            labelText: 'Ledger Bank Name',
-                            counterText: '',
-                            prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
-                        child: TextField(
-                          cursorColor: black,
-                          controller: ledgerBankACNoController,
-                          keyboardType: TextInputType.number,
-                          maxLength: 17,
-                          style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
-                          decoration: const InputDecoration(
-                            labelText: 'Ledger Bank AC No.',
-                            counterText: '',
-                            prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
-                          ),
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly
-                          ],
-                        ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
-                        child: TextField(
-                          cursorColor: black,
-                          controller: ledgerBankIFSCCodeController,
-                          keyboardType: TextInputType.text,
-                          textCapitalization: TextCapitalization.characters,
-                          style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
-                          decoration: const InputDecoration(
-                            labelText: 'Ledger IFSC Code',
-                            counterText: '',
-                            prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
-                        child: TextField(
-                          cursorColor: black,
-                          controller: ledgerBankSwiftCodeController,
-                          keyboardType: TextInputType.text,
-                          textCapitalization: TextCapitalization.characters,
-                          style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
-                          decoration: const InputDecoration(
-                            labelText: 'Ledger Bank Swift Code',
-                            counterText: '',
-                            prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
-                        child: TextField(
-                          cursorColor: black,
-                          controller: GSTINNoController,
-                          keyboardType: TextInputType.text,
-                          textCapitalization: TextCapitalization.characters,
-                          maxLength: 15,
-                          style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
-                          decoration: const InputDecoration(
-                            labelText: 'GST No',
-                            counterText: '',
-                            prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
-                        child: TextField(
-                          cursorColor: black,
-                          controller: creditLimitController,
-                          keyboardType: TextInputType.number,
-                          maxLength: 10,
-                          style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
-                          decoration: const InputDecoration(
-                            labelText: 'Credit Limit',
-                            counterText: '',
-                            prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
-                          ),
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly
+                      Visibility(
+                        visible: !_isHide,
+                        child: Column(
+                          children: [
+                            Container(
+                              margin: const EdgeInsets.only(left: 20, right: 20),
+                              child: TextField(
+                                cursorColor: black,
+                                controller: contactPersonController,
+                                keyboardType: TextInputType.name,
+                                style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
+                                decoration: const InputDecoration(
+                                  labelText: 'Contact Person',
+                                  counterText: '',
+                                  prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
+                              child: TextField(
+                                cursorColor: black,
+                                controller: parentController,
+                                keyboardType: TextInputType.text,
+                                style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
+                                decoration: const InputDecoration(
+                                  labelText: 'Parent',
+                                  counterText: '',
+                                  prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
+                                ),
+                              ),
+                            ),
                           ],
                         ),
                       ),

@@ -115,6 +115,8 @@ class _ProductListPageState extends BaseState<ProductListPage> with TickerProvid
         appBar: AppBar(
           systemOverlayStyle: SystemUiOverlayStyle.dark,
           automaticallyImplyLeading: false,
+          title:  const Text("Product List",
+            style: TextStyle(fontSize: 18, color: white, fontWeight: FontWeight.w600)),
           leading: GestureDetector(
               onTap:() {
                 Navigator.pop(context);
@@ -156,12 +158,12 @@ class _ProductListPageState extends BaseState<ProductListPage> with TickerProvid
             ? const LoadingWidget()
             : Column(
           children: [
-            Container(
-              color: kBlue,
-              alignment: Alignment.topLeft,
-              padding: const EdgeInsets.only(left: 22, top: 10, bottom: 20),
-              child: const Text("Product List", style: TextStyle(fontWeight: FontWeight.w700, color: white,fontSize: 20)),
-            ),
+            // Container(
+            //   color: kBlue,
+            //   alignment: Alignment.topLeft,
+            //   padding: const EdgeInsets.only(left: 22, top: 10, bottom: 20),
+            //   child: const Text("Product List", style: TextStyle(fontWeight: FontWeight.w700, color: white,fontSize: 20)),
+            // ),
             Container(
               color: kLightestPurple,
               child: Column(

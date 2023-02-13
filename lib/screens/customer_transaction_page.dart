@@ -91,7 +91,7 @@ class _CustomerTransactionListPageState extends BaseState<CustomerTransactionLis
                                   text: '₹ ',
                                   style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: black),
                                   children: <TextSpan>[
-                                    TextSpan(text: checkValidString(dataGetSet?.customerTransection![index].transectionAmount).toString(),
+                                    TextSpan(text: checkValidString(convertToComaSeparated(dataGetSet!.customerTransection![index].transectionAmount.toString())),
                                         style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: black),
                                         recognizer: TapGestureRecognizer()..onTap = () => {
                                         }),

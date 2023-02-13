@@ -101,7 +101,8 @@ class _SelectCustomerListPageState extends BaseState<SelectCustomerListPage> {
         appBar: AppBar(
           systemOverlayStyle: SystemUiOverlayStyle.dark,
           automaticallyImplyLeading: false,
-          title: const Text(""),
+          title: const Text("Customers",
+              style: TextStyle(fontSize: 18, color: white, fontWeight: FontWeight.w600)),
           leading: GestureDetector(
               onTap:() {
                 Navigator.pop(context, CustomerList());
@@ -136,12 +137,12 @@ class _SelectCustomerListPageState extends BaseState<SelectCustomerListPage> {
         body: _isLoading ? const LoadingWidget()
             : Column(
           children: [
-            Container(
+           /* Container(
               color: kBlue,
               alignment: Alignment.topLeft,
               padding: const EdgeInsets.only(left: 22, top: 10, bottom: 10),
               child: const Text("Customers", style: TextStyle(fontWeight: FontWeight.w700, color: white,fontSize: 20)),
-            ),
+            ),*/
             Container(
               color: kLightestPurple,
               child: Container(
@@ -302,10 +303,10 @@ class _SelectCustomerListPageState extends BaseState<SelectCustomerListPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  margin: const EdgeInsets.only(left: 10),
+                  margin: const EdgeInsets.only(left: 10, right: 10),
                   child: Text(checkValidString(listCustomer[index].customerName.toString().trim()),
-                    maxLines: 2,
                     overflow: TextOverflow.ellipsis,
+                    maxLines: 3,
                     textAlign: TextAlign.start,
                     style: const TextStyle(fontSize: 14, color: black, fontWeight: FontWeight.w600),
                   ),

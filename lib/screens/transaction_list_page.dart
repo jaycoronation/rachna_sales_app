@@ -4,6 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pretty_http_logger/pretty_http_logger.dart';
 import 'package:salesapp/model/transaction_list_response_model.dart';
@@ -16,6 +17,7 @@ import '../network/api_end_point.dart';
 import '../utils/app_utils.dart';
 import '../utils/base_class.dart';
 import '../widget/loading.dart';
+import '../widget/no_data.dart';
 
 class TransactionListPage extends StatefulWidget {
   const TransactionListPage({Key? key}) : super(key: key);
@@ -44,6 +46,8 @@ class _TransactionListPageState extends BaseState<TransactionListPage> {
 
   var listTransactions = List<TransectionLits>.empty(growable: true);
   TransactionListResponseModel transactionListResponse = TransactionListResponseModel();
+
+  var listFilter = ["Month wise filter", "Year wise filter", "Custom Filter"];
 
   @override
   void initState() {
@@ -107,7 +111,8 @@ class _TransactionListPageState extends BaseState<TransactionListPage> {
         appBar: AppBar(
           systemOverlayStyle: SystemUiOverlayStyle.dark,
           automaticallyImplyLeading: false,
-          title: const Text(""),
+          title:const Text("Transaction",
+              style: TextStyle(fontSize: 18, color: white, fontWeight: FontWeight.w600)),
           leading: GestureDetector(
               onTap:() {
                 Navigator.pop(context);
@@ -122,28 +127,31 @@ class _TransactionListPageState extends BaseState<TransactionListPage> {
               )
           ),
           actions: [
-            GestureDetector(
-              onTap: () {
-
-              },
-              child: Container(
-                height: 35,
-                width: 35,
-                alignment: Alignment.center,
-                child: const Icon(Icons.calendar_today_outlined, color: white, size: 22,),
+            Container(
+              margin: const EdgeInsets.only(top: 11, bottom: 11, right: 10),
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () {
+                  _showFilterDialog();
+                },
+                child: const Icon(Icons.calendar_today_outlined, color: white, size: 28,),
               ),
             ),
-            GestureDetector(
-              onTap: () {
+            Container(
+              margin: const EdgeInsets.only(top: 11, bottom: 11, right: 15),
+              child: GestureDetector(
+                onTap: () {
 
-              },
-              child: Container(
-                height: 45,
-                width: 45,
-                alignment: Alignment.center,
-                child: const Icon(Icons.picture_as_pdf, color: white, size: 22,),
+                },
+                child: Container(
+                  height: 45,
+                  width: 45,
+                  alignment: Alignment.center,
+                  child: const Icon(Icons.picture_as_pdf, color: white, size: 28,),
+                ),
               ),
             ),
+
           ],
           centerTitle: false,
           elevation: 0,
@@ -156,12 +164,12 @@ class _TransactionListPageState extends BaseState<TransactionListPage> {
               color: kBlue,
               child: Column(
                 children: [
-                  Container(
+                 /* Container(
                     color: kBlue,
                     alignment: Alignment.topLeft,
                     padding: const EdgeInsets.only(left: 22, top: 10, bottom: 10),
                     child: const Text("Transaction", style: TextStyle(fontWeight: FontWeight.w700, color: white,fontSize: 20)),
-                  ),
+                  ),*/
                   Stack(
                     children: [
                       Container(
@@ -306,7 +314,7 @@ class _TransactionListPageState extends BaseState<TransactionListPage> {
                             text: '₹ ',
                             style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: kBlue),
                             children: <TextSpan>[
-                              TextSpan(text: transactionListResponse.netBalance.toString(),
+                              TextSpan(text: checkValidString(convertToComaSeparated(transactionListResponse.netBalance.toString())),
                                   style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: kBlue),
                                   recognizer: TapGestureRecognizer()..onTap = () => {
                                   }),
@@ -322,7 +330,8 @@ class _TransactionListPageState extends BaseState<TransactionListPage> {
             _isSearchLoading
                 ? const Center(
               child: LoadingWidget(),
-            ) : Expanded(
+            ) : listTransactions.isNotEmpty
+            ? Expanded(
               child: ListView.builder(
                   controller: _scrollViewController,
                   scrollDirection: Axis.vertical,
@@ -372,8 +381,7 @@ class _TransactionListPageState extends BaseState<TransactionListPage> {
                                     ),
                                   ),
                                 ),
-                                listTransactions[index].orderDetails!.subTotal!.toString().isNotEmpty
-                                ? Container(
+                                Container(
                                   margin: const EdgeInsets.only(right: 8, top: 6),
                                   child: RichText(
                                     textAlign: TextAlign.center,
@@ -381,15 +389,14 @@ class _TransactionListPageState extends BaseState<TransactionListPage> {
                                       text: '₹ ',
                                       style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: black),
                                       children: <TextSpan>[
-                                        TextSpan(text: checkValidString(listTransactions[index].transectionAmount).toString(),
+                                        TextSpan(text: checkValidString(convertToComaSeparated(listTransactions[index].transectionAmount.toString())),
                                             style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: black),
                                             recognizer: TapGestureRecognizer()..onTap = () => {
                                             }),
                                       ],
                                     ),
                                   ),
-                                )
-                                : Container(),
+                                ),
                               ],
                             ),
                             Container(
@@ -397,7 +404,7 @@ class _TransactionListPageState extends BaseState<TransactionListPage> {
                               margin: const EdgeInsets.only(left: 10, top: 6),
                               child: Text(checkValidString(listTransactions[index].transectionDate).toString(),
                                 textAlign: TextAlign.start,
-                                style: TextStyle(fontSize: 13, color: kGray, fontWeight: FontWeight.w400),
+                                style: const TextStyle(fontSize: 13, color: kGray, fontWeight: FontWeight.w400),
                               ),
                             ),
                             Container(
@@ -408,25 +415,27 @@ class _TransactionListPageState extends BaseState<TransactionListPage> {
                       ),
                     ),
                   )),
+            )
+            : const Center(
+              child: SizedBox(
+                  height: 60,
+                  child: MyNoDataWidget(msg: "", subMsg: "No transactions found")),
             ),
             Visibility(
                 visible: _isLoadingMore,
-                child: Positioned(
-                  bottom: 50,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                          width: 30,
-                          height: 30,
-                          child: Lottie.asset('assets/images/loader_new.json', repeat: true, animate: true, frameRate: FrameRate.max)),
-                      const Text(
-                          ' Loading more...',
-                          style: TextStyle(color: black, fontWeight: FontWeight.w400, fontSize: 16)
-                      )
-                    ],
-                  ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                        width: 30,
+                        height: 30,
+                        child: Lottie.asset('assets/images/loader_new.json', repeat: true, animate: true, frameRate: FrameRate.max)),
+                    const Text(
+                        ' Loading more...',
+                        style: TextStyle(color: black, fontWeight: FontWeight.w400, fontSize: 16)
+                    )
+                  ],
                 )),
           ],
         ),
@@ -440,10 +449,185 @@ class _TransactionListPageState extends BaseState<TransactionListPage> {
     widget is TransactionListPage;
   }
 
+  void _showFilterDialog() {
+    showModalBottomSheet(
+        isScrollControlled: true,
+        backgroundColor: white,
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(12), topRight: Radius.circular(12))),
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+                return SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.25,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 12,right: 12,top: 15),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Container(
+                            width: 60,
+                            margin: const EdgeInsets.only(top: 12),
+                            child: const Divider(
+                              height: 1.5,
+                              thickness: 1.5,
+                              color: kBlue,
+                            )),
+                        Container(
+                          margin: const EdgeInsets.only(top: 12),
+                          padding: const EdgeInsets.fromLTRB(14, 8, 14, 8),
+                          child: const Text("Select Date", style: TextStyle(color: black, fontWeight: FontWeight.bold, fontSize: 15)),
+                        ),
+                        Container(height: 6),
+                        Expanded(child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              ListView.builder(
+                                  itemCount: listFilter.length,
+                                  shrinkWrap: true,
+                                  physics: const AlwaysScrollableScrollPhysics(),
+                                  scrollDirection: Axis.vertical,
+                                  itemBuilder: (context, index) {
+                                    return Column(
+                                      children: [
+                                        InkWell(
+                                          onTap: () async {
+                                            setState(() {
+                                              // _transactionModeController.text = checkValidString(listFilter[index]);
+                                            });
+                                            Navigator.of(context).pop();
+
+                                            if (index == 0) {
+                                              var monthTillDate = "";
+                                              monthTillDate = DateTime.now().toString();
+
+                                              var dateParse = DateTime.parse(monthTillDate);
+                                              String currentDate = DateFormat('dd-MM-yyyy').format(dateParse);
+
+                                              print("==========");
+                                              print(currentDate);
+                                              print("==========");
+
+                                              String fromDateTillMonth = "01-${DateFormat('MM-yyyy').format(dateParse)}";
+                                              print("==========");
+                                              print(fromDateTillMonth);
+
+                                              dateStartSelectionChanged = fromDateTillMonth;
+                                              dateEndSelectionChanged = currentDate;
+
+                                              if(isInternetConnected) {
+                                                _getTransactionListData(true);
+                                              }else {
+                                                noInterNet(context);
+                                              }
+
+                                            }else if (index == 1) {
+
+                                              var yearTillDate = DateTime.now().toString();
+                                              var dateParse = DateTime.parse(yearTillDate);
+
+                                              String currentYear = DateFormat('yyyy').format(dateParse);
+                                              String fromDateTillYear = "01-04-${DateFormat('yyyy').format(dateParse)}";
+
+                                              var result = int.parse(currentYear) + 1;
+                                              String toDateTillYear = "31-03-$result";
+
+                                              print("==========");
+                                              print(fromDateTillYear);
+                                              print("==========");
+                                              print(toDateTillYear);
+
+                                              dateStartSelectionChanged = fromDateTillYear;
+                                              dateEndSelectionChanged = toDateTillYear;
+
+                                              if(isInternetConnected) {
+                                                _getTransactionListData(true);
+                                              }else {
+                                                noInterNet(context);
+                                              }
+
+                                            }else if (index == 2) {
+
+                                              DateTimeRange? result = await showDateRangePicker(
+                                                  context: context,
+                                                  firstDate: DateTime(2022, 1, 1), // the earliest allowable
+                                                  lastDate: DateTime.now(), // the latest allowable
+                                                  currentDate: DateTime.now(),
+                                                  saveText: 'Done',
+                                                  builder: (context, Widget? child) => Theme(
+                                                    data: Theme.of(context).copyWith(
+                                                        appBarTheme: Theme.of(context).appBarTheme.copyWith(
+                                                            backgroundColor: kBlue,
+                                                            iconTheme: Theme.of(context).appBarTheme.iconTheme?.copyWith(color: Colors.white)),
+                                                        scaffoldBackgroundColor: white,
+                                                        colorScheme: const ColorScheme.light(
+                                                            onPrimary: Colors.white,
+                                                            primary: kBlue
+                                                        )),
+                                                    child: child!,
+                                                  )
+                                              );
+
+                                              if(result !=null)
+                                              {
+                                                DateTime? startDate = result.start;
+                                                DateTime? endDate = result.end;
+                                                print(startDate);
+                                                print(endDate);
+                                                String startDateFormat = DateFormat('dd-MM-yyyy').format(startDate);
+                                                String endDateFormat = DateFormat('dd-MM-yyyy').format(endDate);
+                                                print("==============");
+                                                print(startDateFormat);
+                                                print(endDateFormat);
+                                                dateStartSelectionChanged = startDateFormat;
+                                                dateEndSelectionChanged = endDateFormat;
+
+                                                if(isInternetConnected) {
+                                                  _getTransactionListData(true);
+                                                }else {
+                                                  noInterNet(context);
+                                                }
+                                              }
+
+                                            }else {
+
+                                            }
+                                          },
+                                          child: Container(
+                                            padding: const EdgeInsets.only(left: 20.0, right: 20, top: 8, bottom: 8),
+                                            alignment: Alignment.centerLeft,
+                                            child: Text(
+                                              checkValidString(listFilter[index]),
+                                              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: black),
+                                            ),
+                                          ),
+                                        ),
+                                        const Divider(
+                                          thickness: 0.5,
+                                          color: kTextLightGray,
+                                          endIndent: 16,
+                                          indent: 16,
+                                        ),
+                                      ],
+                                    );
+                                  })
+                            ],
+                          ),
+                        ))
+                      ],
+                    ),
+                  ),
+                );
+              });
+        });
+
+  }
+
   Future<void> _redirectToAddPayment(BuildContext context) async {
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => AddPaymentDetailPage(Order(), "", "", "", "")),
+      MaterialPageRoute(builder: (context) => AddPaymentDetailPage(Order(), "", "", "", "", false)),
     );
 
     print("result ===== $result");

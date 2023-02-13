@@ -109,7 +109,7 @@ class _CustomerSalesHistoryListPageState extends BaseState<CustomerSalesHistoryL
                                             text: '₹ ',
                                             style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: kBlue),
                                             children: <TextSpan>[
-                                              TextSpan(text: checkValidString(dataGetSet?.salesHistory![index].grandTotal.toString()),
+                                              TextSpan(text: checkValidString(convertToComaSeparated(dataGetSet!.salesHistory![index].grandTotal.toString())),
                                                   style: const TextStyle(fontSize: 18, color: kBlue, fontWeight: FontWeight.w700),
                                                   recognizer: TapGestureRecognizer()..onTap = () => {
                                                   }),
@@ -185,7 +185,7 @@ class _CustomerSalesHistoryListPageState extends BaseState<CustomerSalesHistoryL
   Future<void> _redirectToTransaction(BuildContext context, String orderId, String customerId, String customerName, String totalAmount) async {
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => AddPaymentDetailPage(Order(), orderId, customerId, customerName, totalAmount)),
+      MaterialPageRoute(builder: (context) => AddPaymentDetailPage(Order(), orderId, customerId, customerName, totalAmount, false)),
     );
 
     print("result ===== $result");

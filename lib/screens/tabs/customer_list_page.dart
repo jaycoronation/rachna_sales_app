@@ -51,6 +51,8 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
 
   String searchText = "";
 
+  var listFilter = ["Month wise filter", "Year wise filter", "Custom Filter"];
+
   @override
   void initState() {
     _scrollViewController = ScrollController();
@@ -93,9 +95,41 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
       appBar: AppBar(
         systemOverlayStyle: SystemUiOverlayStyle.dark,
         automaticallyImplyLeading: false,
-        title: const Text(""),
+        title: const Text("Customer List",
+            style: TextStyle(fontSize: 18, color: white, fontWeight: FontWeight.w600)),
         actions: [
+
           Container(
+            margin: const EdgeInsets.only(top: 12, bottom: 12),
+            child: GestureDetector(
+              onTap: () {
+                _redirectToAddCustomer(context, CustomerList(), false);
+              },
+              child: Container(
+                height: 33,
+                width: 34,
+                decoration: BoxDecoration(
+                    border: Border.all(width: 1, color: kLightestPurple),
+                    borderRadius: const BorderRadius.all(Radius.circular(14.0),),
+                    color: white,
+                    shape: BoxShape.rectangle
+                ),
+                alignment: Alignment.center,
+                child: const Icon(Icons.add, color: kBlue, size: 21,),
+              ),
+            ),
+          ),
+          Container(
+            margin: const EdgeInsets.only(top: 11, bottom: 11, left:  15, right: 22),
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                _showFilterDialog();
+              },
+              child: const Icon(Icons.calendar_today_outlined, color: white, size: 28,),
+            ),
+          ),
+         /* Container(
             margin: const EdgeInsets.only(top: 12, bottom: 12, right: 3),
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
@@ -169,7 +203,7 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
                 child: const Icon(Icons.calendar_today_outlined, color: white, size: 26,),
               ),
             ),
-          ),
+          ),*/
         ],
         centerTitle: false,
         elevation: 0,
@@ -192,11 +226,11 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
               color: kBlue,
               child: Column(
                 children: [
-                  Container(
+                 /* Container(
                     alignment: Alignment.topLeft,
                     padding: const EdgeInsets.only(left: 22),
                     child: const Text("Customer List", style: TextStyle(fontWeight: FontWeight.w700, color: white,fontSize: 20)),
-                  ),
+                  ),*/
                   Stack(
                     children: [
                       SizedBox(
@@ -318,7 +352,7 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
                                                       text: '₹ ',
                                                       style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: kGreen),
                                                       children: <TextSpan>[
-                                                        TextSpan(text: totalSale.toString(),
+                                                        TextSpan(text: checkValidString(convertToComaSeparated(totalSale.toString())),
                                                             style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: kGreen),
                                                             recognizer: TapGestureRecognizer()..onTap = () => {
                                                             }),
@@ -328,7 +362,7 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
                                               ),
                                               Container(
                                                   alignment: Alignment.center,
-                                                  child: const Text("Total Sales",
+                                                  child: const Text("Total",
                                                       style: TextStyle(fontSize: 11, fontWeight: FontWeight.w400, color: kGray),
                                                       textAlign: TextAlign.center)
                                               ),
@@ -354,7 +388,7 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
                                                       text: '₹ ',
                                                       style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w400, color: kRed),
                                                       children: <TextSpan>[
-                                                        TextSpan(text: totalOverdue.toString(),
+                                                        TextSpan(text: checkValidString(convertToComaSeparated(totalOverdue.toString())),
                                                             style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: kRed),
                                                             recognizer: TapGestureRecognizer()..onTap = () => {
                                                             }),
@@ -431,7 +465,7 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
                             children: [
                               Container(
                                 margin: const EdgeInsets.only(left: 10, right: 5, bottom: 8),
-                                child: Text(checkValidString(toDisplayCase(listCustomer[index].customerName.toString().trim())),
+                                child: Text(checkValidString(toDisplayUpperCase1(listCustomer[index].customerName.toString().trim())),
                                   overflow: TextOverflow.ellipsis,
                                   maxLines: 3,
                                   textAlign: TextAlign.start,
@@ -465,14 +499,14 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
                                       ),
                                     ),
                                   ),
-                                  IconButton(
+                                  /*IconButton(
                                     icon: const Icon(Icons.delete_outline_outlined, color: black, size: 24,),
                                     iconSize: 24,
                                     alignment: Alignment.center,
                                     onPressed: () async {
                                       _deleteCustomer(listCustomer[index], index);
                                     },
-                                  ),
+                                  ),*/
                                 ],
                               ),
                               Container(
@@ -553,6 +587,181 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
         isCustomerListReload = true;
       });
     }
+  }
+
+  void _showFilterDialog() {
+    showModalBottomSheet(
+        isScrollControlled: true,
+        backgroundColor: white,
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(12), topRight: Radius.circular(12))),
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+                return SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.25,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 12,right: 12,top: 15),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Container(
+                            width: 60,
+                            margin: const EdgeInsets.only(top: 12),
+                            child: const Divider(
+                              height: 1.5,
+                              thickness: 1.5,
+                              color: kBlue,
+                            )),
+                        Container(
+                          margin: const EdgeInsets.only(top: 12),
+                          padding: const EdgeInsets.fromLTRB(14, 8, 14, 8),
+                          child: const Text("Select Date", style: TextStyle(color: black, fontWeight: FontWeight.bold, fontSize: 15)),
+                        ),
+                        Container(height: 6),
+                        Expanded(child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              ListView.builder(
+                                  itemCount: listFilter.length,
+                                  shrinkWrap: true,
+                                  physics: const AlwaysScrollableScrollPhysics(),
+                                  scrollDirection: Axis.vertical,
+                                  itemBuilder: (context, index) {
+                                    return Column(
+                                      children: [
+                                        InkWell(
+                                          onTap: () async {
+                                            setState(() {
+                                              // _transactionModeController.text = checkValidString(listFilter[index]);
+                                            });
+                                            Navigator.of(context).pop();
+
+                                            if (index == 0) {
+                                              var monthTillDate = "";
+                                              monthTillDate = DateTime.now().toString();
+
+                                              var dateParse = DateTime.parse(monthTillDate);
+                                              String currentDate = DateFormat('dd-MM-yyyy').format(dateParse);
+
+                                              print("==========");
+                                              print(currentDate);
+                                              print("==========");
+
+                                              String fromDateTillMonth = "01-${DateFormat('MM-yyyy').format(dateParse)}";
+                                              print("==========");
+                                              print(fromDateTillMonth);
+
+                                              dateStartSelectionChanged = fromDateTillMonth;
+                                              dateEndSelectionChanged = currentDate;
+
+                                              if(isInternetConnected) {
+                                                _getCustomerListData(true);
+                                              }else {
+                                                noInterNet(context);
+                                              }
+
+                                            }else if (index == 1) {
+
+                                              var yearTillDate = DateTime.now().toString();
+                                              var dateParse = DateTime.parse(yearTillDate);
+
+                                              String currentYear = DateFormat('yyyy').format(dateParse);
+                                              String fromDateTillYear = "01-04-${DateFormat('yyyy').format(dateParse)}";
+
+                                              var result = int.parse(currentYear) + 1;
+                                              String toDateTillYear = "31-03-$result";
+
+                                              print("==========");
+                                              print(fromDateTillYear);
+                                              print("==========");
+                                              print(toDateTillYear);
+
+                                              dateStartSelectionChanged = fromDateTillYear;
+                                              dateEndSelectionChanged = toDateTillYear;
+
+                                              if(isInternetConnected) {
+                                                _getCustomerListData(true);
+                                              }else {
+                                                noInterNet(context);
+                                              }
+
+                                            }else if (index == 2) {
+
+                                              DateTimeRange? result = await showDateRangePicker(
+                                                  context: context,
+                                                  firstDate: DateTime(2022, 1, 1), // the earliest allowable
+                                                  lastDate: DateTime.now(), // the latest allowable
+                                                  currentDate: DateTime.now(),
+                                                  saveText: 'Done',
+                                                  builder: (context, Widget? child) => Theme(
+                                                    data: Theme.of(context).copyWith(
+                                                        appBarTheme: Theme.of(context).appBarTheme.copyWith(
+                                                            backgroundColor: kBlue,
+                                                            iconTheme: Theme.of(context).appBarTheme.iconTheme?.copyWith(color: Colors.white)),
+                                                        scaffoldBackgroundColor: white,
+                                                        colorScheme: const ColorScheme.light(
+                                                            onPrimary: Colors.white,
+                                                            primary: kBlue
+                                                        )),
+                                                    child: child!,
+                                                  )
+                                              );
+
+                                              if(result !=null)
+                                              {
+                                                DateTime? startDate = result.start;
+                                                DateTime? endDate = result.end;
+                                                print(startDate);
+                                                print(endDate);
+                                                String startDateFormat = DateFormat('dd-MM-yyyy').format(startDate);
+                                                String endDateFormat = DateFormat('dd-MM-yyyy').format(endDate);
+                                                print("==============");
+                                                print(startDateFormat);
+                                                print(endDateFormat);
+                                                dateStartSelectionChanged = startDateFormat;
+                                                dateEndSelectionChanged = endDateFormat;
+
+                                                if(isInternetConnected) {
+                                                  _getCustomerListData(true);
+                                                }else {
+                                                  noInterNet(context);
+                                                }
+                                              }
+
+                                            }else {
+
+                                            }
+                                          },
+                                          child: Container(
+                                            padding: const EdgeInsets.only(left: 20.0, right: 20, top: 8, bottom: 8),
+                                            alignment: Alignment.centerLeft,
+                                            child: Text(
+                                              checkValidString(listFilter[index]),
+                                              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: black),
+                                            ),
+                                          ),
+                                        ),
+                                        const Divider(
+                                          thickness: 0.5,
+                                          color: kTextLightGray,
+                                          endIndent: 16,
+                                          indent: 16,
+                                        ),
+                                      ],
+                                    );
+                                  })
+                            ],
+                          ),
+                        ))
+                      ],
+                    ),
+                  ),
+                );
+              });
+        });
+
   }
 
   void _deleteCustomer(CustomerList customer, int index) {
@@ -690,6 +899,8 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
       var customerListResponse = CustomerListResponseModel.fromJson(order);
       totalOverdue = checkValidString(dataResponse.totalOverdue);
       totalSale = checkValidString(dataResponse.totalSale);
+
+      sessionManagerMethod.setOverdues(totalOverdue.toString());
 
       if (customerListResponse.customerList != null) {
 

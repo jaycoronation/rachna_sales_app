@@ -94,7 +94,7 @@ class _CustomerDetailPageState extends BaseState<CustomerDetailPage> with Ticker
                 onTap: () {
                   _showFilterDialog();
                 },
-                child: const Icon(Icons.filter_alt_outlined, color: white, size: 30,),
+                child: const Icon(Icons.calendar_today_outlined, color: white, size: 26,),
               ),
             ),
           ],
@@ -132,9 +132,9 @@ class _CustomerDetailPageState extends BaseState<CustomerDetailPage> with Ticker
                         margin: const EdgeInsets.only(left: 22, right: 5),
                         child: Text(checkValidString(toDisplayCase(customerDetailResponseModel.customerDetails!.customerName.toString().trim())),
                           overflow: TextOverflow.ellipsis,
-                          maxLines: 3,
+                          maxLines: 2,
                           textAlign: TextAlign.start,
-                          style: const TextStyle(fontSize: 20, color: white, fontWeight: FontWeight.w700),
+                          style: const TextStyle(fontSize: 18, color: white, fontWeight: FontWeight.w700),
                         ),
                       ),
                     ),
@@ -148,17 +148,17 @@ class _CustomerDetailPageState extends BaseState<CustomerDetailPage> with Ticker
                         height: 40,
                         width: 40,
                         alignment: Alignment.center,
-                        child: const Icon(Icons.edit, color: white, size: 21,),
+                        child: const Icon(Icons.edit, color: white, size: 24,),
                       ),
                     ),
                   ],
                 ),
                 Container(
                   alignment: Alignment.topLeft,
-                  padding: const EdgeInsets.only(left: 22),
+                  padding: const EdgeInsets.only(left: 22, right: 22),
                   child: Text(checkValidString(toDisplayCase(customerDetailResponseModel.customerDetails!.customerName.toString())),
                       overflow: TextOverflow.ellipsis,
-                      maxLines: 3,
+                      maxLines: 1,
                       textAlign: TextAlign.start,
                       style: const TextStyle(fontWeight: FontWeight.w400, color: white,fontSize: 14)),
                 ),
@@ -247,15 +247,15 @@ class _CustomerDetailPageState extends BaseState<CustomerDetailPage> with Ticker
                 Stack(
                   children: [
                     SizedBox(
-                      height: 210,
+                      height: 200,
                       child: Column(
                         children: [
                           Container(height: 80, color: kBlue),
                           Container(
-                            height: 130,
+                            height: 120,
                             color: kLightestPurple,
                             child: Container(
-                            margin: const EdgeInsets.only(top: 70, bottom: 10, left: 10, right: 10),
+                            margin: const EdgeInsets.only(top: 70, left: 10, right: 10),
                             child: TabBar(
                               controller: _tabController,
                               indicatorColor: kBlue,
@@ -308,7 +308,7 @@ class _CustomerDetailPageState extends BaseState<CustomerDetailPage> with Ticker
                                                   text: '₹ ',
                                                   style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: kGreen),
                                                   children: <TextSpan>[
-                                                    TextSpan(text: totalSale.toString(),
+                                                    TextSpan(text: checkValidString(convertToComaSeparated(totalSale.toString())),
                                                         style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: kGreen),
                                                         recognizer: TapGestureRecognizer()..onTap = () => {
                                                         }),
@@ -344,7 +344,7 @@ class _CustomerDetailPageState extends BaseState<CustomerDetailPage> with Ticker
                                                   text: '₹ ',
                                                   style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w400, color: kRed),
                                                   children: <TextSpan>[
-                                                    TextSpan(text: totalOverdue.toString(),
+                                                    TextSpan(text: checkValidString(convertToComaSeparated(totalOverdue.toString())),
                                                         style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: kRed),
                                                         recognizer: TapGestureRecognizer()..onTap = () => {
                                                         }),
@@ -453,7 +453,7 @@ class _CustomerDetailPageState extends BaseState<CustomerDetailPage> with Ticker
   Future<void> _redirectToTransaction(BuildContext context, String orderId, String customerId, String customerName, String totalAmount) async {
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => AddPaymentDetailPage(Order(), orderId, customerId, customerName, totalAmount)),
+      MaterialPageRoute(builder: (context) => AddPaymentDetailPage(Order(), orderId, customerId, customerName, totalAmount, false)),
     );
 
     print("result ===== $result");

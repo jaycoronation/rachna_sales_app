@@ -68,11 +68,12 @@ class _EditProfilePageState extends BaseState<EditProfilePage> {
     return Scaffold(
       backgroundColor: appBG,
       resizeToAvoidBottomInset: true,
-      appBar:AppBar(
+      appBar: AppBar(
         systemOverlayStyle: SystemUiOverlayStyle.dark,
         toolbarHeight: 55,
         automaticallyImplyLeading: false,
-        title: const Text(""),
+        title: const Text("Personal Detail",
+            style: TextStyle(fontSize: 18, color: white, fontWeight: FontWeight.w600)),
         leading: GestureDetector(
             onTap:() {
               Navigator.pop(context);
@@ -99,13 +100,13 @@ class _EditProfilePageState extends BaseState<EditProfilePage> {
                 child: IntrinsicHeight(
                   child: Column(
                     children: [
-                      Container(
+                    /*  Container(
                         color: kBlue,
                         alignment: Alignment.topLeft,
                         padding: const EdgeInsets.only(left: 22, top: 10, bottom: 15),
                         child: const Text("Personal Detail",
                             style: TextStyle(fontWeight: FontWeight.w700, color: white, fontSize: 20)),
-                      ),
+                      ),*/
                       cardProfileImage(),
                       Container(
                         margin: const EdgeInsets.only(top:20, left: 20, right: 20),
@@ -546,7 +547,6 @@ class _EditProfilePageState extends BaseState<EditProfilePage> {
       print("_pickImage picImgPath ====>$pickImgPath");
 
       setState(() {
-
       });
     }
   }
@@ -570,12 +570,11 @@ class _EditProfilePageState extends BaseState<EditProfilePage> {
 
   Future<void> pickImageFromGallery() async {
     try {
-      var pickedfiles = await ImagePicker().pickImage(source: ImageSource.gallery);
+      var pickedfiles = await ImagePicker().pickImage(source: ImageSource.gallery, imageQuality:50);
       if(pickedfiles != null){
         final filePath = pickedfiles.path;
         _cropImage(filePath);
         setState(() {
-
         });
       }else{
         print("No image is selected.");
@@ -601,7 +600,6 @@ class _EditProfilePageState extends BaseState<EditProfilePage> {
     };
 
     final response = await http.post(url, body: jsonBody);
-
     final statusCode = response.statusCode;
 
     final body = response.body;
@@ -621,7 +619,6 @@ class _EditProfilePageState extends BaseState<EditProfilePage> {
       setState(() {
         _isLoading = false;
       });
-
 
     }else {
       setState(() {
@@ -678,7 +675,6 @@ class _EditProfilePageState extends BaseState<EditProfilePage> {
           }
         }
         _designationController.text = _designationFilteredSelectedName;
-
       });
 
       setState(() {

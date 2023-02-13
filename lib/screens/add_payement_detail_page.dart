@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pretty_http_logger/pretty_http_logger.dart';
 import 'package:salesapp/Model/common_response_model.dart';
+import 'package:salesapp/screens/select_customer_list_page.dart';
 
+import '../Model/customer_list_response_model.dart';
 import '../constant/color.dart';
 import '../model/order_detail_response_model.dart';
 import '../network/api_end_point.dart';
@@ -18,8 +20,9 @@ class AddPaymentDetailPage extends StatefulWidget {
   final String customerId;
   final String customerName;
   final String pendingAmount;
+  final bool isFromDashboard;
 
-  const AddPaymentDetailPage(this.dataGetSet, this.orderId, this.customerId, this.customerName, this.pendingAmount, {Key? key}) : super(key: key);
+  const AddPaymentDetailPage(this.dataGetSet, this.orderId, this.customerId, this.customerName, this.pendingAmount, this.isFromDashboard, {Key? key}) : super(key: key);
 
   @override
   _AddPaymentDetailPageState createState() => _AddPaymentDetailPageState();
@@ -42,6 +45,7 @@ class _AddPaymentDetailPageState extends BaseState<AddPaymentDetailPage> {
   bool isTransactionId = false;
 
   var listPaymentModes = ["Cash", "NEFT", "Net Banking", "UPI", "Cheque", "Debit Card", "Credit Card", "Google Pay", "Paytm"];
+  var customerDetail = CustomerList();
 
   @override
   void initState() {
@@ -56,6 +60,7 @@ class _AddPaymentDetailPageState extends BaseState<AddPaymentDetailPage> {
     print("--------------");
 
     super.initState();
+
   }
 
   @override
@@ -66,7 +71,8 @@ class _AddPaymentDetailPageState extends BaseState<AddPaymentDetailPage> {
       appBar:AppBar(
         systemOverlayStyle: SystemUiOverlayStyle.dark,
         automaticallyImplyLeading: false,
-        title: const Text(""),
+        title: const Text("Add Payment Details",
+            style: TextStyle(fontSize: 18, color: white, fontWeight: FontWeight.w600)),
         leading: GestureDetector(
             onTap:() {
               Navigator.pop(context);
@@ -93,13 +99,14 @@ class _AddPaymentDetailPageState extends BaseState<AddPaymentDetailPage> {
                 child: IntrinsicHeight(
                   child: Column(
                     children: [
-                      Container(
+/*                      Container(
                         color: kBlue,
                         alignment: Alignment.topLeft,
                         padding: const EdgeInsets.only(left: 22, top: 10, bottom: 15),
                         child: const Text("Add Payment Details",
                             style: TextStyle(fontWeight: FontWeight.w700, color: white, fontSize: 20)),
-                      ),
+                      ),*/
+
                       Container(
                         margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
                         child: TextField(
@@ -112,6 +119,13 @@ class _AddPaymentDetailPageState extends BaseState<AddPaymentDetailPage> {
                             counterText: '',
                             prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
                           ),
+                          readOnly:(widget as AddPaymentDetailPage).isFromDashboard,
+                          onTap: () {
+                            if ((widget as AddPaymentDetailPage).isFromDashboard) {
+                              _redirectToAddCustomer(context, customerDetail);
+                            }
+                          },
+
                         ),
                       ),
                       Container(
@@ -131,7 +145,6 @@ class _AddPaymentDetailPageState extends BaseState<AddPaymentDetailPage> {
                           ],
                         ),
                       ),
-
                       Container(
                         margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
                         child: TextField(
@@ -235,7 +248,6 @@ class _AddPaymentDetailPageState extends BaseState<AddPaymentDetailPage> {
                                 showSnackBar("Please select a transaction mode", context);
                               } else if (transactionMode != "Cash" && transactionId.trim().isEmpty) {
                                 showSnackBar("Please enter a transaction id", context);
-
                               } else {
                                 if(isInternetConnected) {
                                   _saveTransaction();
@@ -244,7 +256,6 @@ class _AddPaymentDetailPageState extends BaseState<AddPaymentDetailPage> {
                                 }
                               }
                             }
-
                           },
                           child: const Text("Submit",
                             style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: white),),
@@ -358,6 +369,28 @@ class _AddPaymentDetailPageState extends BaseState<AddPaymentDetailPage> {
 
   }
 
+  Future<void> _redirectToAddCustomer(BuildContext context, CustomerList customerData) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => SelectCustomerListPage(customerData)),
+    );
+
+    print("result ===== $result");
+    setState(() {
+      customerDetail = result;
+
+      if ((widget as AddPaymentDetailPage).isFromDashboard) {
+        customerId = customerDetail.customerId.toString();
+        _customerNameController.text = customerDetail.customerName.toString();
+      }
+
+    });
+
+    if (result == "success") {
+      setState(() {
+      });
+    }
+  }
   /*void showPayementTypeActionDialog() {
     showModalBottomSheet<void>(
       context: context,

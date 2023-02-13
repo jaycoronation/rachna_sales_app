@@ -77,6 +77,32 @@ noInterNet(BuildContext? context) {
   }
 }
 
+toDisplayUpperCase (String str) {
+  try {
+    return str.toUpperCase().split(' ').map((word) {
+      String leftText = (word.length > 1) ? word.substring(1, word.length) : '';
+      return word[0].toUpperCase() + leftText;
+    }).join(' ');
+  } catch (e) {
+    if (kDebugMode) {
+      print(e);
+    }
+  }
+}
+
+toDisplayUpperCase1 (String str) {
+  try {
+    return str.toUpperCase().split('  ').map((word) {
+      String leftText = (word.length > 1) ? word.substring(1, word.length) : '';
+      return word[0].toUpperCase() + leftText;
+    }).join(' ');
+  } catch (e) {
+    if (kDebugMode) {
+      print(e);
+    }
+  }
+}
+
 toDisplayCase (String str) {
   try {
     return str.toLowerCase().split(' ').map((word) {
@@ -203,16 +229,6 @@ bool isValidPan(String ? input) {
   }
 }
 
-String convertToCommaSeperatedValue(double text) {
-  var price = "";
-  try {
-    var formatter = NumberFormat('#,##,000');
-    price = formatter.format(text);
-  } catch (e) {
-    print(e);
-  }
-  return price;
-}
 
 extension CapExtension on String {
   String get inCaps => '${this[0].toUpperCase()}${substring(1)}';
@@ -230,6 +246,22 @@ getRandomCartSession () {
     if (kDebugMode) {
       print(e);
     }
+  }
+}
+
+String convertToComaSeparated(String text) {
+  if(text.isNotEmpty)
+  {
+    try {
+      var formatter = NumberFormat('#,##,###');
+      return formatter.format(double.parse(text));
+    } catch (e) {
+      return text;
+    }
+  }
+  else
+  {
+    return "₹ " + text;
   }
 }
 

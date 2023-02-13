@@ -56,6 +56,8 @@ class _OrderDetailPageState extends BaseState<OrderDetailPage> {
         appBar: AppBar(
           systemOverlayStyle: SystemUiOverlayStyle.dark,
           automaticallyImplyLeading: false,
+          title: const Text("Order Detail",
+              style: TextStyle(fontSize: 18, color: white, fontWeight: FontWeight.w600)),
           leading: GestureDetector(
               onTap:() {
                 Navigator.pop(context);
@@ -77,7 +79,7 @@ class _OrderDetailPageState extends BaseState<OrderDetailPage> {
                 height: 45,
                 width: 45,
                 alignment: Alignment.center,
-                child: const Icon(Icons.share, color: white, size: 28,),
+                child: const Icon(Icons.share, color: white, size: 26,),
               ),
             ),
           ],
@@ -89,12 +91,12 @@ class _OrderDetailPageState extends BaseState<OrderDetailPage> {
             : SingleChildScrollView(
               child: Column(
                 children: [
-                  Container(
-                    color: kBlue,
-                    alignment: Alignment.topLeft,
-                    padding: const EdgeInsets.only(left: 22, top: 10, bottom: 10),
-                    child: const Text("Order Detail", style: TextStyle(fontWeight: FontWeight.w700, color: white,fontSize: 20)),
-                  ),
+                  // Container(
+                  //   color: kBlue,
+                  //   alignment: Alignment.topLeft,
+                  //   padding: const EdgeInsets.only(left: 22, top: 10, bottom: 10),
+                  //   child: const Text("Order Detail", style: TextStyle(fontWeight: FontWeight.w700, color: white,fontSize: 20)),
+                  // ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -149,6 +151,7 @@ class _OrderDetailPageState extends BaseState<OrderDetailPage> {
 
                         ],
                       ),
+
                       /*Column(
                         children: [
                           Container(
@@ -392,7 +395,7 @@ class _OrderDetailPageState extends BaseState<OrderDetailPage> {
   Future<void> _redirectToTransaction(BuildContext context, Order getSet) async {
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => AddPaymentDetailPage(getSet, "", "", "", "")),
+      MaterialPageRoute(builder: (context) => AddPaymentDetailPage(getSet, "", "", "", "", false)),
     );
 
     print("result ===== $result");
