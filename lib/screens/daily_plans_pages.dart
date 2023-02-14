@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import 'package:pretty_http_logger/pretty_http_logger.dart';
+import 'package:salesapp/model/daily_plan_response_model.dart';
 
 import '../Model/login_with_otp_response_model.dart';
 import '../constant/color.dart';
@@ -28,7 +29,7 @@ class _DailyPlansPageState extends BaseState<DailyPlansPage> {
     super.initState();
 
     if(isInternetConnected) {
-      // _makeCallRequestOtp();
+       _getDailyPlansList();
     }else {
       noInterNet(context);
     }
@@ -209,16 +210,18 @@ class _DailyPlansPageState extends BaseState<DailyPlansPage> {
   }
 
   //API call function...
-  _getDailyPlansList(String contactNum) async {
+  _getDailyPlansList() async {
     HttpWithMiddleware http = HttpWithMiddleware.build(middlewares: [
       HttpLogger(logLevel: LogLevel.BODY),
     ]);
 
-    final url = Uri.parse(BASE_URL + loginWithOTP);
+    final url = Uri.parse(BASE_URL + dailyPlanList);
 
     Map<String, String> jsonBody = {
-      'phone': contactNum.toString().trim(),
-      'from_app' : FROM_APP
+    'from_app':FROM_APP,
+    'page':'0',
+    'limit':'10',
+    'search':   ''
     };
 
     final response = await http.post(url, body: jsonBody);
@@ -226,10 +229,9 @@ class _DailyPlansPageState extends BaseState<DailyPlansPage> {
 
     final body = response.body;
     Map<String, dynamic> user = jsonDecode(body);
-    var dataResponse = LoginWithOtpResponseModel.fromJson(user);
+    var dataResponse = DailyPlanResponseModel.fromJson(user);
 
     if (statusCode == 200 && dataResponse.success == 1) {
-      showSnackBar(dataResponse.message, context);
 
     }else {
       showSnackBar(dataResponse.message, context);

@@ -16,6 +16,7 @@ import 'package:salesapp/widget/no_data.dart';
 
 import '../../Model/customer_list_response_model.dart';
 import '../../constant/color.dart';
+import '../../constant/font.dart';
 import '../../model/customer_detail_response_model.dart';
 import '../../network/api_end_point.dart';
 import '../../utils/base_class.dart';
@@ -51,7 +52,7 @@ class _OrderListPageState extends BaseState<OrderListPage> {
 
   TextEditingController searchController = TextEditingController();
   String searchText = "";
-  var listFilter = ["Month wise filter", "Year wise filter", "Custom Filter"];
+  var listFilter = ["Month to date", "Year to date", "Custom Range"];
 
   @override
   void initState() {
@@ -292,7 +293,7 @@ class _OrderListPageState extends BaseState<OrderListPage> {
                                                     style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: kGreen),
                                                     children: <TextSpan>[
                                                       TextSpan(text: checkValidString(convertToComaSeparated(totalAmount.toString())),
-                                                          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: kGreen),
+                                                          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: kGreen, fontFamily: kFontNameRubikBold),
                                                           recognizer: TapGestureRecognizer()..onTap = () => {
                                                           }),
                                                     ],
@@ -328,7 +329,7 @@ class _OrderListPageState extends BaseState<OrderListPage> {
                                                     style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: kGreen),
                                                     children: <TextSpan>[
                                                       TextSpan(text: checkValidString(convertToComaSeparated(todaySale.toString())),
-                                                          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: kGreen),
+                                                          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: kGreen, fontFamily: kFontNameRubikBold),
                                                           recognizer: TapGestureRecognizer()..onTap = () => {
                                                           }),
                                                     ],
@@ -555,7 +556,7 @@ class _OrderListPageState extends BaseState<OrderListPage> {
                                         const Gap(5),
                                         Expanded(
                                           child: Text(checkValidString(listOrder[index].customerName),
-                                            maxLines:2,
+                                            maxLines: 2,
                                             overflow: TextOverflow.clip,
                                             textAlign: TextAlign.start,
                                             style: const TextStyle(fontSize: 15, color: black, fontWeight: FontWeight.w700),

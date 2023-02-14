@@ -7,8 +7,10 @@ import 'package:pretty_http_logger/pretty_http_logger.dart';
 import 'package:salesapp/Model/customer_list_response_model.dart';
 import 'package:salesapp/Model/dash_board_data_response_model.dart';
 import 'package:salesapp/Model/employee_list_response_model.dart';
+import 'package:salesapp/constant/font.dart';
 import 'package:salesapp/model/order_detail_response_model.dart';
 import 'package:salesapp/screens/add_customer_page.dart';
+import 'package:salesapp/screens/add_daily_plan_page.dart';
 import 'package:salesapp/screens/add_employee_page.dart';
 import 'package:salesapp/screens/add_order_page.dart';
 import 'package:salesapp/screens/add_payement_detail_page.dart';
@@ -41,12 +43,10 @@ class _DashboardPageState extends BaseState<DashboardPage> {
   late num? totalOverdue;
   late num? totalEmployee;
   late num? totalCustomer;
-  List<String> listOptions = List<String>.empty(growable: true);
 
   @override
   void initState() {
     super.initState();
-    listOptions = ["Add Customer", "Add Product", "Add Order", "Add Transaction"];
 
     if(isInternetConnected) {
       _makeCallDashboardData();
@@ -166,7 +166,7 @@ class _DashboardPageState extends BaseState<DashboardPage> {
                                       style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: white),
                                       children: <TextSpan>[
                                         TextSpan(text: checkValidString(convertToComaSeparated(totalAmount.toString())),
-                                            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: white),
+                                            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: white, fontFamily: kFontNameRubikBold),
                                             recognizer: TapGestureRecognizer()..onTap = () => {
                                             }),
                                       ],
@@ -200,7 +200,7 @@ class _DashboardPageState extends BaseState<DashboardPage> {
                                       style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: white),
                                       children: <TextSpan>[
                                         TextSpan(text: checkValidString(convertToComaSeparated(totalOverdue.toString())),
-                                            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: white),
+                                            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: white, fontFamily: kFontNameRubikBold),
                                             recognizer: TapGestureRecognizer()..onTap = () => {
                                             }),
                                       ],
@@ -223,10 +223,10 @@ class _DashboardPageState extends BaseState<DashboardPage> {
               ),
               GestureDetector(
                 onTap: () {
-                  // final BottomNavigationBar bar = bottomWidgetKey.currentWidget as BottomNavigationBar;
-                  // bar.onTap!(2);
-                  final DotNavigationBar bar = bottomWidgetKey1.currentWidget as DotNavigationBar;
+                  final BottomNavigationBar bar = bottomWidgetKey.currentWidget as BottomNavigationBar;
                   bar.onTap!(2);
+                  // final DotNavigationBar bar = bottomWidgetKey1.currentWidget as DotNavigationBar;
+                  // bar.onTap!(2);
                 },
                 child: Container(
                   decoration: BoxDecoration(
@@ -298,12 +298,16 @@ class _DashboardPageState extends BaseState<DashboardPage> {
                         ),*/
                         GestureDetector(
                           onTap: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => const TransactionListPage()));
+                            final BottomNavigationBar bar = bottomWidgetKey.currentWidget as BottomNavigationBar;
+                            bar.onTap!(3);
+                            // final DotNavigationBar bar = bottomWidgetKey1.currentWidget as DotNavigationBar;
+                            // bar.onTap!(3);
+                            // Navigator.push(context, MaterialPageRoute(builder: (context) => const TransactionListPage()));
                           },
                           child: Container(
                             decoration: BoxDecoration(
                                 border: Border.all(width: 1, color: kLightPurple),
-                                borderRadius: const BorderRadius.all(Radius.circular(6.0),),
+                                borderRadius: const BorderRadius.all(Radius.circular(6.0)),
                                 color: kLightestPurple,
                                 shape: BoxShape.rectangle
                             ),
@@ -314,7 +318,7 @@ class _DashboardPageState extends BaseState<DashboardPage> {
                                 Container(
                                     alignment: Alignment.center,
                                     margin: const EdgeInsets.only(top:6, bottom: 6, left: 10),
-                                    child: Image.asset("assets/images/ic_transaction.png", height: 42, width: 45,)
+                                    child: Image.asset("assets/images/ic_transaction.png", height: 42, width: 45)
                                 ),
                                 Container(
                                   alignment: Alignment.center,
@@ -328,10 +332,10 @@ class _DashboardPageState extends BaseState<DashboardPage> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            // final BottomNavigationBar bar = bottomWidgetKey.currentWidget as BottomNavigationBar;
-                            // bar.onTap!(1);
-                            final DotNavigationBar bar = bottomWidgetKey1.currentWidget as DotNavigationBar;
+                            final BottomNavigationBar bar = bottomWidgetKey.currentWidget as BottomNavigationBar;
                             bar.onTap!(1);
+                            // final DotNavigationBar bar = bottomWidgetKey1.currentWidget as DotNavigationBar;
+                            // bar.onTap!(1);
                           },
                           child: Container(
                             decoration: BoxDecoration(
@@ -403,7 +407,6 @@ class _DashboardPageState extends BaseState<DashboardPage> {
                           onTap: () {
                             // Navigator.push(context, MaterialPageRoute(builder: (context) => ProductListPage()));
                             Navigator.push(context, MaterialPageRoute(builder: (context) => ProductListPageOld()));
-
                           },
                           child: Container(
                             decoration: BoxDecoration(
@@ -789,6 +792,22 @@ class _DashboardPageState extends BaseState<DashboardPage> {
     }
   }
 
+  Future<void> _redirectToPlans(BuildContext context) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => AddDailyPlanPage()),
+    );
+
+    print("result ===== $result");
+
+    if (result == "success") {
+      _makeCallDashboardData();
+      setState(() {
+        isHomeLoad = true;
+      });
+    }
+  }
+
   void showOptionActionDialog() {
     showModalBottomSheet<void>(
       context: context,
@@ -914,6 +933,33 @@ class _DashboardPageState extends BaseState<DashboardPage> {
                         ],
                       ),
                     ),
+                    const Divider(
+                      color: kLightestGray,
+                      height: 1,
+                    ),
+                    InkWell(
+                      onTap: () async {
+                        Navigator.pop(context);
+                        _redirectToPlans(context);
+                      },
+                      child: Row(
+                        children: [
+                          Container(
+                              alignment: Alignment.center,
+                              margin: const EdgeInsets.only(top:6, bottom: 6),
+                              child: Image.asset("assets/images/ic_transaction.png", height: 42, width: 45)
+                          ),
+                          Container(
+                            alignment: Alignment.topLeft,
+                            padding: const EdgeInsets.only(right: 18, top: 15, bottom: 15),
+                            child: const Text("Plan",
+                              textAlign: TextAlign.start,
+                              style: TextStyle(fontSize: 15, color: black, fontWeight: FontWeight.normal),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ))
           ],
@@ -940,11 +986,10 @@ class _DashboardPageState extends BaseState<DashboardPage> {
     final url = Uri.parse(BASE_URL + dashboardData);
     Map<String, String> jsonBody = {
       'from_app': FROM_APP,
-      'customer_id': sessionManager.getEmpId().toString().trim(),
+      'emp_id': sessionManager.getEmpId().toString().trim(),
     };
 
     final response = await http.post(url, body: jsonBody);
-
     final statusCode = response.statusCode;
 
     final body = response.body;

@@ -7,6 +7,7 @@ import 'package:salesapp/screens/edit_profile_page.dart';
 import 'package:salesapp/screens/login_page.dart';
 
 import '../constant/color.dart';
+import '../constant/font.dart';
 import '../model/profile_detail_response_model.dart';
 import '../network/api_end_point.dart';
 import '../utils/app_utils.dart';
@@ -108,8 +109,8 @@ class _ProfilePageState extends BaseState<ProfilePage> {
                         children: [
                           Image.asset('assets/images/ic_customer_employee.png', color:white, height: 20, width: 20,),
                           Gap(8),
-                          Text("Customer: ${totalCustomerCount}",
-                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400, color: white),),
+                          Text("Customer: $totalCustomerCount",
+                            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w400, color: white, fontFamily: kFontNameRubikBold),),
                         ],
                       ),
                     ),
@@ -121,7 +122,7 @@ class _ProfilePageState extends BaseState<ProfilePage> {
                           Column(
                             children: [
                               const Text("Total Orders",
-                                  style: TextStyle(fontWeight: FontWeight.w400, color: black, fontSize: 14)),
+                                  style: TextStyle(fontWeight: FontWeight.w400, color: black, fontSize: 14, fontFamily: kFontNameRubikBold)),
                               const Gap(3),
                               Text(sessionManagerMethod.getTotalOrders().toString().isNotEmpty
                                   ? getPrice(sessionManagerMethod.getTotalOrders().toString()) : "-",
@@ -148,7 +149,7 @@ class _ProfilePageState extends BaseState<ProfilePage> {
                                   style: TextStyle(fontWeight: FontWeight.w400, color: black, fontSize: 14)),
                               const Gap(3),
                               Text(getPrice(totalSales),
-                                  style: const TextStyle(fontWeight: FontWeight.w500, color: kBlue, fontSize: 14))
+                                  style: const TextStyle(fontWeight: FontWeight.w500, color: kBlue, fontSize: 14, fontFamily: kFontNameRubikBold))
                             ],
                           ),
             /*              Column(
@@ -172,7 +173,7 @@ class _ProfilePageState extends BaseState<ProfilePage> {
                               const Gap(3),
                               Text(sessionManagerMethod.getOverdues().toString().isNotEmpty
                                   ? getPrice(sessionManagerMethod.getOverdues().toString()) : "-",
-                                  style: const TextStyle(fontWeight: FontWeight.w500, color: kBlue, fontSize: 14))
+                                  style: const TextStyle(fontWeight: FontWeight.w500, color: kBlue, fontSize: 14, fontFamily: kFontNameRubikBold))
                             ],
                           ),
                           const Gap(10),

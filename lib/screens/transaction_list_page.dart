@@ -12,6 +12,7 @@ import 'package:salesapp/screens/add_payement_detail_page.dart';
 import 'package:salesapp/screens/transaction_detail_page.dart';
 
 import '../constant/color.dart';
+import '../constant/font.dart';
 import '../model/order_detail_response_model.dart';
 import '../network/api_end_point.dart';
 import '../utils/app_utils.dart';
@@ -47,7 +48,7 @@ class _TransactionListPageState extends BaseState<TransactionListPage> {
   var listTransactions = List<TransectionLits>.empty(growable: true);
   TransactionListResponseModel transactionListResponse = TransactionListResponseModel();
 
-  var listFilter = ["Month wise filter", "Year wise filter", "Custom Filter"];
+  var listFilter = ["Month to date", "Year to date", "Custom Range"];
 
   @override
   void initState() {
@@ -111,9 +112,9 @@ class _TransactionListPageState extends BaseState<TransactionListPage> {
         appBar: AppBar(
           systemOverlayStyle: SystemUiOverlayStyle.dark,
           automaticallyImplyLeading: false,
-          title:const Text("Transaction",
+          title:const Text("Transactions",
               style: TextStyle(fontSize: 18, color: white, fontWeight: FontWeight.w600)),
-          leading: GestureDetector(
+/*          leading: GestureDetector(
               onTap:() {
                 Navigator.pop(context);
               },
@@ -125,7 +126,7 @@ class _TransactionListPageState extends BaseState<TransactionListPage> {
                 alignment: Alignment.center,
                 child: Image.asset('assets/images/ic_back_arrow.png', color: white, height: 22, width: 22),
               )
-          ),
+          ),*/
           actions: [
             Container(
               margin: const EdgeInsets.only(top: 11, bottom: 11, right: 10),
@@ -140,6 +141,7 @@ class _TransactionListPageState extends BaseState<TransactionListPage> {
             Container(
               margin: const EdgeInsets.only(top: 11, bottom: 11, right: 15),
               child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
                 onTap: () {
 
                 },
@@ -162,68 +164,57 @@ class _TransactionListPageState extends BaseState<TransactionListPage> {
           children: [
             Container(
               color: kBlue,
-              child: Column(
+              child: Stack(
                 children: [
-                 /* Container(
-                    color: kBlue,
-                    alignment: Alignment.topLeft,
-                    padding: const EdgeInsets.only(left: 22, top: 10, bottom: 10),
-                    child: const Text("Transaction", style: TextStyle(fontWeight: FontWeight.w700, color: white,fontSize: 20)),
-                  ),*/
-                  Stack(
+                  Container(
+                    height: 50,
+                    margin: const EdgeInsets.only(left: 20, bottom: 20, right: 20),
+                    decoration: BoxDecoration(
+                        border: Border.all(width: 1, color: kLightPurple),
+                        borderRadius: const BorderRadius.all(Radius.circular(8.0),),
+                        color: white,
+                        shape: BoxShape.rectangle
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Container(
-                        height: 50,
-                        margin: const EdgeInsets.only(left: 20, bottom: 20, right: 20),
-                        decoration: BoxDecoration(
-                            border: Border.all(width: 1, color: kLightPurple),
-                            borderRadius: const BorderRadius.all(Radius.circular(8.0),),
-                            color: white,
-                            shape: BoxShape.rectangle
+                      Expanded(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                                margin: const EdgeInsets.only(left: 12, top:15, bottom: 15),
+                                child: const Icon(Icons.calendar_today_outlined, color: kBlue, size: 18,)),
+                            Container(
+                              margin: const EdgeInsets.only(left: 8, top:15, bottom: 15),
+                              child: const Text("Start Date",
+                                  style: TextStyle(fontWeight: FontWeight.w500, color: kBlue, fontSize: 13)
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Container(
-                                    margin: const EdgeInsets.only(left: 12, top:15, bottom: 15),
-                                    child: const Icon(Icons.calendar_today_outlined, color: kBlue, size: 18,)),
-                                Container(
-                                  margin: const EdgeInsets.only(left: 8, top:15, bottom: 15),
-                                  child: const Text("Start Date",
-                                      style: TextStyle(fontWeight: FontWeight.w500, color: kBlue, fontSize: 13)
-                                  ),
-                                ),
-                              ],
+                      Container(width: 0.8, color: kBlue, height: 50,),
+                      Expanded(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                                margin: const EdgeInsets.only(top:15, bottom: 15),
+                                child: const Icon(Icons.calendar_today_outlined, color: kBlue, size: 18,)),
+                            Container(
+                              margin: const EdgeInsets.only(left: 8, top:15, bottom: 15),
+                              child: const Text("End Date", style: TextStyle(fontWeight: FontWeight.w500, color: kBlue, fontSize: 13)
+                              ),
                             ),
-                          ),
-                          Container(width: 0.8, color: kBlue, height: 50,),
-                          Expanded(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Container(
-                                    margin: const EdgeInsets.only(top:15, bottom: 15),
-                                    child: const Icon(Icons.calendar_today_outlined, color: kBlue, size: 18,)),
-                                Container(
-                                  margin: const EdgeInsets.only(left: 8, top:15, bottom: 15),
-                                  child: const Text("End Date", style: TextStyle(fontWeight: FontWeight.w500, color: kBlue, fontSize: 13)
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ],
-                  )
-
+                  ),
                 ],
               ),
             ),
@@ -315,7 +306,7 @@ class _TransactionListPageState extends BaseState<TransactionListPage> {
                             style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: kBlue),
                             children: <TextSpan>[
                               TextSpan(text: checkValidString(convertToComaSeparated(transactionListResponse.netBalance.toString())),
-                                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: kBlue),
+                                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: kBlue, fontFamily: kFontNameRubikBold),
                                   recognizer: TapGestureRecognizer()..onTap = () => {
                                   }),
                             ],
@@ -344,6 +335,7 @@ class _TransactionListPageState extends BaseState<TransactionListPage> {
                     child: Padding(
                       padding: const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 3),
                       child: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
                         onTap: () {
                           Navigator.push(context, MaterialPageRoute(builder: (context) => TransactionDetailPage(checkValidString(listTransactions[index].id).toString())));
                         },
@@ -427,13 +419,17 @@ class _TransactionListPageState extends BaseState<TransactionListPage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SizedBox(
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 80),
                         width: 30,
                         height: 30,
                         child: Lottie.asset('assets/images/loader_new.json', repeat: true, animate: true, frameRate: FrameRate.max)),
-                    const Text(
-                        ' Loading more...',
-                        style: TextStyle(color: black, fontWeight: FontWeight.w400, fontSize: 16)
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 80),
+                      child: const Text(
+                          ' Loading more...',
+                          style: TextStyle(color: black, fontWeight: FontWeight.w400, fontSize: 16)
+                      ),
                     )
                   ],
                 )),

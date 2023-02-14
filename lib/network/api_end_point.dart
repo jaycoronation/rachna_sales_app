@@ -38,5 +38,7 @@ const categoryList = "manageCategory/list";
 
 const saveTransaction = "manageTransection/save";
 const transactionList = "manageTransection/list";
-
 const transactionDetail = "manageTransection/details";
+
+const savePlan = "manageDailyPlan/save";
+const dailyPlanList = "manageDailyPlan/list";

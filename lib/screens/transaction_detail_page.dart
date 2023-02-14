@@ -177,12 +177,12 @@ class _TransactionDetailPageState extends BaseState<TransactionDetailPage> {
                   children: [
                     Container(
                       alignment: Alignment.topLeft,
-                      padding: const EdgeInsets.only(left: 22, top: 10, bottom: 20),
+                      padding: const EdgeInsets.only(left: 22, top: 10, bottom: 10),
                       child: const Text("Employee Name :", style: TextStyle(fontWeight: FontWeight.w400, color: kGray, fontSize: 14)),
                     ),
                     Container(
                       alignment: Alignment.topLeft,
-                      padding: const EdgeInsets.only(right: 22, left: 10,top: 10, bottom: 20),
+                      padding: const EdgeInsets.only(right: 22, left: 10, top: 10, bottom: 10),
                       child: Text(transactionDetailResponseModel.transectionDetails!.employeeDetails!.empName.toString().isNotEmpty
                           ? checkValidString(transactionDetailResponseModel.transectionDetails!.employeeDetails!.empName.toString())
                           : "-",
@@ -196,12 +196,12 @@ class _TransactionDetailPageState extends BaseState<TransactionDetailPage> {
                   children: [
                     Container(
                       alignment: Alignment.topLeft,
-                      padding: const EdgeInsets.only(left: 22, top: 10, bottom: 20),
+                      padding: const EdgeInsets.only(left: 22, top: 10, bottom: 10),
                       child: const Text("Employee Phone No. : ", style: TextStyle(fontWeight: FontWeight.w400, color: kGray, fontSize: 14)),
                     ),
                     Container(
                       alignment: Alignment.topLeft,
-                      padding: const EdgeInsets.only(right: 22, left: 10,top: 10, bottom: 20),
+                      padding: const EdgeInsets.only(right: 22, left: 10,top: 10, bottom: 10),
                       child: Text(transactionDetailResponseModel.transectionDetails!.employeeDetails!.empPhone.toString().isNotEmpty
                           ? checkValidString(transactionDetailResponseModel.transectionDetails!.employeeDetails!.empPhone.toString())
                           : "-",
@@ -213,12 +213,12 @@ class _TransactionDetailPageState extends BaseState<TransactionDetailPage> {
                   children: [
                     Container(
                       alignment: Alignment.topLeft,
-                      padding: const EdgeInsets.only(left: 22, top: 10, bottom: 20),
+                      padding: const EdgeInsets.only(left: 22, top: 10, bottom: 10),
                       child: const Text("Employee Email : ", style: TextStyle(fontWeight: FontWeight.w400, color: kGray, fontSize: 14)),
                     ),
                     Container(
                       alignment: Alignment.topLeft,
-                      padding: const EdgeInsets.only(right: 22, left: 10,top: 10, bottom: 20),
+                      padding: const EdgeInsets.only(right: 22, left: 10,top: 10, bottom: 10),
                       child: Text(transactionDetailResponseModel.transectionDetails!.employeeDetails!.empEmail.toString().isNotEmpty
                           ? checkValidString(transactionDetailResponseModel.transectionDetails!.employeeDetails!.empEmail.toString())
                           : "-",
@@ -241,15 +241,17 @@ class _TransactionDetailPageState extends BaseState<TransactionDetailPage> {
                       padding: const EdgeInsets.only(left: 22, top: 10, bottom: 20),
                       child: const Text("Customer Name : ", style: TextStyle(fontWeight: FontWeight.w400, color: kGray, fontSize: 14)),
                     ),
-                    Container(
-                      alignment: Alignment.topLeft,
-                      padding: const EdgeInsets.only(right: 22, left: 10, top: 10, bottom: 20),
-                      child: Text(transactionDetailResponseModel.transectionDetails!.customerDetails!.customerName.toString().isNotEmpty
-                          ? checkValidString(transactionDetailResponseModel.transectionDetails!.customerDetails!.customerName.toString())
-                          : "-",
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 3,
-                          style: const TextStyle(fontWeight: FontWeight.w500, color: black, fontSize: 14)),
+                    Expanded(
+                      child: Container(
+                        alignment: Alignment.topLeft,
+                        padding: const EdgeInsets.only(right: 22, left: 10, top: 10, bottom: 20),
+                        child: Text(transactionDetailResponseModel.transectionDetails!.customerDetails!.customerName.toString().isNotEmpty
+                            ? checkValidString(transactionDetailResponseModel.transectionDetails!.customerDetails!.customerName.toString())
+                            : "-",
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 3,
+                            style: const TextStyle(fontWeight: FontWeight.w500, color: black, fontSize: 14)),
+                      ),
                     ),
                   ],
                 ),

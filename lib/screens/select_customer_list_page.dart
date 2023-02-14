@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:gap/gap.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pretty_http_logger/pretty_http_logger.dart';
 import 'package:salesapp/screens/add_customer_page.dart';
@@ -14,6 +15,7 @@ import '../network/api_end_point.dart';
 import '../utils/app_utils.dart';
 import '../utils/base_class.dart';
 import '../widget/loading.dart';
+import '../widget/no_data.dart';
 
 class SelectCustomerListPage extends StatefulWidget {
   final CustomerList dataGetSet;
@@ -167,8 +169,7 @@ class _SelectCustomerListPageState extends BaseState<SelectCustomerListPage> {
                           borderRadius: BorderRadius.circular(8),
                         ),
                         enabledBorder: OutlineInputBorder(
-                          borderSide:
-                          const BorderSide(color: kLightPurple, width: 0),
+                          borderSide: const BorderSide(color: kLightPurple, width: 0),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         hintStyle: const TextStyle(fontWeight: FontWeight.w400, color: kBlue, fontSize: 14),
@@ -200,6 +201,7 @@ class _SelectCustomerListPageState extends BaseState<SelectCustomerListPage> {
                   )
               ),
             ),
+            listCustomer.isNotEmpty ?
             Expanded(
               child: Stack(
                 alignment: Alignment.center,
@@ -231,7 +233,8 @@ class _SelectCustomerListPageState extends BaseState<SelectCustomerListPage> {
                                 index, listCustomer),
                           ),
                         ),
-                      )),
+                      )
+                  ),
                   Visibility(
                       visible: _isLoadingMore,
                       child: Positioned(
@@ -244,15 +247,20 @@ class _SelectCustomerListPageState extends BaseState<SelectCustomerListPage> {
                                 width: 30,
                                 height: 30,
                                 child: Lottie.asset('assets/images/loader_new.json', repeat: true, animate: true, frameRate: FrameRate.max)),
-                            const Text(
-                                ' Loading more...',
+                            const Text(' Loading more...',
                                 style: TextStyle(color: black, fontWeight: FontWeight.w400, fontSize: 16)
                             )
                           ],
                         ),
-                      )),
+                      )
+                  ),
                 ],
               ),
+            )
+            : const Center(
+              child: SizedBox(
+                  height: 60,
+                  child: MyNoDataWidget(msg: "", subMsg: "No customers found")),
             ),
           ],
         ),
@@ -292,49 +300,51 @@ class _SelectCustomerListPageState extends BaseState<SelectCustomerListPage> {
               ),
               width: 40,
               height: 40,
-              child: Text(listCustomer[index].customerName.toString().isNotEmpty ? getInitials(listCustomer[index].customerName.toString()) : "",
+              child: Text(listData[index].customerName.toString().isNotEmpty ? getInitials(listData[index].customerName.toString()) : "",
                 maxLines: 1,
                 textAlign: TextAlign.center,
                 style: const TextStyle(fontSize: 11, color: kBlue, fontWeight: FontWeight.w400),
               ),
             ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  margin: const EdgeInsets.only(left: 10, right: 10),
-                  child: Text(checkValidString(listCustomer[index].customerName.toString().trim()),
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 3,
-                    textAlign: TextAlign.start,
-                    style: const TextStyle(fontSize: 14, color: black, fontWeight: FontWeight.w600),
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    margin: const EdgeInsets.only(left: 10, right: 10),
+                    child: Text(checkValidString(listData[index].customerName.toString().trim()),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 3,
+                      textAlign: TextAlign.start,
+                      style: const TextStyle(fontSize: 14, color: black, fontWeight: FontWeight.w600),
+                    ),
                   ),
-                ),
-                Container(
-                  margin: const EdgeInsets.only(left: 10, right: 10),
-                  child: Text("${checkValidString(listCustomer[index].addressLine1.toString().trim())}\n${checkValidString(listCustomer[index].addressLine2.toString().trim())}",
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 3,
-                    textAlign: TextAlign.start,
-                    style: const TextStyle(fontSize: 13, color: black, fontWeight: FontWeight.w400),
+                  Container(
+                    margin: const EdgeInsets.only(left: 10, right: 10),
+                    child: Text("${checkValidString(listData[index].addressLine1.toString().trim())}\n${checkValidString(listData[index].addressLine2.toString().trim())}",
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 3,
+                      textAlign: TextAlign.start,
+                      style: const TextStyle(fontSize: 13, color: black, fontWeight: FontWeight.w400),
+                    ),
                   ),
-                ),
-                /*Container(
-                                      margin: const EdgeInsets.only(left: 10,),
-                                      alignment: Alignment.center,
-                                      child: Text("${listCustomer[index].ledgerMobile.toString().isNotEmpty ? checkValidString(listCustomer[index].ledgerMobile.toString().trim()) : ""} ",
-                                        textAlign: TextAlign.start,
-                                        style: const TextStyle(fontSize: 12, color: kGray, fontWeight: FontWeight.w500),
-                                      ),
-                                    ),*/
-              ],
+                /*  Container(
+                    margin: const EdgeInsets.only(left: 10,),
+                    alignment: Alignment.center,
+                    child: Text("${listData[index].ledgerMobile.toString().isNotEmpty ? checkValidString(listData[index].ledgerMobile.toString().trim()) : ""} ",
+                      textAlign: TextAlign.start,
+                      style: const TextStyle(fontSize: 12, color: kGray, fontWeight: FontWeight.w500),
+                    ),
+                  ),*/
+                ],
+              ),
             ),
           ],
         ),
         Container(
             margin: const EdgeInsets.only(left: 5, right: 5, top: 5),
-            height: index == listCustomer.length-1 ? 0 : 0.8, color: kLightPurple),
+            height: index == listData.length-1 ? 0 : 0.8, color: kLightPurple),
       ],
     );
   }

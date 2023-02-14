@@ -11,6 +11,7 @@ bool isHomeLoad = false;
 bool isOrderListLoad = false;
 bool isCustomerListReload = false;
 bool isEmployeeListReload = false;
+bool isTransactionListReload = false;
 
 double kTextFieldCornerRadius = 22.0;
 double kButtonCornerRadius = 6.0;

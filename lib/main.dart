@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:salesapp/screens/login_page.dart';
+import 'package:salesapp/screens/tabs/bottom_tab_navigation.dart';
 import 'package:salesapp/screens/tabs/tabnavigation.dart';
 import 'package:salesapp/utils/session_manager.dart';
 import 'package:salesapp/utils/session_manager_methods.dart';
@@ -97,7 +98,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
       if(isLoggedIn == true) {
           Timer(const Duration(seconds: 1), () =>
-              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => TabNavigation(0)), (Route<dynamic> route) => false)
+              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => BottomTabNavigation(0)), (Route<dynamic> route) => false)
+              // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => TabNavigation(0)), (Route<dynamic> route) => false)
           );
       }else {
         Timer(const Duration(seconds: 1), () =>

@@ -125,7 +125,6 @@ class _AddPaymentDetailPageState extends BaseState<AddPaymentDetailPage> {
                               _redirectToAddCustomer(context, customerDetail);
                             }
                           },
-
                         ),
                       ),
                       Container(
@@ -381,7 +380,7 @@ class _AddPaymentDetailPageState extends BaseState<AddPaymentDetailPage> {
 
       if ((widget as AddPaymentDetailPage).isFromDashboard) {
         customerId = customerDetail.customerId.toString();
-        _customerNameController.text = customerDetail.customerName.toString();
+        _customerNameController.text = checkValidString(customerDetail.customerName.toString());
       }
 
     });
@@ -495,6 +494,7 @@ class _AddPaymentDetailPageState extends BaseState<AddPaymentDetailPage> {
     if (statusCode == 200 && dataResponse.success == 1) {
       setState(() {
         _isLoading = false;
+        isTransactionListReload = true;
       });
 
       Navigator.pop(context, "success");

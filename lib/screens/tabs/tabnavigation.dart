@@ -4,6 +4,7 @@ import 'package:dot_navigation_bar/dot_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/services.dart';
+import 'package:salesapp/screens/transaction_list_page.dart';
 
 import '../../constant/color.dart';
 import '../../utils/app_utils.dart';
@@ -15,8 +16,8 @@ import 'order_list_page.dart';
 
 
 class TabNavigation extends StatefulWidget {
-  late final int passIndex;
-  TabNavigation(this.passIndex, {Key? key}) : super(key: key);
+  final int passIndex;
+  const TabNavigation(this.passIndex, {Key? key}) : super(key: key);
 
   @override
   State<TabNavigation> createState() => _TabNavigationPageState();
@@ -29,6 +30,7 @@ class _TabNavigationPageState extends State<TabNavigation> {
     DashboardPage(),
     const OrderListPage(),
     const CustomerListPage(),
+    const TransactionListPage(),
     // const EmployeeListPage(),
   ];
 
@@ -60,6 +62,12 @@ class _TabNavigationPageState extends State<TabNavigation> {
       setState(() {
         _pages.removeAt(2);
         _pages.insert(2, CustomerListPage(key: UniqueKey()));
+      });
+    }
+    else if(value == 3 && isTransactionListReload) {
+      setState(() {
+        _pages.removeAt(3);
+        _pages.insert(3, TransactionListPage(key: UniqueKey()));
       });
     }
     /*else if(value == 3 && isEmployeeListReload) {
@@ -124,7 +132,7 @@ class _TabNavigationPageState extends State<TabNavigation> {
               boxShadow: const [
                 BoxShadow(
                   color: kBlue,
-                  spreadRadius:0,
+                  spreadRadius: 0,
                   blurRadius: 1,
                   offset: Offset(0, 0), // changes position of shadow
                 )
@@ -149,6 +157,10 @@ class _TabNavigationPageState extends State<TabNavigation> {
                   icon: const ImageIcon(AssetImage("assets/images/ic_customer.png"),),
                   selectedColor: kBlue,
                 ),
+                DotNavigationBarItem(
+                  icon: const ImageIcon(AssetImage("assets/images/ic_customer.png"),),
+                  selectedColor: kBlue,
+                ),
                 /* DotNavigationBarItem(
                   icon: const ImageIcon(AssetImage("assets/images/ic_employee.png"),),
                   selectedColor:kBlue,
@@ -158,35 +170,43 @@ class _TabNavigationPageState extends State<TabNavigation> {
             Positioned(
               bottom: Platform.isAndroid ? 0 : 35,
               child: Container(
-                margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                width: MediaQuery.of(context).size.width,
+                margin: const EdgeInsets.symmetric(horizontal: 25, vertical: 12),
+                width: MediaQuery.of(context).size.width / 1.15,
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisSize: MainAxisSize.max,
                   children: [
                     Expanded(
                         child: _currentIndex == 0 ? Container(
-                          margin: const EdgeInsets.only(right: 20),
+                          // margin: const EdgeInsets.only(right: 0),
                           color: Colors.transparent,
-                          height: 10, width: 2,
-                          child: Image.asset("assets/images/ic_view_pager_bottom.png", height: 10, width: 2, color: _currentIndex == 0 ? kBlue : kLightestPurple,),
+                          height: 10, width: 10,
+                          child: Image.asset("assets/images/ic_view_pager_bottom.png", height: 10, width: 10, color: _currentIndex == 0 ? kBlue : kLightestPurple,),
                         ) : Container()
                     ),
                     Expanded(
                         child: _currentIndex == 1 ? Container(
-                          margin: const EdgeInsets.only(right:30),
+                          margin: const EdgeInsets.only(right:8),
                           color: Colors.transparent,
                           height: 10, width: 10,
-                          child: Image.asset("assets/images/ic_view_pager_bottom.png",height: 10, width: 10, color: _currentIndex == 1 ? kBlue : kLightestPurple,),
+                          child: Image.asset("assets/images/ic_view_pager_bottom.png", height: 10, width: 10, color: _currentIndex == 1 ? kBlue : kLightestPurple,),
                         ) : Container()
                     ),
                     Expanded(
-                        child: _currentIndex == 2 ?  Container(
-                          margin: const EdgeInsets.only(right: 30),
+                        child: _currentIndex == 2 ? Container(
+                          // margin: const EdgeInsets.only(right: 30),
                           color: Colors.transparent,
                           height: 10, width: 10,
                           child: Image.asset("assets/images/ic_view_pager_bottom.png", height: 10, width: 10, color: _currentIndex == 2 ? kBlue : kLightestPurple,),
+                        ) : Container()
+                    ),
+                    Expanded(
+                        child: _currentIndex == 3 ? Container(
+                          margin: const EdgeInsets.only(left: 8),
+                          color: Colors.transparent,
+                          height: 10, width: 10,
+                          child: Image.asset("assets/images/ic_view_pager_bottom.png", height: 10, width: 10, color: _currentIndex == 3 ? kBlue : kLightestPurple),
                         ) : Container()
                     ),
                     /*Expanded(child: Container(

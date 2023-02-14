@@ -14,6 +14,7 @@ import 'package:salesapp/screens/customer_detail_page.dart';
 import '../../Model/common_response_model.dart';
 import '../../Model/customer_list_response_model.dart';
 import '../../constant/color.dart';
+import '../../constant/font.dart';
 import '../../network/api_end_point.dart';
 import '../../utils/app_utils.dart';
 import '../../utils/base_class.dart';
@@ -51,7 +52,7 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
 
   String searchText = "";
 
-  var listFilter = ["Month wise filter", "Year wise filter", "Custom Filter"];
+  var listFilter = ["Month to date", "Year to date", "Custom Range"];
 
   @override
   void initState() {
@@ -98,7 +99,6 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
         title: const Text("Customer List",
             style: TextStyle(fontSize: 18, color: white, fontWeight: FontWeight.w600)),
         actions: [
-
           Container(
             margin: const EdgeInsets.only(top: 12, bottom: 12),
             child: GestureDetector(
@@ -353,7 +353,7 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
                                                       style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: kGreen),
                                                       children: <TextSpan>[
                                                         TextSpan(text: checkValidString(convertToComaSeparated(totalSale.toString())),
-                                                            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: kGreen),
+                                                            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: kGreen, fontFamily: kFontNameRubikBold),
                                                             recognizer: TapGestureRecognizer()..onTap = () => {
                                                             }),
                                                       ],
@@ -389,7 +389,7 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
                                                       style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w400, color: kRed),
                                                       children: <TextSpan>[
                                                         TextSpan(text: checkValidString(convertToComaSeparated(totalOverdue.toString())),
-                                                            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: kRed),
+                                                            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: kRed, fontFamily: kFontNameRubikBold),
                                                             recognizer: TapGestureRecognizer()..onTap = () => {
                                                             }),
                                                       ],

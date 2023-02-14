@@ -79,7 +79,7 @@ class _ProductListPageState extends BaseState<ProductListPageOld> {
                 _redirectToAddProduct(context, Products(), false);
               },
               child: Container(
-                margin: EdgeInsets.only(top: 12, bottom: 12, right: 10),
+                margin: const EdgeInsets.only(top: 11, bottom: 11, right: 15),
                 height: 34,
                 width: 36,
                 decoration: BoxDecoration(
@@ -121,12 +121,12 @@ class _ProductListPageState extends BaseState<ProductListPageOld> {
         body: _isLoading ? const LoadingWidget()
             : Column(
           children: [
-            Container(
+           /* Container(
               color: kBlue,
               alignment: Alignment.topLeft,
               padding: const EdgeInsets.only(left: 22, top: 10, bottom: 20),
               child: const Text("Product List", style: TextStyle(fontWeight: FontWeight.w700, color: white,fontSize: 20)),
-            ),
+            ),*/
             Stack(
               children: [
                 Container(

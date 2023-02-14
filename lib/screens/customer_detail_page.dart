@@ -18,6 +18,7 @@ import '../../utils/app_utils.dart';
 import '../../utils/base_class.dart';
 import '../../widget/loading.dart';
 import '../../widget/no_internet.dart';
+import '../constant/font.dart';
 import '../model/customer_detail_response_model.dart';
 import '../model/order_detail_response_model.dart';
 import 'add_order_page.dart';
@@ -46,7 +47,7 @@ class _CustomerDetailPageState extends BaseState<CustomerDetailPage> with Ticker
   late String? totalSale;
 
   late TabController _tabController;
-  var listFilter = ["Month wise filter", "Year wise filter", "Custom Filter"];
+  var listFilter = ["Month to date", "Year to date", "Custom Range"];
 
   String dateStartSelectionChanged = "";
   String dateEndSelectionChanged = "";
@@ -309,7 +310,7 @@ class _CustomerDetailPageState extends BaseState<CustomerDetailPage> with Ticker
                                                   style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: kGreen),
                                                   children: <TextSpan>[
                                                     TextSpan(text: checkValidString(convertToComaSeparated(totalSale.toString())),
-                                                        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: kGreen),
+                                                        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: kGreen, fontFamily: kFontNameRubikBold),
                                                         recognizer: TapGestureRecognizer()..onTap = () => {
                                                         }),
                                                   ],
@@ -345,7 +346,7 @@ class _CustomerDetailPageState extends BaseState<CustomerDetailPage> with Ticker
                                                   style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w400, color: kRed),
                                                   children: <TextSpan>[
                                                     TextSpan(text: checkValidString(convertToComaSeparated(totalOverdue.toString())),
-                                                        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: kRed),
+                                                        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: kRed, fontFamily: kFontNameRubikBold),
                                                         recognizer: TapGestureRecognizer()..onTap = () => {
                                                         }),
                                                   ],
