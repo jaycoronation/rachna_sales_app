@@ -14,31 +14,13 @@ class MyNoDataWidget extends StatelessWidget {
     return Center(
         child: Container(
           width: double.infinity,
+          alignment: Alignment.center,
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                   /* Card(
-                        clipBehavior: Clip.antiAliasWithSaveLayer,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(kNoDataViewCornerRadius))),
-                        elevation: 0,
-                        color: white,
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 22.0, bottom: 22, left: 40, right: 40),
-                          child: Image.asset("assets/images/$imageName", width: 60,height: 60, color: black,),
-                        )
-                    ),
-                    const Gap(6),
-                    */
-                    Text(msg, style: const TextStyle(color: black, fontSize: 20, fontWeight: FontWeight.bold)),
-                    const Gap(6),
-                    Text(subMsg, style: const TextStyle(color: black, fontSize: 18, fontWeight: FontWeight.w500), textAlign: TextAlign.center,)
-                  ],
-                ),
-              ),
+              Text(msg, style: const TextStyle(color: black, fontSize: 20, fontWeight: FontWeight.bold)),
+              const Gap(6),
+              Text(subMsg, style: const TextStyle(color: black, fontSize: 18, fontWeight: FontWeight.w500), textAlign: TextAlign.center,),
             ],
           ),
         )

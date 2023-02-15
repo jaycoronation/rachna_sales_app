@@ -1,82 +1,68 @@
 import 'dart:convert';
 /// success : 1
 /// message : "Daily Plan details found"
-/// totalCount : "2"
-/// daily_plan_list : [{"id":"2","description":"to meet trt","other":"erter tert","plan_date":"14-02-2023","status":"1","save_timestamp":"14-02-2023","updated_at":"","customer":{"customer_id":"1","customer_name":"Aabad Food Pvt. Ltd. 1"}},{"id":"3","description":"test","other":"tetsffe","plan_date":"14-02-2023","status":"1","save_timestamp":"14-02-2023","updated_at":"","customer":{"customer_id":"3292","customer_name":"A.M.HOSPITALITY"}}]
+/// daily_plan_details : {"id":"5","description":"to meet trt","other":"erter tert","plan_date":"15-02-2023","status":"1","save_timestamp":"15-02-2023","updated_at":"","customer":{"customer_id":"","customer_name":""}}
 
-DailyPlanResponseModel dailyPlanResponseModelFromJson(String str) => DailyPlanResponseModel.fromJson(json.decode(str));
-String dailyPlanResponseModelToJson(DailyPlanResponseModel data) => json.encode(data.toJson());
-class DailyPlanResponseModel {
-  DailyPlanResponseModel({
+DailyPlanDetailResponseModel dailyPlanDetailResponseModelFromJson(String str) => DailyPlanDetailResponseModel.fromJson(json.decode(str));
+String dailyPlanDetailResponseModelToJson(DailyPlanDetailResponseModel data) => json.encode(data.toJson());
+class DailyPlanDetailResponseModel {
+  DailyPlanDetailResponseModel({
       num? success, 
       String? message, 
-      String? totalCount, 
-      List<DailyPlanList>? dailyPlanList,}){
+      DailyPlanDetails? dailyPlanDetails,}){
     _success = success;
     _message = message;
-    _totalCount = totalCount;
-    _dailyPlanList = dailyPlanList;
+    _dailyPlanDetails = dailyPlanDetails;
 }
 
-  DailyPlanResponseModel.fromJson(dynamic json) {
+  DailyPlanDetailResponseModel.fromJson(dynamic json) {
     _success = json['success'];
     _message = json['message'];
-    _totalCount = json['totalCount'];
-    if (json['daily_plan_list'] != null) {
-      _dailyPlanList = [];
-      json['daily_plan_list'].forEach((v) {
-        _dailyPlanList?.add(DailyPlanList.fromJson(v));
-      });
-    }
+    _dailyPlanDetails = json['daily_plan_details'] != null ? DailyPlanDetails.fromJson(json['daily_plan_details']) : null;
   }
   num? _success;
   String? _message;
-  String? _totalCount;
-  List<DailyPlanList>? _dailyPlanList;
-DailyPlanResponseModel copyWith({  num? success,
+  DailyPlanDetails? _dailyPlanDetails;
+DailyPlanDetailResponseModel copyWith({  num? success,
   String? message,
-  String? totalCount,
-  List<DailyPlanList>? dailyPlanList,
-}) => DailyPlanResponseModel(  success: success ?? _success,
+  DailyPlanDetails? dailyPlanDetails,
+}) => DailyPlanDetailResponseModel(  success: success ?? _success,
   message: message ?? _message,
-  totalCount: totalCount ?? _totalCount,
-  dailyPlanList: dailyPlanList ?? _dailyPlanList,
+  dailyPlanDetails: dailyPlanDetails ?? _dailyPlanDetails,
 );
   num? get success => _success;
   String? get message => _message;
-  String? get totalCount => _totalCount;
-  List<DailyPlanList>? get dailyPlanList => _dailyPlanList;
+  DailyPlanDetails? get dailyPlanDetails => _dailyPlanDetails;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['success'] = _success;
     map['message'] = _message;
-    map['totalCount'] = _totalCount;
-    if (_dailyPlanList != null) {
-      map['daily_plan_list'] = _dailyPlanList?.map((v) => v.toJson()).toList();
+    if (_dailyPlanDetails != null) {
+      map['daily_plan_details'] = _dailyPlanDetails?.toJson();
     }
     return map;
   }
 
 }
 
-/// id : "2"
+/// id : "5"
 /// description : "to meet trt"
 /// other : "erter tert"
-/// plan_date : "14-02-2023"
+/// plan_date : "15-02-2023"
 /// status : "1"
-/// save_timestamp : "14-02-2023"
+/// save_timestamp : "15-02-2023"
 /// updated_at : ""
-/// customer : {"customer_id":"1","customer_name":"Aabad Food Pvt. Ltd. 1"}
+/// customer : {"customer_id":"","customer_name":""}
 
-DailyPlanList dailyPlanDetailsFromJson(String str) => DailyPlanList.fromJson(json.decode(str));
-String dailyPlanDetailsToJson(DailyPlanList data) => json.encode(data.toJson());
-class DailyPlanList {
-  DailyPlanList({
+DailyPlanDetails dailyPlanDetailsFromJson(String str) => DailyPlanDetails.fromJson(json.decode(str));
+String dailyPlanDetailsToJson(DailyPlanDetails data) => json.encode(data.toJson());
+class DailyPlanDetails {
+  DailyPlanDetails({
       String? id, 
       String? description, 
       String? other, 
-      String? planDate,
+      String? planDate, 
       String? status, 
       String? saveTimestamp, 
       String? updatedAt, 
@@ -91,7 +77,7 @@ class DailyPlanList {
     _customer = customer;
 }
 
-  DailyPlanList.fromJson(dynamic json) {
+  DailyPlanDetails.fromJson(dynamic json) {
     _id = json['id'];
     _description = json['description'];
     _other = json['other'];
@@ -109,7 +95,7 @@ class DailyPlanList {
   String? _saveTimestamp;
   String? _updatedAt;
   Customer? _customer;
-DailyPlanList copyWith({  String? id,
+DailyPlanDetails copyWith({  String? id,
   String? description,
   String? other,
   String? planDate,
@@ -117,7 +103,7 @@ DailyPlanList copyWith({  String? id,
   String? saveTimestamp,
   String? updatedAt,
   Customer? customer,
-}) => DailyPlanList(  id: id ?? _id,
+}) => DailyPlanDetails(  id: id ?? _id,
   description: description ?? _description,
   other: other ?? _other,
   planDate: planDate ?? _planDate,
@@ -152,8 +138,8 @@ DailyPlanList copyWith({  String? id,
 
 }
 
-/// customer_id : "1"
-/// customer_name : "Aabad Food Pvt. Ltd. 1"
+/// customer_id : ""
+/// customer_name : ""
 
 Customer customerFromJson(String str) => Customer.fromJson(json.decode(str));
 String customerToJson(Customer data) => json.encode(data.toJson());

@@ -310,9 +310,6 @@ class _TransactionDetailPageState extends BaseState<TransactionDetailPage> {
     if (statusCode == 200 && dataResponse.success == 1) {
       transactionDetailResponseModel = dataResponse;
 
-
-
-
       setState(() {
         _isLoading = false;
       });

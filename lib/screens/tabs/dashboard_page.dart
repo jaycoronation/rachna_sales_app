@@ -8,24 +8,27 @@ import 'package:salesapp/Model/customer_list_response_model.dart';
 import 'package:salesapp/Model/dash_board_data_response_model.dart';
 import 'package:salesapp/Model/employee_list_response_model.dart';
 import 'package:salesapp/constant/font.dart';
+import 'package:salesapp/model/daily_plan_detail_response_model.dart';
 import 'package:salesapp/model/order_detail_response_model.dart';
 import 'package:salesapp/screens/add_customer_page.dart';
 import 'package:salesapp/screens/add_daily_plan_page.dart';
 import 'package:salesapp/screens/add_employee_page.dart';
 import 'package:salesapp/screens/add_order_page.dart';
 import 'package:salesapp/screens/add_payement_detail_page.dart';
-import 'package:salesapp/screens/daily_plans_pages.dart';
+import 'package:salesapp/screens/daily_plans_page.dart';
 import 'package:salesapp/screens/profile_page.dart';
 import 'package:salesapp/screens/transaction_list_page.dart';
 import 'package:salesapp/utils/app_utils.dart';
 
 import '../../constant/color.dart';
+import '../../model/daily_plan_response_model.dart';
 import '../../model/product_item_list_response_model_old.dart';
 import '../../network/api_end_point.dart';
 import '../../utils/base_class.dart';
 import '../../widget/loading.dart';
 import '../../widget/no_internet.dart';
 import '../add_product_page.dart';
+import '../plan_detail_page.dart';
 import '../product_list_page_old.dart';
 
 
@@ -43,6 +46,7 @@ class _DashboardPageState extends BaseState<DashboardPage> {
   late num? totalOverdue;
   late num? totalEmployee;
   late num? totalCustomer;
+  var listDailyPlan = List<DailyPlanList>.empty(growable: true);
 
   @override
   void initState() {
@@ -451,11 +455,11 @@ class _DashboardPageState extends BaseState<DashboardPage> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const DailyPlansPage()));
+                      _redirectToPlanList(context);
                     },
                     child: Container(
                       decoration: BoxDecoration(
-                        color: kLightestGray,//kLightestPurple,
+                        color: kLightestPurple,
                           border: Border.all(width: 1, color: kLightPurple),
                           borderRadius: const BorderRadius.all(Radius.circular(6.0)),
                           shape: BoxShape.rectangle
@@ -478,10 +482,11 @@ class _DashboardPageState extends BaseState<DashboardPage> {
                     child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     shrinkWrap: true,
-                    itemCount: 8,
+                    itemCount: listDailyPlan.length,
                     itemBuilder: (ctx, index) => (InkWell(
                       hoverColor: Colors.white.withOpacity(0.0),
                       onTap: () async {
+                        _redirectToPlanDetail(context, listDailyPlan[index].id.toString());
                         setState(() {
                         });
                       },
@@ -499,52 +504,50 @@ class _DashboardPageState extends BaseState<DashboardPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Stack(
-                              children: [
-                                Container(
-                                  margin: const EdgeInsets.only(top: 10),
-                                  decoration: BoxDecoration(
-                                      color: kBlue,
-                                      borderRadius: BorderRadius.all(Radius.circular(kTextFieldCornerRadius))),
-                                    width: 35,
-                                    height: 35,
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      margin: const EdgeInsets.only(right: 3, left: 7, top: 12),
-                                      child: const Text("15",
-                                        maxLines: 1,
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(fontSize: 12, color: white, fontWeight: FontWeight.w500),
-                                      ),
-                                    ),
-                                    Container(
-                                      margin: const EdgeInsets.only(right: 3, left: 7, bottom: 3),
-                                      child: const Text("May",
-                                        maxLines: 1,
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(fontSize: 11, color: white, fontWeight: FontWeight.w400),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
                             Container(
-                              margin: const EdgeInsets.only(top: 10, bottom: 4),
-                              child: const Text("Hyatt Hotel",
-                                maxLines: 1,
-                                textAlign: TextAlign.start,
-                                style: TextStyle(fontSize: 14, color: kBlue, fontWeight: FontWeight.w600),
+                              margin: const EdgeInsets.only(top: 10),
+                              decoration: BoxDecoration(
+                                  color: kBlue,
+                                  borderRadius: BorderRadius.all(Radius.circular(kTextFieldCornerRadius))),
+                                width: 40,
+                                height: 40,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    margin: const EdgeInsets.only(right: 3, left: 3, top: 3),
+                                    child: Text(universalDateConverter("dd-MM-yyyy","dd",checkValidString(listDailyPlan[index].planDate).toString()),
+                                      maxLines: 1,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(fontSize: 13, color: white, fontWeight: FontWeight.w600),
+                                    ),
+                                  ),
+                                  Container(
+                                    margin: const EdgeInsets.only(right: 3, left: 3, bottom: 3),
+                                    child: Text(universalDateConverter("dd-MM-yyyy","MMM",checkValidString(listDailyPlan[index].planDate).toString()),// planDate.toString().split('-')[1].trim()
+                                      maxLines: 1,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(fontSize: 11, color: white, fontWeight: FontWeight.w400),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                            const Text("11:15AM - 1:00PM",
-                              maxLines: 2,
+
+                            Container(
+                              margin: const EdgeInsets.only(top: 10, bottom: 4),
+                              child: Text(listDailyPlan[index].customer!.customerName.toString().isNotEmpty ?
+                              checkValidString(listDailyPlan[index].customer!.customerName.toString().trim()) : "-",
+                                maxLines: 1,
+                                overflow: TextOverflow.clip,
+                                textAlign: TextAlign.start,
+                                style: const TextStyle(fontSize: 14, color: kBlue, fontWeight: FontWeight.w600),
+                              ),
+                            ),
+                            Text(checkValidString(listDailyPlan[index].planDate.toString().trim()),
                               textAlign: TextAlign.start,
-                              style: TextStyle(fontSize: 12, color: kGray, fontWeight: FontWeight.w400),
+                              style: const TextStyle(fontSize: 12, color: kGray, fontWeight: FontWeight.w400),
                             ),
                           ],
                         ),
@@ -615,10 +618,12 @@ class _DashboardPageState extends BaseState<DashboardPage> {
                       ),
                     ),
                   ),
-                *//*  Flexible(
+                */
+              /*  Flexible(
                     child: Column(
                       children: [
-                        *//**//*GestureDetector(
+                        *//**/
+              /*GestureDetector(
                           onTap: () {
                             _redirectToAddEmployee(context,EmployeeList(), false);
                           },
@@ -679,7 +684,6 @@ class _DashboardPageState extends BaseState<DashboardPage> {
                       ],
                     ),
                   )*/
-
               /*
                 ],
               ),*/
@@ -795,7 +799,7 @@ class _DashboardPageState extends BaseState<DashboardPage> {
   Future<void> _redirectToPlans(BuildContext context) async {
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => AddDailyPlanPage()),
+      MaterialPageRoute(builder: (context) => AddDailyPlanPage(DailyPlanList(), false)),
     );
 
     print("result ===== $result");
@@ -804,6 +808,38 @@ class _DashboardPageState extends BaseState<DashboardPage> {
       _makeCallDashboardData();
       setState(() {
         isHomeLoad = true;
+      });
+    }
+  }
+
+  Future<void> _redirectToPlanDetail(BuildContext context, String planId) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => PlanDetailPage(planId)),
+    );
+
+    print("result ===== $result");
+
+    if (result == "success") {
+      _getDailyPlansList();
+
+      setState(() {
+      });
+    }
+  }
+
+  Future<void> _redirectToPlanList(BuildContext context) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => DailyPlansPage()),
+    );
+
+    print("result ===== $result");
+
+    if (result == "success") {
+      _getDailyPlansList();
+
+      setState(() {
       });
     }
   }
@@ -997,10 +1033,6 @@ class _DashboardPageState extends BaseState<DashboardPage> {
     var dataResponse = DashBoardDataResponseModel.fromJson(user);
 
     if (statusCode == 200 && dataResponse.success == 1) {
-      setState(() {
-        _isLoading = false;
-      });
-
       totalAmount = dataResponse.data?.totalAmount;
       totalOverdue = dataResponse.data?.totalOverdue;
       totalEmployee = dataResponse.data?.totalEmployee;
@@ -1011,6 +1043,46 @@ class _DashboardPageState extends BaseState<DashboardPage> {
         _isLoading = false;
       });
 
+    }
+
+    _getDailyPlansList();
+
+  }
+
+  _getDailyPlansList() async {
+    HttpWithMiddleware http = HttpWithMiddleware.build(middlewares: [
+      HttpLogger(logLevel: LogLevel.BODY),
+    ]);
+
+    final url = Uri.parse(BASE_URL + dailyPlanList);
+
+    Map<String, String> jsonBody = {
+      'from_app': FROM_APP,
+      'limit' : "10",
+      'page' : "0",
+      'search' : "",
+    };
+
+    final response = await http.post(url, body: jsonBody);
+    final statusCode = response.statusCode;
+
+    final body = response.body;
+    Map<String, dynamic> dailyPlan = jsonDecode(body);
+    var dataResponse = DailyPlanResponseModel.fromJson(dailyPlan);
+
+    if (statusCode == 200 && dataResponse.success == 1) {
+      if (dataResponse.dailyPlanList != null) {
+        listDailyPlan = dataResponse.dailyPlanList!;
+      }
+
+      setState(() {
+        _isLoading = false;
+      });
+
+    }else {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 

@@ -5,11 +5,11 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:pretty_http_logger/pretty_http_logger.dart';
 import 'package:salesapp/Model/common_response_model.dart';
+import 'package:salesapp/model/daily_plan_response_model.dart';
 import 'package:salesapp/screens/select_customer_list_page.dart';
 
 import '../Model/customer_list_response_model.dart';
 import '../constant/color.dart';
-import '../model/order_detail_response_model.dart';
 import '../network/api_end_point.dart';
 import '../utils/app_utils.dart';
 import '../utils/base_class.dart';
@@ -17,7 +17,9 @@ import '../widget/loading.dart';
 
 class AddDailyPlanPage extends StatefulWidget {
 
-  const AddDailyPlanPage({Key? key}) : super(key: key);
+  final DailyPlanList dataGetSet;
+  final bool isFromList;
+  const AddDailyPlanPage(this.dataGetSet, this.isFromList, {Key? key}) : super(key: key);
 
   @override
   _AddDailyPlanPageState createState() => _AddDailyPlanPageState();
@@ -38,8 +40,14 @@ class _AddDailyPlanPageState extends BaseState<AddDailyPlanPage> {
 
   @override
   void initState() {
-
     super.initState();
+
+    if ((widget as AddDailyPlanPage).isFromList) {
+      _customerNameController.text = checkValidString((widget as AddDailyPlanPage).dataGetSet.customer!.customerName!).toString().trim();
+      _selectDateController.text = checkValidString((widget as AddDailyPlanPage).dataGetSet.planDate).toString().trim();
+      _descriptionController.text = checkValidString((widget as AddDailyPlanPage).dataGetSet.description).toString().trim();
+      _otherController.text = checkValidString((widget as AddDailyPlanPage).dataGetSet.other).toString().trim();
+    }
 
   }
 
@@ -51,15 +59,16 @@ class _AddDailyPlanPageState extends BaseState<AddDailyPlanPage> {
       appBar: AppBar(
         systemOverlayStyle: SystemUiOverlayStyle.dark,
         automaticallyImplyLeading: false,
-        title: const Text("Add Plan",
-            style: TextStyle(fontSize: 18, color: white, fontWeight: FontWeight.w600)),
+        title: Text((widget as AddDailyPlanPage).isFromList ? "Update Plan" : "Add Plan",
+            style: const TextStyle(fontSize: 18, color: white, fontWeight: FontWeight.w600)),
         leading: GestureDetector(
+          behavior: HitTestBehavior.opaque,
             onTap:() {
               Navigator.pop(context);
             },
             child: Container(
               decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(20.0),),
+                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
                   color: kBlue
               ),
               alignment: Alignment.center,
@@ -110,9 +119,6 @@ class _AddDailyPlanPageState extends BaseState<AddDailyPlanPage> {
                             counterText: '',
                             prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
                           ),
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly
-                          ],
                           onTap: () async {
                             datePicker(context, setState, _selectDateController);
                           },
@@ -125,14 +131,13 @@ class _AddDailyPlanPageState extends BaseState<AddDailyPlanPage> {
                           controller: _descriptionController,
                           keyboardType: TextInputType.text,
                           style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
-                          maxLines: 4,
+                          maxLines: 3,
                           onTap: () {
                           },
                           decoration: const InputDecoration(
                               labelText: 'Description',
                               prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16)
                           ),
-
                         ),
                       ),
                       Container(
@@ -161,7 +166,6 @@ class _AddDailyPlanPageState extends BaseState<AddDailyPlanPage> {
                         ),
                         child: TextButton(
                           onPressed: () {
-
                             FocusScope.of(context).requestFocus(FocusNode());
 
                             String customerName = _customerNameController.text.toString();
@@ -201,8 +205,11 @@ class _AddDailyPlanPageState extends BaseState<AddDailyPlanPage> {
     DateTime? pickedDate = await showDatePicker(
         context: context,
         initialDate: DateTime.now(),
-        firstDate: DateTime(1900),
-        lastDate: DateTime.now(),
+        firstDate: DateTime.now(), // the earliest allowable
+        lastDate: DateTime(2030, 1, 1), // the latest allowable
+        currentDate: DateTime.now(),
+        // firstDate: DateTime(1900),
+        // lastDate: DateTime.now(),
         builder: (context, child) {
           return Theme(
             data: Theme.of(context).copyWith(
@@ -243,14 +250,15 @@ class _AddDailyPlanPageState extends BaseState<AddDailyPlanPage> {
     print("result ===== $result");
     setState(() {
       customerDetail = result;
-      customerId = customerDetail.customerId.toString();
-      _customerNameController.text = checkValidString(customerDetail.customerName.toString());
+      customerId = checkValidString(customerDetail.customerId).toString();
+      _customerNameController.text = checkValidString(customerDetail.customerName).toString();
     });
 
     if (result == "success") {
       setState(() {
       });
     }
+
   }
 
   @override
@@ -259,6 +267,7 @@ class _AddDailyPlanPageState extends BaseState<AddDailyPlanPage> {
     widget is AddDailyPlanPage;
   }
 
+  //API Call Function...
   void _savePlan() async {
     setState(() {
       _isLoading = true;
@@ -276,7 +285,7 @@ class _AddDailyPlanPageState extends BaseState<AddDailyPlanPage> {
       "description": _descriptionController.value.text.toString().trim(),
       "other": _otherController.value.text.toString().trim(),
       "plan_date": _selectDateController.value.text.toString().trim(),
-      "id": ''
+      "id": (widget as AddDailyPlanPage).isFromList ? checkValidString((widget as AddDailyPlanPage).dataGetSet.id).toString() : ""
     };
 
     final response = await http.post(url, body: jsonBody);
@@ -299,6 +308,7 @@ class _AddDailyPlanPageState extends BaseState<AddDailyPlanPage> {
       });
       showSnackBar(dataResponse.message, context);
     }
+
   }
 
 }

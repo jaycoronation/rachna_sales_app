@@ -226,11 +226,6 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
               color: kBlue,
               child: Column(
                 children: [
-                 /* Container(
-                    alignment: Alignment.topLeft,
-                    padding: const EdgeInsets.only(left: 22),
-                    child: const Text("Customer List", style: TextStyle(fontWeight: FontWeight.w700, color: white,fontSize: 20)),
-                  ),*/
                   Stack(
                     children: [
                       SizedBox(
@@ -434,14 +429,10 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
                 ],
               ),
             ),
-            _isSearchLoading
-                ? const Center(
-              child: LoadingWidget(),
-            ) :
             Stack(
               alignment: Alignment.center,
               children: [
-                listCustomer.isNotEmpty ?
+                _isSearchLoading ? const LoadingWidget() : listCustomer.isNotEmpty ?
                 ListView.builder(
                     scrollDirection: Axis.vertical,
                     physics: const NeverScrollableScrollPhysics(),
@@ -472,7 +463,7 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
                                   style: const TextStyle(fontSize: 15, color: black, fontWeight: FontWeight.w700),
                                 ),
                               ),
-  /*                            Container(
+                              /*                            Container(
                                 margin: const EdgeInsets.only(left: 10, right: 5),
                                 child: const Text("Pending amount : ",
                                   overflow: TextOverflow.ellipsis,
@@ -517,8 +508,7 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
                         ),
                       ),
                     ))
-                : const SizedBox(height: 60,
-                    child: MyNoDataWidget(msg: "", subMsg: "No customer found")),
+                    : const MyNoDataWidget(msg: "", subMsg: "No customer found"),
                 Visibility(
                     visible: _isLoadingMore,
                     child: Positioned(
@@ -537,10 +527,9 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
                           )
                         ],
                       ),
-                    ))
+                    )),
               ],
             ),
-
           ]
       ),
     );
@@ -886,8 +875,8 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
     final statusCode = response.statusCode;
 
     final body = response.body;
-    Map<String, dynamic> order = jsonDecode(body);
-    var dataResponse = CustomerListResponseModel.fromJson(order);
+    Map<String, dynamic> customerData = jsonDecode(body);
+    var dataResponse = CustomerListResponseModel.fromJson(customerData);
 
     if (isFirstTime) {
       if (listCustomer.isNotEmpty) {
@@ -896,16 +885,15 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
     }
 
     if (statusCode == 200 && dataResponse.success == 1) {
-      var customerListResponse = CustomerListResponseModel.fromJson(order);
       totalOverdue = checkValidString(dataResponse.totalOverdue);
       totalSale = checkValidString(dataResponse.totalSale);
 
       sessionManagerMethod.setOverdues(totalOverdue.toString());
 
-      if (customerListResponse.customerList != null) {
+      if (dataResponse.customerList != null) {
 
         List<CustomerList>? _tempList = [];
-        _tempList = customerListResponse.customerList;
+        _tempList = dataResponse.customerList;
         listCustomer.addAll(_tempList!);
 
         if (_tempList.isNotEmpty) {

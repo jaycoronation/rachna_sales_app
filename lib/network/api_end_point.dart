@@ -42,3 +42,5 @@ const transactionDetail = "manageTransection/details";
 
 const savePlan = "manageDailyPlan/save";
 const dailyPlanList = "manageDailyPlan/list";
+const dailyPlanDetail = "manageDailyPlan/details";
+const dailyPlanDelete = "manageDailyPlan/delete";

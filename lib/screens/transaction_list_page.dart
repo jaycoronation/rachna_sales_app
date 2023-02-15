@@ -318,12 +318,8 @@ class _TransactionListPageState extends BaseState<TransactionListPage> {
                 ],
               ),
             ),
-            _isSearchLoading
-                ? const Center(
-              child: LoadingWidget(),
-            ) : listTransactions.isNotEmpty
-            ? Expanded(
-              child: ListView.builder(
+            Expanded(
+              child: _isSearchLoading ? const LoadingWidget() : listTransactions.isNotEmpty ? ListView.builder(
                   controller: _scrollViewController,
                   scrollDirection: Axis.vertical,
                   physics: const AlwaysScrollableScrollPhysics(),
@@ -406,12 +402,7 @@ class _TransactionListPageState extends BaseState<TransactionListPage> {
                         ),
                       ),
                     ),
-                  )),
-            )
-            : const Center(
-              child: SizedBox(
-                  height: 60,
-                  child: MyNoDataWidget(msg: "", subMsg: "No transactions found")),
+                  )) : const MyNoDataWidget(msg: "", subMsg: "No transactions found"),
             ),
             Visibility(
                 visible: _isLoadingMore,
@@ -631,7 +622,7 @@ class _TransactionListPageState extends BaseState<TransactionListPage> {
     if (result == "success") {
       _getTransactionListData(true);
       setState(() {
-        isOrderListLoad = true;
+        isTransactionListReload = true;
       });
     }
 
