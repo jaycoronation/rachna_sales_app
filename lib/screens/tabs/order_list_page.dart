@@ -153,226 +153,226 @@ class _OrderListPageState extends BaseState<OrderListPage> {
   }
 
   Widget setData() {
-    return SingleChildScrollView(
-      controller: _scrollViewController,
-      child: Column(
-          children: [
-            Container(
-              color: kBlue,
-              child: Stack(
-                children: [
-                  SizedBox(
-                    height: 215,
-                    child: Column(
-                      children: [
-                        Container(
-                          height: 120,
-                          color: kBlue,
-                        ),
-                        Container(
-                          height: 95,
-                          color: kLightestPurple,
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                      decoration: BoxDecoration(
-                          color: white,
-                          border: Border.all(width: 1, color: kLightPurple),
-                          borderRadius: const BorderRadius.all(
-                            Radius.circular(8.0),
-                          ),
-                          shape: BoxShape.rectangle
+    return Column(
+        children: [
+          Container(
+            color: kBlue,
+            child: Stack(
+              children: [
+                SizedBox(
+                  height: 215,
+                  child: Column(
+                    children: [
+                      Container(
+                        height: 120,
+                        color: kBlue,
                       ),
-                      margin: const EdgeInsets.only(left: 15, right: 15, top: 150),
-                      child: TextField(
-                        keyboardType: TextInputType.text,
-                        textAlign: TextAlign.start,
-                        controller: searchController,
-                        cursorColor: black,
-                        style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 15, color: black,),
-                        decoration: InputDecoration(
-                            hintText: "Search Order",
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(color: kLightPurple, width: 0),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(color: kLightPurple, width: 0),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            hintStyle: const TextStyle(fontWeight: FontWeight.w400, color: kBlue, fontSize: 14),
-                            prefixIcon: const Icon(Icons.search, size: 26, color: kBlue,),
-                            suffixIcon: InkWell(
-                              child: const Icon(
-                                Icons.close,
-                                size: 26,
-                                color: black,
-                              ),
-                              onTap: () {
-
-                                if (searchController.text.isNotEmpty) {
-                                  setState(() {
-                                    searchController.text = "";
-                                    searchText = "";
-                                    dateStartSelectionChanged = "";
-                                    dateEndSelectionChanged = "";
-                                    isOrderListLoad = false;
-                                  });
-                                  _getOrderListData(true);
-                                }
-
-                              },
-                            )
-                        ),
-                        onChanged: (text) {
-                          searchController.text = text;
-                          searchController.selection = TextSelection.fromPosition(TextPosition(offset: searchController.text.length));
-                          if (text.isEmpty) {
-                            setState(() {
-                              searchText = "";
-                            });
-
-                            _getOrderListData(true);
-                          }
-                          else if (text.length > 3) {
-                            setState(() {
-                              searchText = searchController.text.toString().trim();
-                            });
-                            _getOrderListData(true);
-                          }
-                        },
-                      )
+                      Container(
+                        height: 95,
+                        color: kLightestPurple,
+                      ),
+                    ],
                   ),
-                  SizedBox(
-                    height: 135,
-                    child: Column(
-                      children: [
-                        Container(
-                          height: 10,
+                ),
+                Container(
+                    decoration: BoxDecoration(
+                        color: white,
+                        border: Border.all(width: 1, color: kLightPurple),
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(8.0),
                         ),
-                        Container(
-                          decoration: BoxDecoration(
-                              border: Border.all(width: 1, color: kLightPurple),
-                              borderRadius: const BorderRadius.all(
-                                Radius.circular(12.0),
-                              ),
-                              color: white,
-                              shape: BoxShape.rectangle
+                        shape: BoxShape.rectangle
+                    ),
+                    margin: const EdgeInsets.only(left: 15, right: 15, top: 150),
+                    child: TextField(
+                      keyboardType: TextInputType.text,
+                      textAlign: TextAlign.start,
+                      controller: searchController,
+                      cursorColor: black,
+                      style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 15, color: black,),
+                      decoration: InputDecoration(
+                          hintText: "Search Order",
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(color: kLightPurple, width: 0),
+                            borderRadius: BorderRadius.circular(8),
                           ),
-                          height: 125,
-                          margin: const EdgeInsets.only(left: 20, right: 20),
-                          child: Column(
-                            children: [
-                              SizedBox(
-                                height: 80,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Expanded(
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-                                          Container(
-                                            alignment: Alignment.center,
-                                            margin: const EdgeInsets.only(top: 5),
-                                            child: RichText(
-                                              textAlign: TextAlign.center,
-                                              text: TextSpan(
-                                                text: '₹ ',
-                                                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: kGreen),
-                                                children: <TextSpan>[
-                                                  TextSpan(text: checkValidString(convertToComaSeparated(totalAmount.toString())),
-                                                      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: kGreen, fontFamily: kFontNameRubikBold),
-                                                      recognizer: TapGestureRecognizer()..onTap = () => {
-                                                      }),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                          Container(
-                                              alignment: Alignment.center,
-                                              child: const Text("Total Orders",
-                                                  style: TextStyle(fontSize: 11, fontWeight: FontWeight.w400, color: kGray),
-                                                  textAlign: TextAlign.center)
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Container(
-                                      width: 1.0,
-                                      color: kLightestGray,
-                                      margin: const EdgeInsets.only(top: 10, bottom: 10),
-                                    ),
-                                    Expanded(
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-                                          Container(
-                                            alignment: Alignment.center,
-                                            margin: const EdgeInsets.only(top: 5),
-                                            child: RichText(
-                                              textAlign: TextAlign.center,
-                                              text: TextSpan(
-                                                text: '₹ ',
-                                                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: kGreen),
-                                                children: <TextSpan>[
-                                                  TextSpan(text: checkValidString(convertToComaSeparated(todaySale.toString())),
-                                                      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: kGreen, fontFamily: kFontNameRubikBold),
-                                                      recognizer: TapGestureRecognizer()..onTap = () => {
-                                                      }),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                          Container(
-                                              alignment: Alignment.center,
-                                              child: const Text("Today's Orders",
-                                                  style: TextStyle(fontSize: 11, fontWeight: FontWeight.w400, color: kGray),
-                                                  textAlign: TextAlign.center)
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Container(height: 0.5, color: kLightestGray),
-                              Row(
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(color: kLightPurple, width: 0),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          hintStyle: const TextStyle(fontWeight: FontWeight.w400, color: kBlue, fontSize: 14),
+                          prefixIcon: const Icon(Icons.search, size: 26, color: kBlue,),
+                          suffixIcon: InkWell(
+                            child: const Icon(
+                              Icons.close,
+                              size: 26,
+                              color: black,
+                            ),
+                            onTap: () {
+
+                              if (searchController.text.isNotEmpty) {
+                                setState(() {
+                                  searchController.text = "";
+                                  searchText = "";
+                                  dateStartSelectionChanged = "";
+                                  dateEndSelectionChanged = "";
+                                  isOrderListLoad = false;
+                                });
+                                _getOrderListData(true);
+                              }
+
+                            },
+                          )
+                      ),
+                      onChanged: (text) {
+                        searchController.text = text;
+                        searchController.selection = TextSelection.fromPosition(TextPosition(offset: searchController.text.length));
+                        if (text.isEmpty) {
+                          setState(() {
+                            searchText = "";
+                          });
+
+                          _getOrderListData(true);
+                        }
+                        else if (text.length > 3) {
+                          setState(() {
+                            searchText = searchController.text.toString().trim();
+                          });
+                          _getOrderListData(true);
+                        }
+                      },
+                    )
+                ),
+                SizedBox(
+                  height: 135,
+                  child: Column(
+                    children: [
+                      Container(
+                        height: 10,
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                            border: Border.all(width: 1, color: kLightPurple),
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(12.0),
+                            ),
+                            color: white,
+                            shape: BoxShape.rectangle
+                        ),
+                        height: 125,
+                        margin: const EdgeInsets.only(left: 20, right: 20),
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              height: 80,
+                              child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  Container(
-                                      height: 39,
-                                      alignment: Alignment.center,
-                                      child: const Text("VIEW REPORTS",
-                                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400, color: kBlue),
-                                          textAlign: TextAlign.center)
+                                  Expanded(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Container(
+                                          alignment: Alignment.center,
+                                          margin: const EdgeInsets.only(top: 5),
+                                          child: RichText(
+                                            textAlign: TextAlign.center,
+                                            text: TextSpan(
+                                              text: '₹ ',
+                                              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: kGreen),
+                                              children: <TextSpan>[
+                                                TextSpan(text: checkValidString(convertToComaSeparated(totalAmount.toString())),
+                                                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: kGreen, fontFamily: kFontNameRubikBold),
+                                                    recognizer: TapGestureRecognizer()..onTap = () => {
+                                                    }),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        Container(
+                                            alignment: Alignment.center,
+                                            child: const Text("Total Orders",
+                                                style: TextStyle(fontSize: 11, fontWeight: FontWeight.w400, color: kGray),
+                                                textAlign: TextAlign.center)
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                  Image.asset("assets/images/ic_right_arrow.png", height: 14, width: 14,)
+                                  Container(
+                                    width: 1.0,
+                                    color: kLightestGray,
+                                    margin: const EdgeInsets.only(top: 10, bottom: 10),
+                                  ),
+                                  Expanded(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Container(
+                                          alignment: Alignment.center,
+                                          margin: const EdgeInsets.only(top: 5),
+                                          child: RichText(
+                                            textAlign: TextAlign.center,
+                                            text: TextSpan(
+                                              text: '₹ ',
+                                              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: kGreen),
+                                              children: <TextSpan>[
+                                                TextSpan(text: checkValidString(convertToComaSeparated(todaySale.toString())),
+                                                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: kGreen, fontFamily: kFontNameRubikBold),
+                                                    recognizer: TapGestureRecognizer()..onTap = () => {
+                                                    }),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        Container(
+                                            alignment: Alignment.center,
+                                            child: const Text("Today's Orders",
+                                                style: TextStyle(fontSize: 11, fontWeight: FontWeight.w400, color: kGray),
+                                                textAlign: TextAlign.center)
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ],
                               ),
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                  )
-                ],
-              ),
+                            ),
+                            Container(height: 0.5, color: kLightestGray),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                    height: 39,
+                                    alignment: Alignment.center,
+                                    child: const Text("VIEW REPORTS",
+                                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400, color: kBlue),
+                                        textAlign: TextAlign.center)
+                                ),
+                                Image.asset("assets/images/ic_right_arrow.png", height: 14, width: 14,)
+                              ],
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                )
+              ],
             ),
-            _isSearchLoading
-                ? const LoadingWidget() :
-            Stack(
+          ),
+          _isSearchLoading
+              ? const LoadingWidget() :
+          Expanded(
+            child: Stack(
               children: [
                 listOrder.isNotEmpty ?
                 ListView.builder(
                     scrollDirection: Axis.vertical,
-                    physics: const NeverScrollableScrollPhysics(),
+                    controller: _scrollViewController,
+                    physics: const AlwaysScrollableScrollPhysics(),
                     primary: false,
                     shrinkWrap: true,
                     itemCount: listOrder.length,
@@ -489,26 +489,28 @@ class _OrderListPageState extends BaseState<OrderListPage> {
                 : const MyNoDataWidget(msg: "", subMsg: "No orders found"),
                 Visibility(
                     visible: _isLoadingMore,
-                    child: Positioned(
-                      bottom: 80,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                              width: 30,
-                              height: 30,
-                              child: Lottie.asset('assets/images/loader_new.json', repeat: true, animate: true, frameRate: FrameRate.max)),
-                          const Text(' Loading more...',
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                            margin: const EdgeInsets.only(bottom: 80),
+                            width: 30,
+                            height: 30,
+                            child: Lottie.asset('assets/images/loader_new.json', repeat: true, animate: true, frameRate: FrameRate.max)),
+                        Container(
+                          margin: const EdgeInsets.only(bottom: 80),
+                          child: const Text(
+                              ' Loading more...',
                               style: TextStyle(color: black, fontWeight: FontWeight.w400, fontSize: 16)
-                          )
-                        ],
-                      ),
-                    ))
+                          ),
+                        )
+                      ],
+                    )),
               ],
             ),
-          ]
-      ),
+          ),
+        ]
     );
   }
 

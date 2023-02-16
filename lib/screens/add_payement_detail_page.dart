@@ -99,14 +99,6 @@ class _AddPaymentDetailPageState extends BaseState<AddPaymentDetailPage> {
                 child: IntrinsicHeight(
                   child: Column(
                     children: [
-/*                      Container(
-                        color: kBlue,
-                        alignment: Alignment.topLeft,
-                        padding: const EdgeInsets.only(left: 22, top: 10, bottom: 15),
-                        child: const Text("Add Payment Details",
-                            style: TextStyle(fontWeight: FontWeight.w700, color: white, fontSize: 20)),
-                      ),*/
-
                       Container(
                         margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
                         child: TextField(
@@ -213,8 +205,8 @@ class _AddPaymentDetailPageState extends BaseState<AddPaymentDetailPage> {
                             String amount = _amountController.text.toString();
                             String transactionMode = _transactionModeController.text.toString();
                             String transactionId = _transactionIdController.text.toString();
-                            String pendingAmount = (widget as AddPaymentDetailPage).pendingAmount;
-                            // print("pendingAmount--->$pendingAmount");
+                            String pendingAmount = (widget as AddPaymentDetailPage).pendingAmount.toString();
+                            print("pendingAmount--->$pendingAmount");
                             // print("orderId--->${(widget as AddPaymentDetailPage).orderId}");
 
                             if ((widget as AddPaymentDetailPage).orderId.isEmpty) {
@@ -226,7 +218,6 @@ class _AddPaymentDetailPageState extends BaseState<AddPaymentDetailPage> {
                                 showSnackBar("Please select a transaction mode", context);
                               } else if (transactionMode != "Cash" && transactionId.trim().isEmpty) {
                                 showSnackBar("Please enter a transaction id", context);
-
                               } else {
                                 if(isInternetConnected) {
                                   _saveTransaction();
@@ -241,7 +232,7 @@ class _AddPaymentDetailPageState extends BaseState<AddPaymentDetailPage> {
                                 showSnackBar("Please enter a customer name", context);
                               } else if (amount.trim().isEmpty ) {
                                 showSnackBar("Please enter amount", context);
-                              } else if (amount.trim().isNotEmpty && int.parse(amount) > int.parse(pendingAmount)) {
+                              } else if (amount.trim().isNotEmpty && double.parse(amount) > double.parse(pendingAmount)) {
                                 showSnackBar("Payment amount should not be greater than order amount", context);
                               } else if (transactionMode.trim().isEmpty) {
                                 showSnackBar("Please select a transaction mode", context);

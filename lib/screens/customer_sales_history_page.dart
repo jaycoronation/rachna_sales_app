@@ -141,9 +141,7 @@ class _CustomerSalesHistoryListPageState extends BaseState<CustomerSalesHistoryL
                                             decoration: BoxDecoration(
                                                 color: kLightestPurple,
                                                 border: Border.all(width: 1, color: kLightPurple),
-                                                borderRadius: const BorderRadius.all(
-                                                  Radius.circular(12.0),
-                                                ),
+                                                borderRadius: const BorderRadius.all(Radius.circular(12.0)),
                                                 shape: BoxShape.rectangle
                                             ),
                                             child: TextButton(
@@ -177,7 +175,7 @@ class _CustomerSalesHistoryListPageState extends BaseState<CustomerSalesHistoryL
                 ),
               )),
         )
-        : MyNoDataWidget(msg: "", subMsg: "No sales history found",),
+        : const MyNoDataWidget(msg: "", subMsg: "No sales history found",),
       ),
     );
   }

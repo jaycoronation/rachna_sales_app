@@ -476,7 +476,8 @@ class _DashboardPageState extends BaseState<DashboardPage> {
                 ],
               ),
               Container(
-                margin: const EdgeInsets.only(left: 5, right: 5, top: 20, bottom: 30),
+                alignment: Alignment.centerLeft,
+                margin: const EdgeInsets.only(left: 5, right: 5, top: 10, bottom: 10),
                 child: SizedBox(
                     height: 110,
                     child: ListView.builder(
@@ -492,8 +493,7 @@ class _DashboardPageState extends BaseState<DashboardPage> {
                       },
                       child: Container(
                         decoration: BoxDecoration(
-                            border: Border.all(color: kLightPurple, // Set border color
-                                width: 1.0),
+                            border: Border.all(color: kLightPurple, width: 1.0),
                             color: kLightestPurple,
                             borderRadius: const BorderRadius.all(Radius.circular(12))),
                         padding: const EdgeInsets.all(5),
@@ -983,7 +983,7 @@ class _DashboardPageState extends BaseState<DashboardPage> {
                           Container(
                               alignment: Alignment.center,
                               margin: const EdgeInsets.only(top:6, bottom: 6),
-                              child: Image.asset("assets/images/ic_transaction.png", height: 42, width: 45)
+                              child: Image.asset("assets/images/icons-08.png", height: 42, width: 45)
                           ),
                           Container(
                             alignment: Alignment.topLeft,

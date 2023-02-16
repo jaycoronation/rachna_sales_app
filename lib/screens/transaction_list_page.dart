@@ -162,161 +162,218 @@ class _TransactionListPageState extends BaseState<TransactionListPage> {
         body: _isLoading ? const LoadingWidget()
             : Column(
           children: [
-            Container(
-              color: kBlue,
-              child: Stack(
-                children: [
-                  Container(
-                    height: 50,
-                    margin: const EdgeInsets.only(left: 20, bottom: 20, right: 20),
-                    decoration: BoxDecoration(
-                        border: Border.all(width: 1, color: kLightPurple),
-                        borderRadius: const BorderRadius.all(Radius.circular(8.0),),
-                        color: white,
-                        shape: BoxShape.rectangle
-                    ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Container(
-                                margin: const EdgeInsets.only(left: 12, top:15, bottom: 15),
-                                child: const Icon(Icons.calendar_today_outlined, color: kBlue, size: 18,)),
-                            Container(
-                              margin: const EdgeInsets.only(left: 8, top:15, bottom: 15),
-                              child: const Text("Start Date",
-                                  style: TextStyle(fontWeight: FontWeight.w500, color: kBlue, fontSize: 13)
-                              ),
+            Stack(
+              children: [
+                Column(
+                  children: [
+                    Container(
+                      color: kBlue,
+                      height: 50,
+                     /* child: Stack(
+                        children: [
+                          Container(
+                            height: 50,
+                            margin: const EdgeInsets.only(left: 20, bottom: 40, right: 20),
+                            decoration: BoxDecoration(
+                                border: Border.all(width: 1, color: kLightPurple),
+                                borderRadius: const BorderRadius.all(Radius.circular(8.0),),
+                                color: white,
+                                shape: BoxShape.rectangle
                             ),
-                          ],
-                        ),
-                      ),
-                      Container(width: 0.8, color: kBlue, height: 50,),
-                      Expanded(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Container(
-                                margin: const EdgeInsets.only(top:15, bottom: 15),
-                                child: const Icon(Icons.calendar_today_outlined, color: kBlue, size: 18,)),
-                            Container(
-                              margin: const EdgeInsets.only(left: 8, top:15, bottom: 15),
-                              child: const Text("End Date", style: TextStyle(fontWeight: FontWeight.w500, color: kBlue, fontSize: 13)
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              color: kLightestPurple,
-              child: Column(
-                children: [
-                  Container(
-                      decoration: BoxDecoration(
-                          color: white,
-                          border: Border.all(width: 1, color: kLightPurple),
-                          borderRadius: const BorderRadius.all(
-                            Radius.circular(8.0),
                           ),
-                          shape: BoxShape.rectangle
-                      ),
-                      margin: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 10),
-                      child: TextField(
-                        keyboardType: TextInputType.text,
-                        textAlign: TextAlign.start,
-                        controller: searchController,
-                        cursorColor: black,
-                        style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 15, color: black,),
-                        decoration: InputDecoration(
-                            hintText: "Search Entries",
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(color: kLightPurple, width: 0),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide:
-                              const BorderSide(color: kLightPurple, width: 0),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            hintStyle: const TextStyle(fontWeight: FontWeight.w400, color: kBlue, fontSize: 14),
-                            prefixIcon: const Icon(Icons.search, size: 26, color: kBlue),
-                            suffixIcon: InkWell(
-                              child: const Icon(
-                                Icons.close,
-                                size: 26,
-                                color: black,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                        margin: const EdgeInsets.only(left: 12, top:15, bottom: 15),
+                                        child: const Icon(Icons.calendar_today_outlined, color: kBlue, size: 18,)),
+                                    Container(
+                                      margin: const EdgeInsets.only(left: 8, top:15, bottom: 15),
+                                      child: const Text("Start Date",
+                                          style: TextStyle(fontWeight: FontWeight.w500, color: kBlue, fontSize: 13)
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
-                              onTap: () {
-                                if(searchController.text.isNotEmpty) {
-                                  setState(() {
-                                    isCustomerListReload = false;
-                                    searchController.text = "";
-                                    searchText = "";
-                                  });
-
-                                  _getTransactionListData(true);
-                                }
-
-                              },
-                            )
-                        ),
-                        onChanged: (text) {
-                          searchController.text = text;
-                          searchController.selection = TextSelection.fromPosition(TextPosition(offset: searchController.text.length));
-                          if(text.isEmpty) {
-                            searchText = "";
-                            _getTransactionListData(true);
-                          } else if(text.length > 3) {
-                            searchText = searchController.text.toString().trim();
-                            _getTransactionListData(true);
-                          }
-                        },
-                      )
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.only(left: 25, bottom: 15),
-                        alignment: Alignment.center,
-                        child: const Text("Net Balance",
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 15, color: kBlue, fontWeight: FontWeight.w700),
-                        ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(right: 25, top: 6, bottom: 15),
-                        child: RichText(
-                          textAlign: TextAlign.center,
-                          text: TextSpan(
-                            text: '₹ ',
-                            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: kBlue),
-                            children: <TextSpan>[
-                              TextSpan(text: checkValidString(convertToComaSeparated(transactionListResponse.netBalance.toString())),
-                                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: kBlue, fontFamily: kFontNameRubikBold),
-                                  recognizer: TapGestureRecognizer()..onTap = () => {
-                                  }),
+                              Container(width: 0.8, color: kBlue, height: 50,),
+                              Expanded(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                        margin: const EdgeInsets.only(top:15, bottom: 15),
+                                        child: const Icon(Icons.calendar_today_outlined, color: kBlue, size: 18,)),
+                                    Container(
+                                      margin: const EdgeInsets.only(left: 8, top:15, bottom: 15),
+                                      child: const Text("End Date", style: TextStyle(fontWeight: FontWeight.w500, color: kBlue, fontSize: 13)
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ],
                           ),
-                        ),
+                        ],
+                      ),*/
+                    ),
+                    Container(
+                      color: kLightestPurple,
+                      child: Container(
+                          decoration: BoxDecoration(
+                              color: white,
+                              border: Border.all(width: 1, color: kLightPurple),
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(8.0),
+                              ),
+                              shape: BoxShape.rectangle
+                          ),
+                          margin: const EdgeInsets.only(left: 15, right: 15, top: 35, bottom: 15),
+                          child: TextField(
+                            keyboardType: TextInputType.text,
+                            textAlign: TextAlign.start,
+                            controller: searchController,
+                            cursorColor: black,
+                            style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 15, color: black,),
+                            decoration: InputDecoration(
+                                hintText: "Search Entries",
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(color: kLightPurple, width: 0),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide:
+                                  const BorderSide(color: kLightPurple, width: 0),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                hintStyle: const TextStyle(fontWeight: FontWeight.w400, color: kBlue, fontSize: 14),
+                                prefixIcon: const Icon(Icons.search, size: 26, color: kBlue),
+                                suffixIcon: InkWell(
+                                  child: const Icon(
+                                    Icons.close,
+                                    size: 26,
+                                    color: black,
+                                  ),
+                                  onTap: () {
+                                    if(searchController.text.isNotEmpty) {
+                                      setState(() {
+                                        isCustomerListReload = false;
+                                        searchController.text = "";
+                                        searchText = "";
+                                      });
+
+                                      _getTransactionListData(true);
+                                    }
+
+                                  },
+                                )
+                            ),
+                            onChanged: (text) {
+                              searchController.text = text;
+                              searchController.selection = TextSelection.fromPosition(TextPosition(offset: searchController.text.length));
+                              if(text.isEmpty) {
+                                searchText = "";
+                                _getTransactionListData(true);
+                              } else if(text.length > 3) {
+                                searchText = searchController.text.toString().trim();
+                                _getTransactionListData(true);
+                              }
+                            },
+                          )
                       ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 135,
+                  child: Column(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                            border: Border.all(width: 1, color: kLightPurple),
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(12.0),
+                            ),
+                            color: white,
+                            shape: BoxShape.rectangle
+                        ),
+                        height: 60,
+                        margin: const EdgeInsets.only(left: 20, right: 20, top: 10),
+                        child: SizedBox(
+                          height: 50,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Container(
+                                margin: const EdgeInsets.only(left: 25,),
+                                alignment: Alignment.center,
+                                child: const Text("Net Balance",
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(fontSize: 15, color: kBlue, fontWeight: FontWeight.w700),
+                                ),
+                              ),
+                              Container(
+                                margin: const EdgeInsets.only(right: 25,),
+                                child: RichText(
+                                  textAlign: TextAlign.center,
+                                  text: TextSpan(
+                                    text: '₹ ',
+                                    style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: kBlue),
+                                    children: <TextSpan>[
+                                      TextSpan(text: checkValidString(convertToComaSeparated(transactionListResponse.netBalance.toString())),
+                                          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: kBlue, fontFamily: kFontNameRubikBold),
+                                          recognizer: TapGestureRecognizer()..onTap = () => {
+                                          }),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+
+                         /* Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Container(
+                                alignment: Alignment.center,
+                                margin: const EdgeInsets.only(top: 5),
+                                child: RichText(
+                                  textAlign: TextAlign.center,
+                                  text: TextSpan(
+                                    text: '₹ ',
+                                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: kGreen),
+                                    children: <TextSpan>[
+                                      TextSpan(text: checkValidString(convertToComaSeparated(transactionListResponse.netBalance.toString())),
+                                          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: kGreen, fontFamily: kFontNameRubikBold),
+                                          recognizer: TapGestureRecognizer()..onTap = () => {
+                                          }),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                  alignment: Alignment.center,
+                                  child: const Text("Net Balance",
+                                      style: TextStyle(fontSize: 11, fontWeight: FontWeight.w400, color: kGray),
+                                      textAlign: TextAlign.center)
+                              ),
+                            ],
+                          ),*/
+                        ),
+                      )
                     ],
-                  )
-                ],
-              ),
+                  ),
+                )
+              ],
             ),
             Expanded(
               child: _isSearchLoading ? const LoadingWidget() : listTransactions.isNotEmpty ? ListView.builder(

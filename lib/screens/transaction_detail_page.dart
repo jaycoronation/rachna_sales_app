@@ -149,12 +149,12 @@ class _TransactionDetailPageState extends BaseState<TransactionDetailPage> {
                         children: [
                           Container(
                             alignment: Alignment.topLeft,
-                            padding: const EdgeInsets.only(left: 22, top: 10, bottom: 20),
-                            child: const Text("Order Number", style: TextStyle(fontWeight: FontWeight.w400, color: kGray, fontSize: 14)),
+                            padding: const EdgeInsets.only(left: 22, top: 10, bottom: 10),
+                            child: const Text("Order No. : ", style: TextStyle(fontWeight: FontWeight.w400, color: kGray, fontSize: 14)),
                           ),
                           Container(
                             alignment: Alignment.topLeft,
-                            padding: const EdgeInsets.only(right: 22, left: 10, top: 10, bottom: 20),
+                            padding: const EdgeInsets.only(right: 22, left: 10, top: 10, bottom: 10),
                             child: Text(transactionDetailResponseModel.transectionDetails!.orderDetails!.orderNumber.toString().isNotEmpty
                                 ? checkValidString(transactionDetailResponseModel.transectionDetails!.orderDetails!.orderNumber.toString())
                                 : "-",

@@ -175,6 +175,71 @@ class _AddCustomerPageState extends BaseState<AddCustomerPage> {
                         ),
                       ),
                       Container(
+                        margin: const EdgeInsets.only(left: 20, right: 20),
+                        child: TextField(
+                          cursorColor: black,
+                          controller: ledgerEmailController,
+                          keyboardType: TextInputType.emailAddress,
+                          style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
+                          decoration: const InputDecoration(
+                              labelText: 'Email',
+                              prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16)
+                          ),
+                        ),
+                      ),
+                      Container(
+                        margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
+                        child: TextField(
+                          cursorColor: black,
+                          controller: ledgerPhoneController,
+                          keyboardType: TextInputType.number,
+                          maxLength: 10,
+                          style: const TextStyle(fontWeight: FontWeight.w600, color: black, fontSize: 16),
+                          decoration: const InputDecoration(
+                              labelText: 'Phone',
+                              prefixText: '079 ',
+                              counterText: '',
+                              prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16)
+                          ),
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
+                        ),
+                      ),
+                      Container(
+                        margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
+                        child: TextField(
+                          cursorColor: black,
+                          controller: ledgerContactController,
+                          keyboardType: TextInputType.name,
+                          style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
+                          decoration: const InputDecoration(
+                            labelText: 'Contact Name',
+                            counterText: '',
+                            prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
+                        child: TextField(
+                          cursorColor: black,
+                          controller: ledgerMobileController,
+                          keyboardType: TextInputType.number,
+                          maxLength: 10,
+                          style: const TextStyle(fontWeight: FontWeight.w600, color: black, fontSize: 16),
+                          decoration: const InputDecoration(
+                              labelText: 'Mobile',
+                              prefixText: '+91 ',
+                              counterText: '',
+                              prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16)
+                          ),
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
+                        ),
+                      ),
+                      Container(
                         margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
                         child: TextField(
                           cursorColor: black,
@@ -495,71 +560,6 @@ class _AddCustomerPageState extends BaseState<AddCustomerPage> {
                         visible: !_isHideBankDetail,
                         child: Column(
                           children: [
-                            Container(
-                              margin: const EdgeInsets.only(left: 20, right: 20),
-                              child: TextField(
-                                cursorColor: black,
-                                controller: ledgerEmailController,
-                                keyboardType: TextInputType.emailAddress,
-                                style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
-                                decoration: const InputDecoration(
-                                    labelText: 'Ledger Email',
-                                    prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16)
-                                ),
-                              ),
-                            ),
-                            Container(
-                              margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
-                              child: TextField(
-                                cursorColor: black,
-                                controller: ledgerPhoneController,
-                                keyboardType: TextInputType.number,
-                                maxLength: 10,
-                                style: const TextStyle(fontWeight: FontWeight.w600, color: black, fontSize: 16),
-                                decoration: const InputDecoration(
-                                    labelText: 'Ledger Phone',
-                                    prefixText: '079 ',
-                                    counterText: '',
-                                    prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16)
-                                ),
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.digitsOnly
-                                ],
-                              ),
-                            ),
-                            Container(
-                              margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
-                              child: TextField(
-                                cursorColor: black,
-                                controller: ledgerContactController,
-                                keyboardType: TextInputType.name,
-                                style: const TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
-                                decoration: const InputDecoration(
-                                  labelText: 'Ledger Contact',
-                                  counterText: '',
-                                  prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16),
-                                ),
-                              ),
-                            ),
-                            Container(
-                              margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
-                              child: TextField(
-                                cursorColor: black,
-                                controller: ledgerMobileController,
-                                keyboardType: TextInputType.number,
-                                maxLength: 10,
-                                style: const TextStyle(fontWeight: FontWeight.w600, color: black, fontSize: 16),
-                                decoration: const InputDecoration(
-                                    labelText: 'Ledger Mobile',
-                                    prefixText: '+91 ',
-                                    counterText: '',
-                                    prefixStyle: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 16)
-                                ),
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.digitsOnly
-                                ],
-                              ),
-                            ),
                             Container(
                               margin: const EdgeInsets.only(top: 20, left: 20, right: 20),
                               child: TextField(

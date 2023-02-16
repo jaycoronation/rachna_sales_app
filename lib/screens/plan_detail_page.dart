@@ -78,71 +78,143 @@ class _PlanDetailPageState extends BaseState<PlanDetailPage> {
             : SingleChildScrollView(
           child: Column(
             children: [
+             /* Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Expanded(flex: 2,
+                    child:  Text("SKU",
+                      textAlign: TextAlign.start,
+                      style: TextStyle(fontSize: 14, color: black, fontWeight: FontWeight.w500),
+                    ),),
+                  const Text(" : ",
+                    textAlign: TextAlign.start,
+                    style: TextStyle(fontSize: 14, color: black, fontWeight: FontWeight.w500),
+                  ),
+                  Expanded(flex: 4,
+                    child:  Text("${productData.sku}",
+                      textAlign: TextAlign.start,
+                      style: const TextStyle(fontSize: 14, color: black, fontWeight: FontWeight.w500),
+                    ),)
+                ],
+              )*/
               Row(
                 children: [
-                  Container(
-                    alignment: Alignment.topLeft,
-                    padding: const EdgeInsets.only(left: 22, top: 20, bottom: 10),
-                    child: const Text("Customer Name :", style: TextStyle(fontWeight: FontWeight.w400, color: kGray, fontSize: 14)),
+                  Expanded(
+                    flex: 2,
+                    child: Container(
+                      alignment: Alignment.topLeft,
+                      margin: const EdgeInsets.only(left: 22, top: 20, bottom: 10),
+                      child: const Text("Customer Name", style: TextStyle(fontWeight: FontWeight.w400, color: kGray, fontSize: 14)),
+                    ),
                   ),
                   Container(
-                    alignment: Alignment.topLeft,
-                    padding: const EdgeInsets.only(right: 22, left: 10, bottom: 10, top: 20,),
-                    child: Text(dailyPlanDetailResponseModel.dailyPlanDetails!.customer!.customerName.toString().isNotEmpty
-                        ? checkValidString(dailyPlanDetailResponseModel.dailyPlanDetails!.customer!.customerName.toString())
-                        : "-",
-                        style: const TextStyle(fontWeight: FontWeight.w500, color: black, fontSize: 14)),
+                    margin: const EdgeInsets.only(top: 20, bottom: 10),
+                    child: const Text(" : ",
+                      textAlign: TextAlign.start,
+                      style: TextStyle(fontSize: 14, color: black, fontWeight: FontWeight.w500),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 4,
+                    child: Container(
+                      alignment: Alignment.topLeft,
+                      margin: const EdgeInsets.only(right: 22, left: 10, bottom: 10, top: 20,),
+                      child: Text(dailyPlanDetailResponseModel.dailyPlanDetails!.customer!.customerName.toString().isNotEmpty
+                          ? checkValidString(dailyPlanDetailResponseModel.dailyPlanDetails!.customer!.customerName.toString())
+                          : "-",
+                          style: const TextStyle(fontWeight: FontWeight.w500, color: black, fontSize: 14)),
+                    ),
                   ),
                 ],
               ),
               Row(
                 children: [
-                  Container(
-                    alignment: Alignment.topLeft,
-                    padding: const EdgeInsets.only(left: 22, top: 10, bottom: 10),
-                    child: const Text("Plan Date :", style: TextStyle(fontWeight: FontWeight.w400, color: kGray, fontSize: 14)),
+                  Expanded(
+                    flex: 2,
+                    child: Container(
+                      alignment: Alignment.topLeft,
+                      margin: const EdgeInsets.only(left: 22, top: 10, bottom: 10),
+                      child: const Text("Plan Date", style: TextStyle(fontWeight: FontWeight.w400, color: kGray, fontSize: 14)),
+                    ),
                   ),
                   Container(
-                    alignment: Alignment.topLeft,
-                    padding: const EdgeInsets.only(right: 22, left: 10, top: 10,bottom: 10),
-                    child: Text(dailyPlanDetailResponseModel.dailyPlanDetails!.planDate.toString().isNotEmpty
-                        ? checkValidString(dailyPlanDetailResponseModel.dailyPlanDetails!.planDate!).toString()
-                        : "-",
-                        style: const TextStyle(fontWeight: FontWeight.w500, color: black, fontSize: 14)),
+                    margin: const EdgeInsets.only(top: 10, bottom: 10),
+                    child: const Text(" : ",
+                      textAlign: TextAlign.start,
+                      style: TextStyle(fontSize: 14, color: black, fontWeight: FontWeight.w500),
+                    ),
                   ),
-                ],
-              ),
-              Row(
-                children: [
-                  Container(
-                    alignment: Alignment.topLeft,
-                    padding: const EdgeInsets.only(left: 22, top: 10, bottom: 10),
-                    child: const Text("Description : ", style: TextStyle(fontWeight: FontWeight.w400, color: kGray, fontSize: 14)),
-                  ),
-                  Container(
-                    alignment: Alignment.topLeft,
-                    padding: const EdgeInsets.only(right: 22, left: 10, top: 10, bottom: 10),
-                    child: Text(dailyPlanDetailResponseModel.dailyPlanDetails!.description!.toString().isNotEmpty
-                        ? checkValidString(dailyPlanDetailResponseModel.dailyPlanDetails!.description!.toString())
-                        : "-",
-                        style: const TextStyle(fontWeight: FontWeight.w500, color: black, fontSize: 14)),
+                  Expanded(
+                    flex: 4,
+                    child: Container(
+                      alignment: Alignment.topLeft,
+                      margin: const EdgeInsets.only(right: 22, left: 10, top: 10, bottom: 10),
+                      child: Text(dailyPlanDetailResponseModel.dailyPlanDetails!.planDate.toString().isNotEmpty
+                          ? checkValidString(dailyPlanDetailResponseModel.dailyPlanDetails!.planDate!).toString()
+                          : "-",
+                          style: const TextStyle(fontWeight: FontWeight.w500, color: black, fontSize: 14)),
+                    ),
                   ),
                 ],
               ),
               Row(
                 children: [
-                  Container(
-                    alignment: Alignment.topLeft,
-                    padding: const EdgeInsets.only(left: 22, top: 10, bottom: 10),
-                    child: const Text("Other : ", style: TextStyle(fontWeight: FontWeight.w400, color: kGray, fontSize: 14)),
+                  Expanded(
+                    flex: 2,
+                    child: Container(
+                      alignment: Alignment.topLeft,
+                      margin: const EdgeInsets.only(left: 22, top: 10, bottom: 10),
+                      child: const Text("Description", style: TextStyle(fontWeight: FontWeight.w400, color: kGray, fontSize: 14)),
+                    ),
                   ),
                   Container(
-                    alignment: Alignment.topLeft,
-                    padding: const EdgeInsets.only(right: 22, left: 10, top: 10, bottom: 10),
-                    child: Text(dailyPlanDetailResponseModel.dailyPlanDetails!.other!.toString().isNotEmpty
-                        ? checkValidString(dailyPlanDetailResponseModel.dailyPlanDetails!.other!.toString())
-                        : "-",
-                        style: const TextStyle(fontWeight: FontWeight.w500, color: black, fontSize: 14)),
+                    margin: const EdgeInsets.only(top: 10, bottom: 10),
+                    child: const Text(" : ",
+                      textAlign: TextAlign.start,
+                      style: TextStyle(fontSize: 14, color: black, fontWeight: FontWeight.w500),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 4,
+                    child: Container(
+                      alignment: Alignment.topLeft,
+                      margin: const EdgeInsets.only(right: 22, left: 10, top: 10, bottom: 10),
+                      child: Text(dailyPlanDetailResponseModel.dailyPlanDetails!.description!.toString().isNotEmpty
+                          ? checkValidString(dailyPlanDetailResponseModel.dailyPlanDetails!.description!.toString())
+                          : "-",
+                          style: const TextStyle(fontWeight: FontWeight.w500, color: black, fontSize: 14)),
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: Container(
+                      alignment: Alignment.topLeft,
+                      margin: const EdgeInsets.only(left: 22, top: 10, bottom: 10),
+                      child: const Text("Other", style: TextStyle(fontWeight: FontWeight.w400, color: kGray, fontSize: 14)),
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(top: 10, bottom: 10),
+                    child: const Text(" : ",
+                      textAlign: TextAlign.start,
+                      style: TextStyle(fontSize: 14, color: black, fontWeight: FontWeight.w500),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 4,
+                    child: Container(
+                      alignment: Alignment.topLeft,
+                      margin: const EdgeInsets.only(right: 22, left: 10, top: 10, bottom: 10),
+                      child: Text(dailyPlanDetailResponseModel.dailyPlanDetails!.other!.toString().isNotEmpty
+                          ? checkValidString(dailyPlanDetailResponseModel.dailyPlanDetails!.other!.toString())
+                          : "-",
+                          style: const TextStyle(fontWeight: FontWeight.w500, color: black, fontSize: 14)),
+                    ),
                   ),
                 ],
               ),

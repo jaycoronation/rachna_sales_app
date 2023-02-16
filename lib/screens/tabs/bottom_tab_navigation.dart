@@ -99,7 +99,7 @@ class _BottomTabNavigationPageState extends State<BottomTabNavigation> {
           SizedBox(
             height: Platform.isAndroid ? 89 : 113,
             child: Container(
-              margin: Platform.isAndroid ? const EdgeInsets.only(left: 30, right: 30, bottom: 20) :  const EdgeInsets.only(left: 30, right: 30, bottom: 40) ,
+              margin: Platform.isAndroid ? const EdgeInsets.only(left: 30, right: 30, bottom: 20) : const EdgeInsets.only(left: 30, right: 30, bottom: 40) ,
               child: Card(
                 color: kLightestPurple,
                 elevation: 0,

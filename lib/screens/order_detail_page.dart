@@ -179,10 +179,10 @@ class _OrderDetailPageState extends BaseState<OrderDetailPage> {
                       )*/
                     ],
                   ),
-                  const Divider(indent: 8, endIndent: 8, color: kBlue, height: 2),
+                  const Divider(indent: 10, endIndent: 10, color: kBlue, height: 1),
                   Container(
                       alignment: Alignment.topLeft,
-                      margin: const EdgeInsets.only(left: 20, top: 20, bottom: 10),
+                      margin: const EdgeInsets.only(left: 20, top: 20, bottom: 5),
                       child: const Text("Items In Order",
                         style: TextStyle(fontSize: 13, fontWeight: FontWeight.w400, color: kGray),)
                   ),
@@ -196,70 +196,65 @@ class _OrderDetailPageState extends BaseState<OrderDetailPage> {
                       itemBuilder: (ctx, index) => Container(
                         color: white,
                         child: Padding(
-                          padding: const EdgeInsets.only(left: 10, right: 10, top: 8, bottom: 5),
-                          child: GestureDetector(
-                            onTap: () {
-                            },
-                            child: Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Column(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Container(
-                                          margin: const EdgeInsets.only(left:10, bottom: 6, top: 5),
-                                          child: Text(checkValidString(listOrderItems[index].stockName),
-                                              maxLines: 2,
-                                              overflow: TextOverflow.clip,
-                                              textAlign: TextAlign.start,
-                                              style: const TextStyle(fontWeight: FontWeight.w400, color: black, fontSize: 13)
-                                          ),
+                          padding: const EdgeInsets.only(left: 10, right: 10,  bottom: 5),
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        margin: const EdgeInsets.only(left:10, bottom: 5, top: 5),
+                                        child: Text(checkValidString(listOrderItems[index].stockName),
+                                            maxLines: 2,
+                                            overflow: TextOverflow.clip,
+                                            textAlign: TextAlign.start,
+                                            style: const TextStyle(fontWeight: FontWeight.w400, color: black, fontSize: 13)
                                         ),
-                                        Row(
-                                          children: [
-                                            Container(
-                                                margin: const EdgeInsets.only(left: 10, top: 5),
-                                                child: Text(checkValidString(listOrderItems[index].itemPrice),
-                                                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: kGray),)
-                                            ),
-                                            Container(
-                                                margin: const EdgeInsets.only(left: 5, top: 5),
-                                                child: const Text("x", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: kGray))),
-                                            Container(
-                                                margin: const EdgeInsets.only(left: 5, top: 5),
-                                                child: Text(checkValidString(listOrderItems[index].itemQty),
-                                                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: kGray),)
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                    Container(
-                                      alignment: Alignment.center,
-                                      margin: const EdgeInsets.only(right: 10, bottom: 20),
-                                      child: Text("${checkValidString(getPrice(listOrderItems[index].itemTotal.toString()))}",
-                                          maxLines: 2,
-                                          style: const TextStyle(fontWeight: FontWeight.w600, color: black, fontSize: 13)
                                       ),
+                                      Row(
+                                        children: [
+                                          Container(
+                                              margin: const EdgeInsets.only(left: 10),
+                                              child: Text(checkValidString(getPrice(listOrderItems[index].itemPrice.toString())),
+                                                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: kGray),)
+                                          ),
+                                          Container(
+                                              margin: const EdgeInsets.only(left: 5,),
+                                              child: const Text("x", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: kGray))),
+                                          Container(
+                                              margin: const EdgeInsets.only(left: 5,),
+                                              child: Text(checkValidString(listOrderItems[index].itemQty),
+                                                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: kGray),)
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                  Container(
+                                    alignment: Alignment.center,
+                                    margin: const EdgeInsets.only(right: 10,),
+                                    child: Text("${checkValidString(getPrice(listOrderItems[index].itemTotal.toString()))}",
+                                        style: const TextStyle(fontWeight: FontWeight.w600, color: black, fontSize: 13)
                                     ),
-                                  ],
-                                ),
-                                Container(
-                                    margin: const EdgeInsets.only(left: 10, right: 10, bottom: 10, top: 10),
-                                    height:index == listOrderItems.length-1 ? 0 : 0.8
-                                    , color: kLightPurple),
-                              ],
-                            ),
+                                  ),
+                                ],
+                              ),
+                              Container(
+                                  margin: const EdgeInsets.only(left: 8, right: 8, bottom: 10, top: 10),
+                                  height:index == listOrderItems.length-1 ? 0 : 0.8
+                                  , color: kBlue),
+                            ],
                           ),
                         ),
                       )),
-                  const Divider(indent: 8, endIndent: 8, color: kBlue, height: 2,),
+                  const Divider(indent: 10, endIndent: 10, color: kBlue, height: 1),
                   Container(
                       alignment: Alignment.topLeft,
-                      margin: const EdgeInsets.only(left: 20, top: 20, bottom: 10),
+                      margin: const EdgeInsets.only(left: 20, top: 15, bottom: 10),
                       child: const Text("Payment Summary",
                         style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: kBlue),)
                   ),
@@ -269,12 +264,12 @@ class _OrderDetailPageState extends BaseState<OrderDetailPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Container(
-                              margin: const EdgeInsets.only(left: 20, top: 5, bottom: 10),
+                              margin: const EdgeInsets.only(left: 20, top: 5, bottom: 15),
                               child: Text("Price(${listOrderItems.length} items)",
                                 style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: kGray),)
                           ),
                           Container(
-                              margin: const EdgeInsets.only(right: 20, top: 5, bottom: 10),
+                              margin: const EdgeInsets.only(right: 20, top: 5, bottom: 15),
                               child: Text(checkValidString(getPrice(orderDetailResponseModel.order!.subTotal.toString())),
                                 style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: black),)
                           ),
@@ -316,7 +311,7 @@ class _OrderDetailPageState extends BaseState<OrderDetailPage> {
                       ) : Container(),
                     ],
                   ),
-                  const Divider(indent: 8, endIndent: 8, color: kBlue, height: 2,),
+                  const Divider(indent: 10, endIndent: 10, color: kBlue, height: 2,),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -332,7 +327,7 @@ class _OrderDetailPageState extends BaseState<OrderDetailPage> {
                       ),
                     ],
                   ),
-                  const Divider(indent: 8, endIndent: 8, color: kBlue, height: 2,),
+                  const Divider(indent: 10, endIndent: 10, color: kBlue, height: 2,),
                   /*Container(
                       alignment: Alignment.topLeft,
                       margin: const EdgeInsets.only(left: 20, top: 20, bottom: 10),
@@ -345,7 +340,7 @@ class _OrderDetailPageState extends BaseState<OrderDetailPage> {
                       child: Text(checkValidString(orderDetailResponseModel.order!.paymentMode.toString()),
                         style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400, color: black),)
                   ),
-                  const Divider(indent: 8, endIndent: 8, color: kBlue, height: 2,),
+                  const Divider(indent: 10, endIndent: 10, color: kBlue, height: 2,),
                   */
                   Container(
                       alignment: Alignment.topLeft,
@@ -367,7 +362,7 @@ class _OrderDetailPageState extends BaseState<OrderDetailPage> {
                   ),
                   Container(
                       alignment: Alignment.topLeft,
-                      margin: const EdgeInsets.only(left: 20, bottom: 10),
+                      margin: const EdgeInsets.only(left: 20, bottom: 80),
                       child: Text(checkValidString(orderDetailResponseModel.order!.customerMobile.toString()),
                         style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w400, color: kGray),)
                   ),
@@ -375,7 +370,7 @@ class _OrderDetailPageState extends BaseState<OrderDetailPage> {
               ),
             ),
           floatingActionButton: FloatingActionButton(
-            onPressed: (){
+            onPressed: () {
               _redirectToTransaction(context, orderDetailResponseModel.order!);
             },
             backgroundColor: kBlue,

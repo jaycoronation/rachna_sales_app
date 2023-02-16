@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pretty_http_logger/pretty_http_logger.dart';
 import 'package:salesapp/Model/verify_otp_response_model.dart';
+import 'package:salesapp/screens/tabs/bottom_tab_navigation.dart';
 import 'package:salesapp/screens/tabs/tabnavigation.dart';
 
 import '../Model/login_with_otp_response_model.dart';
@@ -309,7 +310,7 @@ class _VerifyOTPPageState extends BaseState<VerifyOTPPage> {
       await sessionManager.createLoginSession(dataResponse.user!.userId.toString(), dataResponse.user!.name.toString(), dataResponse.user!.empPhone.toString(),
           dataResponse.user!.email.toString(), "");
 
-      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => TabNavigation(0)), (Route<dynamic> route) => false);
+      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const BottomTabNavigation(0)), (Route<dynamic> route) => false);
 
     }else {
       setState(() {

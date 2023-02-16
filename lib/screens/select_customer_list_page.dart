@@ -204,7 +204,6 @@ class _SelectCustomerListPageState extends BaseState<SelectCustomerListPage> {
             listCustomer.isNotEmpty ?
             Expanded(
               child: Stack(
-                alignment: Alignment.center,
                 children: [
                   ListView.builder(
                     controller: _scrollViewController,
