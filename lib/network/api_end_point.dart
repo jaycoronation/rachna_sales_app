@@ -33,14 +33,17 @@ const profileDetail = "manageEmployee/details";
 const orderMasterList = "orderMasterList/list";
 const orderSave = "order";
 const orderDetails = "orderMasterList/details";
+const downloadOrders = "downloadOrders";
 
 const categoryList = "manageCategory/list";
 
 const saveTransaction = "manageTransection/save";
 const transactionList = "manageTransection/list";
 const transactionDetail = "manageTransection/details";
+const downloadTransactions = "downloadTransactions";
 
 const savePlan = "manageDailyPlan/save";
 const dailyPlanList = "manageDailyPlan/list";
 const dailyPlanDetail = "manageDailyPlan/details";
 const dailyPlanDelete = "manageDailyPlan/delete";
+

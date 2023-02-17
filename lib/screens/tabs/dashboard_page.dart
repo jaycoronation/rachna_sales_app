@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dot_navigation_bar/dot_navigation_bar.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:pretty_http_logger/pretty_http_logger.dart';
 import 'package:salesapp/Model/customer_list_response_model.dart';
 import 'package:salesapp/Model/dash_board_data_response_model.dart';
@@ -17,7 +18,7 @@ import 'package:salesapp/screens/add_order_page.dart';
 import 'package:salesapp/screens/add_payement_detail_page.dart';
 import 'package:salesapp/screens/daily_plans_page.dart';
 import 'package:salesapp/screens/profile_page.dart';
-import 'package:salesapp/screens/transaction_list_page.dart';
+import 'package:salesapp/screens/tabs/transaction_list_page.dart';
 import 'package:salesapp/utils/app_utils.dart';
 
 import '../../constant/color.dart';
@@ -1050,6 +1051,11 @@ class _DashboardPageState extends BaseState<DashboardPage> {
   }
 
   _getDailyPlansList() async {
+    var currentDate = DateTime.now().toString();
+
+    var dateParse = DateTime.parse(currentDate);
+    String todaysDate = DateFormat('dd-MM-yyyy').format(dateParse);
+
     HttpWithMiddleware http = HttpWithMiddleware.build(middlewares: [
       HttpLogger(logLevel: LogLevel.BODY),
     ]);
@@ -1061,6 +1067,8 @@ class _DashboardPageState extends BaseState<DashboardPage> {
       'limit' : "10",
       'page' : "0",
       'search' : "",
+      // 'fromDate' : todaysDate,
+      // 'toDate': todaysDate
     };
 
     final response = await http.post(url, body: jsonBody);

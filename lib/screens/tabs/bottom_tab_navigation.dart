@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/services.dart';
-import 'package:salesapp/screens/transaction_list_page.dart';
+import 'package:salesapp/screens/tabs/transaction_list_page.dart';
 
 import '../../constant/color.dart';
 import '../../utils/app_utils.dart';

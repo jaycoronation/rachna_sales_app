@@ -7,18 +7,20 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pretty_http_logger/pretty_http_logger.dart';
+import 'package:salesapp/model/pdf_download_response_model.dart';
 import 'package:salesapp/model/transaction_list_response_model.dart';
 import 'package:salesapp/screens/add_payement_detail_page.dart';
 import 'package:salesapp/screens/transaction_detail_page.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-import '../constant/color.dart';
-import '../constant/font.dart';
-import '../model/order_detail_response_model.dart';
-import '../network/api_end_point.dart';
-import '../utils/app_utils.dart';
-import '../utils/base_class.dart';
-import '../widget/loading.dart';
-import '../widget/no_data.dart';
+import '../../constant/color.dart';
+import '../../constant/font.dart';
+import '../../model/order_detail_response_model.dart';
+import '../../network/api_end_point.dart';
+import '../../utils/app_utils.dart';
+import '../../utils/base_class.dart';
+import '../../widget/loading.dart';
+import '../../widget/no_data.dart';
 
 class TransactionListPage extends StatefulWidget {
   const TransactionListPage({Key? key}) : super(key: key);
@@ -49,6 +51,7 @@ class _TransactionListPageState extends BaseState<TransactionListPage> {
   TransactionListResponseModel transactionListResponse = TransactionListResponseModel();
 
   var listFilter = ["Month to date", "Year to date", "Custom Range"];
+  var pdfLink = "";
 
   @override
   void initState() {
@@ -115,6 +118,7 @@ class _TransactionListPageState extends BaseState<TransactionListPage> {
           title:const Text("Transactions",
               style: TextStyle(fontSize: 18, color: white, fontWeight: FontWeight.w600)),
 /*          leading: GestureDetector(
+              behavior: HitTestBehavior.opaque,
               onTap:() {
                 Navigator.pop(context);
               },
@@ -143,7 +147,7 @@ class _TransactionListPageState extends BaseState<TransactionListPage> {
               child: GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: () {
-
+                  getTransactionPdf();
                 },
                 child: Container(
                   height: 45,
@@ -153,7 +157,6 @@ class _TransactionListPageState extends BaseState<TransactionListPage> {
                 ),
               ),
             ),
-
           ],
           centerTitle: false,
           elevation: 0,
@@ -255,7 +258,15 @@ class _TransactionListPageState extends BaseState<TransactionListPage> {
                                 hintStyle: const TextStyle(fontWeight: FontWeight.w400, color: kBlue, fontSize: 14),
                                 prefixIcon: const Icon(Icons.search, size: 26, color: kBlue),
                                 suffixIcon: InkWell(
-                                  child: const Icon(
+                                  child: _isSearchLoading ?
+                                  const SizedBox(
+                                      height:10,
+                                      width:10,
+                                      child: Padding(
+                                        padding: EdgeInsets.all(10.0),
+                                        child: CircularProgressIndicator(color: kBlue, strokeWidth: 2),
+                                      ))
+                                      : const Icon(
                                     Icons.close,
                                     size: 26,
                                     color: black,
@@ -266,9 +277,11 @@ class _TransactionListPageState extends BaseState<TransactionListPage> {
                                         isCustomerListReload = false;
                                         searchController.text = "";
                                         searchText = "";
+                                        FocusScope.of(context).unfocus();
+
                                       });
 
-                                      _getTransactionListData(true);
+                                      _getTransactionListData(true, true);
                                     }
 
                                   },
@@ -682,10 +695,10 @@ class _TransactionListPageState extends BaseState<TransactionListPage> {
         isTransactionListReload = true;
       });
     }
-
   }
 
-  void _getTransactionListData([bool isFirstTime = false]) async {
+  //API Call Function...
+  void _getTransactionListData([bool isFirstTime = false, bool isFromClose = false]) async {
     if (isFirstTime) {
       if (searchText.isNotEmpty) {
         setState(() {
@@ -697,10 +710,18 @@ class _TransactionListPageState extends BaseState<TransactionListPage> {
         });
       }else {
         setState(() {
-          _isLoading = true;
-          _isLoadingMore = false;
-          _pageIndex = 0;
-          _isLastPage = false;
+          if (isFromClose) {
+            _isSearchLoading = true;
+            _isLoading = false;
+            _isLoadingMore = false;
+            _pageIndex = 0;
+            _isLastPage = false;
+          }else {
+            _isLoading = true;
+            _isLoadingMore = false;
+            _pageIndex = 0;
+            _isLastPage = false;
+          }
         });
       }
     }
@@ -762,6 +783,48 @@ class _TransactionListPageState extends BaseState<TransactionListPage> {
         _isSearchLoading = false;
       });
 
+    }
+  }
+
+  void getTransactionPdf() async {
+    setState(() {
+      _isLoading = true;
+    });
+    HttpWithMiddleware http = HttpWithMiddleware.build(middlewares: [
+      HttpLogger(logLevel: LogLevel.BODY),
+    ]);
+
+    final url = Uri.parse(BASE_URL + downloadTransactions);
+
+    Map<String, String> jsonBody = {
+      'from_app': FROM_APP,
+      'emp_id': "1"//sessionManager.getEmpId().toString().trim(),
+    };
+
+    final response = await http.post(url, body: jsonBody);
+    final statusCode = response.statusCode;
+
+    final body = response.body;
+    Map<String, dynamic> getAnalysisReports = jsonDecode(body);
+
+    var dataResponse = PdfDownloadResponseModel.fromJson(getAnalysisReports);
+
+    if (statusCode == 200 && dataResponse.success == 1) {
+      pdfLink = checkValidString(dataResponse.data?.pdfLink).toString() ?? "";
+      // print(pdfLink);
+      setState(() {
+        _isLoading = false;
+
+        if(pdfLink.isNotEmpty) {
+          launch(pdfLink);
+        }
+
+      });
+
+    }else {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 

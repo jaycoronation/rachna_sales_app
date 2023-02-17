@@ -92,7 +92,7 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: appBG,
-      resizeToAvoidBottomInset: true,
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         systemOverlayStyle: SystemUiOverlayStyle.dark,
         automaticallyImplyLeading: false,
@@ -268,7 +268,15 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
                           hintStyle: const TextStyle(fontWeight: FontWeight.w400, color: kBlue, fontSize: 14),
                           prefixIcon: const Icon(Icons.search, size: 26, color: kBlue,),
                           suffixIcon: InkWell(
-                            child: const Icon(
+                            child: _isSearchLoading ?
+                            const SizedBox(
+                                height:10,
+                                width:10,
+                                child: Padding(
+                                  padding: EdgeInsets.all(10.0),
+                                  child: CircularProgressIndicator(color: kBlue, strokeWidth: 2),
+                                ))
+                                : const Icon(
                               Icons.close,
                               size: 26,
                               color: black,
@@ -280,8 +288,10 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
                                   isCustomerListReload = false;
                                   searchController.text = "";
                                   searchText = "";
+                                  FocusScope.of(context).unfocus();
+
                                 });
-                                _getCustomerListData(true);
+                                _getCustomerListData(true, true);
                               }
                             },
                           )
@@ -426,7 +436,8 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
           Expanded(
             child: Stack(
               children: [
-                _isSearchLoading ? const LoadingWidget() : listCustomer.isNotEmpty ?
+                // _isSearchLoading ? const LoadingWidget() :
+                listCustomer.isNotEmpty ?
                 ListView.builder(
                     scrollDirection: Axis.vertical,
                     controller: _scrollViewController,
@@ -836,7 +847,8 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
     );
   }
 
-  void _getCustomerListData([bool isFirstTime = false]) async {
+  //API call function...
+  void _getCustomerListData([bool isFirstTime = false, bool isFromClose = false]) async {
     if (isFirstTime) {
       if (searchText.isNotEmpty) {
         setState(() {
@@ -848,10 +860,18 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
         });
       }else {
         setState(() {
-          _isLoading = true;
-          _isLoadingMore = false;
-          _pageIndex = 0;
-          _isLastPage = false;
+          if (isFromClose) {
+            _isSearchLoading = true;
+            _isLoading = false;
+            _isLoadingMore = false;
+            _pageIndex = 0;
+            _isLastPage = false;
+          }else {
+            _isLoading = true;
+            _isLoadingMore = false;
+            _pageIndex = 0;
+            _isLastPage = false;
+          }
         });
       }
     }

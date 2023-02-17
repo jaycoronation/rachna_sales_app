@@ -122,7 +122,7 @@ class _DailyPlansPageState extends BaseState<DailyPlansPage> {
             ),
             actions: [
               Container(
-                margin: const EdgeInsets.only(top: 12, bottom: 12, right: 22),
+                margin: const EdgeInsets.only(top: 12, bottom: 12, right: 10),
                 child: GestureDetector(
                   onTap: () {
                     _redirectToAddPlan(context, DailyPlanList(), false);
@@ -141,8 +141,8 @@ class _DailyPlansPageState extends BaseState<DailyPlansPage> {
                   ),
                 ),
               ),
-              /*Container(
-                margin: const EdgeInsets.only(top: 11, bottom: 11, left:  15, right: 22),
+              Container(
+                margin: const EdgeInsets.only(top: 11, bottom: 11, left:  5, right: 22),
                 child: GestureDetector(
                   behavior: HitTestBehavior.opaque,
                   onTap: () {
@@ -150,7 +150,7 @@ class _DailyPlansPageState extends BaseState<DailyPlansPage> {
                   },
                   child: const Icon(Icons.calendar_today_outlined, color: white, size: 28,),
                 ),
-              ),*/
+              ),
             ],
             centerTitle: false,
             elevation: 0,
@@ -208,9 +208,9 @@ class _DailyPlansPageState extends BaseState<DailyPlansPage> {
                               )
                           ),
                           onChanged: (text) {
-
                             searchController.text = text;
                             searchController.selection = TextSelection.fromPosition(TextPosition(offset: searchController.text.length));
+
                             if (text.isEmpty) {
                               setState(() {
                                 searchText = "";
@@ -689,7 +689,6 @@ class _DailyPlansPageState extends BaseState<DailyPlansPage> {
                                               }
 
                                             }else {
-
                                             }
                                           },
                                           child: Container(
@@ -769,6 +768,8 @@ class _DailyPlansPageState extends BaseState<DailyPlansPage> {
       'limit' : _pageResult.toString(),
       'page' : _pageIndex.toString(),
       'search' : searchText,
+      'fromDate' : dateStartSelectionChanged,
+      'toDate': dateEndSelectionChanged
     };
 
     final response = await http.post(url, body: jsonBody);

@@ -92,7 +92,7 @@ class _OrderListPageState extends BaseState<OrderListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: appBG,
-      resizeToAvoidBottomInset: true,
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         systemOverlayStyle: SystemUiOverlayStyle.dark,
         automaticallyImplyLeading: false,
@@ -203,11 +203,15 @@ class _OrderListPageState extends BaseState<OrderListPage> {
                           hintStyle: const TextStyle(fontWeight: FontWeight.w400, color: kBlue, fontSize: 14),
                           prefixIcon: const Icon(Icons.search, size: 26, color: kBlue,),
                           suffixIcon: InkWell(
-                            child: const Icon(
-                              Icons.close,
-                              size: 26,
-                              color: black,
-                            ),
+                            child:  _isSearchLoading ?
+                            const SizedBox(
+                                height:10,
+                                width:10,
+                                child: Padding(
+                                  padding: EdgeInsets.all(10.0),
+                                  child: CircularProgressIndicator(color: kBlue, strokeWidth: 2),
+                                ))
+                            : const Icon(Icons.close, size: 26, color: black,),
                             onTap: () {
 
                               if (searchController.text.isNotEmpty) {
@@ -217,8 +221,10 @@ class _OrderListPageState extends BaseState<OrderListPage> {
                                   dateStartSelectionChanged = "";
                                   dateEndSelectionChanged = "";
                                   isOrderListLoad = false;
+                                  FocusScope.of(context).unfocus();
+
                                 });
-                                _getOrderListData(true);
+                                _getOrderListData(true, true);
                               }
 
                             },
@@ -363,8 +369,8 @@ class _OrderListPageState extends BaseState<OrderListPage> {
               ],
             ),
           ),
-          _isSearchLoading
-              ? const LoadingWidget() :
+          // _isSearchLoading
+          //     ? const LoadingWidget() :
           Expanded(
             child: Stack(
               children: [
@@ -753,7 +759,7 @@ class _OrderListPageState extends BaseState<OrderListPage> {
     }
   }
 
-  void _getOrderListData([bool isFirstTime = false]) async {
+  void _getOrderListData([bool isFirstTime = false, bool isFromClose = false]) async {
 
     if (isFirstTime) {
       if (searchText.isNotEmpty) {
@@ -766,10 +772,19 @@ class _OrderListPageState extends BaseState<OrderListPage> {
         });
       }else {
         setState(() {
-          _isLoading = true;
-          _isLoadingMore = false;
-          _pageIndex = 0;
-          _isLastPage = false;
+          if (isFromClose) {
+            _isSearchLoading = true;
+            _isLoading = false;
+            _isLoadingMore = false;
+            _pageIndex = 0;
+            _isLastPage = false;
+          }else {
+            _isLoading = true;
+            _isLoadingMore = false;
+            _pageIndex = 0;
+            _isLastPage = false;
+          }
+
         });
       }
     }

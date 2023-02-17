@@ -206,7 +206,7 @@ class _AddPaymentDetailPageState extends BaseState<AddPaymentDetailPage> {
                             String transactionMode = _transactionModeController.text.toString();
                             String transactionId = _transactionIdController.text.toString();
                             String pendingAmount = (widget as AddPaymentDetailPage).pendingAmount.toString();
-                            print("pendingAmount--->$pendingAmount");
+                            // print("pendingAmount--->$pendingAmount");
                             // print("orderId--->${(widget as AddPaymentDetailPage).orderId}");
 
                             if ((widget as AddPaymentDetailPage).orderId.isEmpty) {
