@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:dot_navigation_bar/dot_navigation_bar.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -9,7 +8,6 @@ import 'package:salesapp/Model/customer_list_response_model.dart';
 import 'package:salesapp/Model/dash_board_data_response_model.dart';
 import 'package:salesapp/Model/employee_list_response_model.dart';
 import 'package:salesapp/constant/font.dart';
-import 'package:salesapp/model/daily_plan_detail_response_model.dart';
 import 'package:salesapp/model/order_detail_response_model.dart';
 import 'package:salesapp/screens/add_customer_page.dart';
 import 'package:salesapp/screens/add_daily_plan_page.dart';
@@ -18,7 +16,6 @@ import 'package:salesapp/screens/add_order_page.dart';
 import 'package:salesapp/screens/add_payement_detail_page.dart';
 import 'package:salesapp/screens/daily_plans_page.dart';
 import 'package:salesapp/screens/profile_page.dart';
-import 'package:salesapp/screens/tabs/transaction_list_page.dart';
 import 'package:salesapp/utils/app_utils.dart';
 
 import '../../constant/color.dart';
@@ -48,6 +45,7 @@ class _DashboardPageState extends BaseState<DashboardPage> {
   late num? totalEmployee;
   late num? totalCustomer;
   var listDailyPlan = List<DailyPlanList>.empty(growable: true);
+  ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -62,6 +60,25 @@ class _DashboardPageState extends BaseState<DashboardPage> {
     setState(() {
 
     });
+  }
+
+  Future<bool> _refresh() {
+    if (isInternetConnected) {
+      _makeCallDashboardData();
+    } else {
+      setState(() {
+        _isLoading = false;
+      });
+      noInterNet(context);
+    }
+
+    return Future.value(true);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -134,572 +151,575 @@ class _DashboardPageState extends BaseState<DashboardPage> {
   Padding setData() {
     return Padding(
         padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Container(
-                alignment: Alignment.topLeft,
-                margin: const EdgeInsets.only(top:10, bottom: 10, left: 10),
-                child: Text("Hi, ${checkValidString(sessionManager.getName().toString().trim())}",
-                    style: const TextStyle(fontWeight: FontWeight.w700, color: black, fontSize: 20)),
-              ),
-              SizedBox(
-                height: 150,
-                child: Stack(
-                  children: <Widget>[
-                    Container(
-                      height: 150,
-                      margin: const EdgeInsets.only(left: 8, right: 8),
-                      child: Image.asset("assets/images/ic_bg_blue.png")
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Flexible(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Container(
-                                  alignment: Alignment.center,
-                                  margin: const EdgeInsets.only(top: 5, bottom: 5),
-                                  child: RichText(
-                                    textAlign: TextAlign.center,
-                                    text: TextSpan(
-                                      text: '₹ ',
-                                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: white),
-                                      children: <TextSpan>[
-                                        TextSpan(text: checkValidString(convertToComaSeparated(totalAmount.toString())),
-                                            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: white, fontFamily: kFontNameRubikBold),
-                                            recognizer: TapGestureRecognizer()..onTap = () => {
-                                            }),
-                                      ],
-                                    ),
-                                  ),
-                              ),
-                              Container(
-                                  alignment: Alignment.center,
-                                  child: const Text("Total Sales",
-                                      style: TextStyle(fontSize: 11, fontWeight: FontWeight.w400, color: white),
-                                      textAlign: TextAlign.center)
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                            margin: const EdgeInsets.only(top: 40, bottom: 40),
-                            child: const VerticalDivider(width: 1.0, thickness: 1.0, color: white, indent: 10.0, endIndent: 10.0)),
-                        Flexible(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Container(
-                                  alignment: Alignment.center,
-                                  margin: const EdgeInsets.only(top: 5, bottom: 5),
-                                  child: RichText(
-                                    textAlign: TextAlign.center,
-                                    text: TextSpan(
-                                      text: '₹ ',
-                                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: white),
-                                      children: <TextSpan>[
-                                        TextSpan(text: checkValidString(convertToComaSeparated(totalOverdue.toString())),
-                                            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: white, fontFamily: kFontNameRubikBold),
-                                            recognizer: TapGestureRecognizer()..onTap = () => {
-                                            }),
-                                      ],
-                                    ),
-                                  ),
-                              ),
-                              Container(
-                                  alignment: Alignment.center,
-                                  child: const Text("Overdue",
-                                      style: TextStyle(fontSize: 11, fontWeight: FontWeight.w400, color: white),
-                                      textAlign: TextAlign.center)
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+        child: RefreshIndicator(
+          onRefresh: _refresh,
+          child: SingleChildScrollView(
+            controller: _scrollController,
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Column(
+              children: [
+                Container(
+                  alignment: Alignment.topLeft,
+                  margin: const EdgeInsets.only(top:10, bottom: 10, left: 10),
+                  child: Text("Hi, ${checkValidString(sessionManager.getName().toString().trim())}",
+                      style: const TextStyle(fontWeight: FontWeight.w700, color: black, fontSize: 20)),
                 ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  final BottomNavigationBar bar = bottomWidgetKey.currentWidget as BottomNavigationBar;
-                  bar.onTap!(2);
-                  // final DotNavigationBar bar = bottomWidgetKey1.currentWidget as DotNavigationBar;
-                  // bar.onTap!(2);
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                      border: Border.all(width: 1, color: kLightPurple),
-                      borderRadius: const BorderRadius.all(Radius.circular(6.0),),
-                      color: kLightestPurple,
-                      shape: BoxShape.rectangle
-                  ),
-                  alignment: Alignment.center,
-                  margin: const EdgeInsets.only(top:30, bottom: 5, left: 10, right: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
+                SizedBox(
+                  height: 150,
+                  child: Stack(
+                    children: <Widget>[
                       Container(
-                          alignment: Alignment.center,
-                          margin: const EdgeInsets.only(top:6, bottom: 6),
-                          child: Image.asset("assets/images/ic_bg_customer.png", height: 42, width: 45,)
+                        height: 150,
+                        margin: const EdgeInsets.only(left: 8, right: 8),
+                        child: Image.asset("assets/images/ic_bg_blue.png")
                       ),
-                      Container(
-                        alignment: Alignment.center,
-                        margin: const EdgeInsets.only(top:5, bottom: 5, left: 5),
-                        child: Text("Customer (${checkValidString(totalCustomer.toString())})",
-                            style: const TextStyle(fontWeight: FontWeight.w400, color: black,fontSize: 14)
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Flexible(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                    alignment: Alignment.center,
+                                    margin: const EdgeInsets.only(top: 5, bottom: 5),
+                                    child: RichText(
+                                      textAlign: TextAlign.center,
+                                      text: TextSpan(
+                                        text: '₹ ',
+                                        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: white),
+                                        children: <TextSpan>[
+                                          TextSpan(text: checkValidString(convertToComaSeparated(totalAmount.toString())),
+                                              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: white, fontFamily: kFontNameRubikBold),
+                                              recognizer: TapGestureRecognizer()..onTap = () => {
+                                              }),
+                                        ],
+                                      ),
+                                    ),
+                                ),
+                                Container(
+                                    alignment: Alignment.center,
+                                    child: const Text("Total Sales",
+                                        style: TextStyle(fontSize: 11, fontWeight: FontWeight.w400, color: white),
+                                        textAlign: TextAlign.center)
+                                ),
+                              ],
+                            ),
+                          ),
+                          Container(
+                              margin: const EdgeInsets.only(top: 40, bottom: 40),
+                              child: const VerticalDivider(width: 1.0, thickness: 1.0, color: white, indent: 10.0, endIndent: 10.0)),
+                          Flexible(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                    alignment: Alignment.center,
+                                    margin: const EdgeInsets.only(top: 5, bottom: 5),
+                                    child: RichText(
+                                      textAlign: TextAlign.center,
+                                      text: TextSpan(
+                                        text: '₹ ',
+                                        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: white),
+                                        children: <TextSpan>[
+                                          TextSpan(text: checkValidString(convertToComaSeparated(totalOverdue.toString())),
+                                              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: white, fontFamily: kFontNameRubikBold),
+                                              recognizer: TapGestureRecognizer()..onTap = () => {
+                                              }),
+                                        ],
+                                      ),
+                                    ),
+                                ),
+                                Container(
+                                    alignment: Alignment.center,
+                                    child: const Text("Overdue",
+                                        style: TextStyle(fontSize: 11, fontWeight: FontWeight.w400, color: white),
+                                        textAlign: TextAlign.center)
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
                 ),
-              ),
-              Row(
-                children: [
-                  Flexible(
-                    child: Column(
-                      children: [
-                        /*GestureDetector(
-                          onTap: () {
-                            final DotNavigationBar bar = bottomWidgetKey1.currentWidget as DotNavigationBar;
-                            bar.onTap!(3);
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                                border: Border.all(width: 1, color: kLightPurple),
-                                borderRadius: const BorderRadius.all(
-                                  Radius.circular(6.0),
-                                ),
-                              color: kLightestPurple,
-                              shape: BoxShape.rectangle
-                            ),
-                            alignment: Alignment.topLeft,
-                            margin: const EdgeInsets.only(top:30, bottom: 5, left: 10, right: 5),
-                            child: Row(
-                              children: [
-                                Container(
-                                    alignment: Alignment.center,
-                                    margin: const EdgeInsets.only(top:6, bottom: 6, left: 10),
-                                    child: Image.asset("assets/images/ic_employee_bag.png", height: 42, width: 45,)
-                                ),
-                                Container(
-                                  alignment: Alignment.center,
-                                  margin: const EdgeInsets.only(top:5, bottom: 5, left: 5),
-                                  child:  Text("Employee (${checkValidString(totalEmployee.toString())})",
-                                      style: const TextStyle(fontWeight: FontWeight.w400, color: black,fontSize: 14)
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),*/
-                        GestureDetector(
-                          onTap: () {
-                            final BottomNavigationBar bar = bottomWidgetKey.currentWidget as BottomNavigationBar;
-                            bar.onTap!(3);
-                            // final DotNavigationBar bar = bottomWidgetKey1.currentWidget as DotNavigationBar;
-                            // bar.onTap!(3);
-                            // Navigator.push(context, MaterialPageRoute(builder: (context) => const TransactionListPage()));
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                                border: Border.all(width: 1, color: kLightPurple),
-                                borderRadius: const BorderRadius.all(Radius.circular(6.0)),
-                                color: kLightestPurple,
-                                shape: BoxShape.rectangle
-                            ),
-                            alignment: Alignment.topLeft,
-                            margin: const EdgeInsets.only(top:5, bottom: 5, left: 10, right: 5),
-                            child: Row(
-                              children: [
-                                Container(
-                                    alignment: Alignment.center,
-                                    margin: const EdgeInsets.only(top:6, bottom: 6, left: 10),
-                                    child: Image.asset("assets/images/ic_transaction.png", height: 42, width: 45)
-                                ),
-                                Container(
-                                  alignment: Alignment.center,
-                                  margin: const EdgeInsets.only(top:5, bottom: 5, left: 5),
-                                  child: const Text("Transactions", style: TextStyle(fontWeight: FontWeight.w400, color: black,fontSize: 14)
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            final BottomNavigationBar bar = bottomWidgetKey.currentWidget as BottomNavigationBar;
-                            bar.onTap!(1);
-                            // final DotNavigationBar bar = bottomWidgetKey1.currentWidget as DotNavigationBar;
-                            // bar.onTap!(1);
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                                border: Border.all(width: 1, color: kLightPurple),
-                                borderRadius: const BorderRadius.all(
-                                  Radius.circular(6.0),
-                                ),
-                                color: kLightestPurple,
-                                shape: BoxShape.rectangle
-                            ),
-                            alignment: Alignment.topLeft,
-                            margin: const EdgeInsets.only(top:5, bottom: 5, left: 10, right: 5),
-                            child: Row(
-                              children: [
-                                Container(
-                                    alignment: Alignment.center,
-                                    margin: const EdgeInsets.only(top:6, bottom: 6, left: 10),
-                                    child: Image.asset("assets/images/ic_orders.png", height: 42, width: 45,)
-                                ),
-                                Container(
-                                  alignment: Alignment.center,
-                                  margin: const EdgeInsets.only(top:5, bottom: 5, left: 5),
-                                  child: const Text("Orders", style: TextStyle(fontWeight:FontWeight.w400, color: black,fontSize: 14)
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Flexible(
-                    child: Column(
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                                border: Border.all(width: 1, color: kLightPurple),
-                                borderRadius: const BorderRadius.all(
-                                  Radius.circular(6.0),
-                                ),
-                                color: kLightestGray,
-                                shape: BoxShape.rectangle
-                            ),
-                            alignment: Alignment.topLeft,
-                            margin: const EdgeInsets.only(top:5, bottom: 5, left: 5, right: 10),
-                            child: Row(
-                              children: [
-                                Container(
-                                  alignment: Alignment.center,
-                                  margin: const EdgeInsets.only(top:6, bottom: 6, left: 10),
-                                  child: Image.asset("assets/images/ic_reports.png", height: 42, width: 45,)
-                                ),
-                                Container(
-                                  alignment: Alignment.center,
-                                  margin: const EdgeInsets.only(top:5, bottom: 5, left: 10),
-                                  child: const Text("Reports",
-                                      style: TextStyle(fontWeight: FontWeight.w400, color: black,fontSize: 14)
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            // Navigator.push(context, MaterialPageRoute(builder: (context) => ProductListPage()));
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => ProductListPageOld()));
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                                border: Border.all(width: 1, color: kLightPurple),
-                                borderRadius: const BorderRadius.all(
-                                  Radius.circular(8.0),
-                                ),
-                                color: kLightestPurple,
-                                shape: BoxShape.rectangle
-                            ),
-                            alignment: Alignment.topLeft,
-                            margin: const EdgeInsets.only(top:5, bottom: 5, left: 5, right: 10),
-                            child: Row(
-                              children: [
-                                Container(
-                                  alignment: Alignment.center,
-                                  margin: const EdgeInsets.only(top:6, bottom: 6, left: 10),
-                                  child: Image.asset("assets/images/ic_products.png", height: 42, width: 45,)
-                                ),
-                                Container(
-                                  alignment: Alignment.center,
-                                  margin: const EdgeInsets.only(top:5, bottom: 5, left: 5, right: 10),
-                                  child: const Text("Products",
-                                      style: TextStyle(fontWeight:FontWeight.w400, color: black,fontSize: 14)),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    margin: const EdgeInsets.only(top:30, bottom: 5, left: 10),
-                    child: const Text("Daily Plans", style: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 20)),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      _redirectToPlanList(context);
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
+                GestureDetector(
+                  onTap: () {
+                    final BottomNavigationBar bar = bottomWidgetKey.currentWidget as BottomNavigationBar;
+                    bar.onTap!(2);
+                    // final DotNavigationBar bar = bottomWidgetKey1.currentWidget as DotNavigationBar;
+                    // bar.onTap!(2);
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                        border: Border.all(width: 1, color: kLightPurple),
+                        borderRadius: const BorderRadius.all(Radius.circular(6.0),),
                         color: kLightestPurple,
-                          border: Border.all(width: 1, color: kLightPurple),
-                          borderRadius: const BorderRadius.all(Radius.circular(6.0)),
-                          shape: BoxShape.rectangle
-                      ),
-                      alignment: Alignment.centerRight,
-                      margin: const EdgeInsets.only(top:30, bottom: 5, left: 10, right: 10),
-                      child: const Padding(
-                        padding: EdgeInsets.all(6.0),
-                        child: Text("View All", style: TextStyle(fontWeight: FontWeight.w400, color: kBlue, fontSize: 14)
+                        shape: BoxShape.rectangle
+                    ),
+                    alignment: Alignment.center,
+                    margin: const EdgeInsets.only(top:30, bottom: 5, left: 10, right: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                            alignment: Alignment.center,
+                            margin: const EdgeInsets.only(top:6, bottom: 6),
+                            child: Image.asset("assets/images/ic_bg_customer.png", height: 42, width: 45,)
                         ),
-                      ),
+                        Container(
+                          alignment: Alignment.center,
+                          margin: const EdgeInsets.only(top:5, bottom: 5, left: 5),
+                          child: Text("Customer (${checkValidString(totalCustomer.toString())})",
+                              style: const TextStyle(fontWeight: FontWeight.w400, color: black,fontSize: 14)
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
-              Container(
-                alignment: Alignment.centerLeft,
-                margin: const EdgeInsets.only(left: 5, right: 5, top: 10, bottom: 10),
-                child: SizedBox(
-                    height: 110,
-                    child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    shrinkWrap: true,
-                    itemCount: listDailyPlan.length,
-                    itemBuilder: (ctx, index) => (InkWell(
-                      hoverColor: Colors.white.withOpacity(0.0),
-                      onTap: () async {
-                        _redirectToPlanDetail(context, listDailyPlan[index].id.toString());
-                        setState(() {
-                        });
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                            border: Border.all(color: kLightPurple, width: 1.0),
-                            color: kLightestPurple,
-                            borderRadius: const BorderRadius.all(Radius.circular(12))),
-                        padding: const EdgeInsets.all(5),
-                        margin: const EdgeInsets.only(right: 10),
-                        width: 115,
-                        height: 110,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Container(
-                              margin: const EdgeInsets.only(top: 10),
+                ),
+                Row(
+                  children: [
+                    Flexible(
+                      child: Column(
+                        children: [
+                          /*GestureDetector(
+                            onTap: () {
+                              final DotNavigationBar bar = bottomWidgetKey1.currentWidget as DotNavigationBar;
+                              bar.onTap!(3);
+                            },
+                            child: Container(
                               decoration: BoxDecoration(
-                                  color: kBlue,
-                                  borderRadius: BorderRadius.all(Radius.circular(kTextFieldCornerRadius))),
-                                width: 40,
-                                height: 40,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
+                                  border: Border.all(width: 1, color: kLightPurple),
+                                  borderRadius: const BorderRadius.all(
+                                    Radius.circular(6.0),
+                                  ),
+                                color: kLightestPurple,
+                                shape: BoxShape.rectangle
+                              ),
+                              alignment: Alignment.topLeft,
+                              margin: const EdgeInsets.only(top:30, bottom: 5, left: 10, right: 5),
+                              child: Row(
                                 children: [
                                   Container(
-                                    margin: const EdgeInsets.only(right: 3, left: 3, top: 3),
-                                    child: Text(universalDateConverter("dd-MM-yyyy","dd",checkValidString(listDailyPlan[index].planDate).toString()),
-                                      maxLines: 1,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(fontSize: 13, color: white, fontWeight: FontWeight.w600),
-                                    ),
+                                      alignment: Alignment.center,
+                                      margin: const EdgeInsets.only(top:6, bottom: 6, left: 10),
+                                      child: Image.asset("assets/images/ic_employee_bag.png", height: 42, width: 45,)
                                   ),
                                   Container(
-                                    margin: const EdgeInsets.only(right: 3, left: 3, bottom: 3),
-                                    child: Text(universalDateConverter("dd-MM-yyyy","MMM",checkValidString(listDailyPlan[index].planDate).toString()),// planDate.toString().split('-')[1].trim()
-                                      maxLines: 1,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(fontSize: 11, color: white, fontWeight: FontWeight.w400),
+                                    alignment: Alignment.center,
+                                    margin: const EdgeInsets.only(top:5, bottom: 5, left: 5),
+                                    child:  Text("Employee (${checkValidString(totalEmployee.toString())})",
+                                        style: const TextStyle(fontWeight: FontWeight.w400, color: black,fontSize: 14)
                                     ),
                                   ),
                                 ],
                               ),
                             ),
-
-                            Container(
-                              margin: const EdgeInsets.only(top: 10, bottom: 4),
-                              child: Text(listDailyPlan[index].customer!.customerName.toString().isNotEmpty ?
-                              checkValidString(listDailyPlan[index].customer!.customerName.toString().trim()) : "-",
-                                maxLines: 1,
-                                overflow: TextOverflow.clip,
-                                textAlign: TextAlign.start,
-                                style: const TextStyle(fontSize: 14, color: kBlue, fontWeight: FontWeight.w600),
+                          ),*/
+                          GestureDetector(
+                            onTap: () {
+                              final BottomNavigationBar bar = bottomWidgetKey.currentWidget as BottomNavigationBar;
+                              bar.onTap!(3);
+                              // final DotNavigationBar bar = bottomWidgetKey1.currentWidget as DotNavigationBar;
+                              // bar.onTap!(3);
+                              // Navigator.push(context, MaterialPageRoute(builder: (context) => const TransactionListPage()));
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  border: Border.all(width: 1, color: kLightPurple),
+                                  borderRadius: const BorderRadius.all(Radius.circular(6.0)),
+                                  color: kLightestPurple,
+                                  shape: BoxShape.rectangle
+                              ),
+                              alignment: Alignment.topLeft,
+                              margin: const EdgeInsets.only(top:5, bottom: 5, left: 10, right: 5),
+                              child: Row(
+                                children: [
+                                  Container(
+                                      alignment: Alignment.center,
+                                      margin: const EdgeInsets.only(top:6, bottom: 6, left: 10),
+                                      child: Image.asset("assets/images/ic_transaction.png", height: 42, width: 45)
+                                  ),
+                                  Container(
+                                    alignment: Alignment.center,
+                                    margin: const EdgeInsets.only(top:5, bottom: 5, left: 5),
+                                    child: const Text("Transactions", style: TextStyle(fontWeight: FontWeight.w400, color: black,fontSize: 14)
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                            Text(checkValidString(listDailyPlan[index].planDate.toString().trim()),
-                              textAlign: TextAlign.start,
-                              style: const TextStyle(fontSize: 12, color: kGray, fontWeight: FontWeight.w400),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              final BottomNavigationBar bar = bottomWidgetKey.currentWidget as BottomNavigationBar;
+                              bar.onTap!(1);
+                              // final DotNavigationBar bar = bottomWidgetKey1.currentWidget as DotNavigationBar;
+                              // bar.onTap!(1);
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  border: Border.all(width: 1, color: kLightPurple),
+                                  borderRadius: const BorderRadius.all(
+                                    Radius.circular(6.0),
+                                  ),
+                                  color: kLightestPurple,
+                                  shape: BoxShape.rectangle
+                              ),
+                              alignment: Alignment.topLeft,
+                              margin: const EdgeInsets.only(top:5, bottom: 5, left: 10, right: 5),
+                              child: Row(
+                                children: [
+                                  Container(
+                                      alignment: Alignment.center,
+                                      margin: const EdgeInsets.only(top:6, bottom: 6, left: 10),
+                                      child: Image.asset("assets/images/ic_orders.png", height: 42, width: 45,)
+                                  ),
+                                  Container(
+                                    alignment: Alignment.center,
+                                    margin: const EdgeInsets.only(top:5, bottom: 5, left: 5),
+                                    child: const Text("Orders", style: TextStyle(fontWeight:FontWeight.w400, color: black,fontSize: 14)
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                    )))),
-              ),
-              /*Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Flexible(
-                    child: GestureDetector(
+                    ),
+                    Flexible(
+                      child: Column(
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  border: Border.all(width: 1, color: kLightPurple),
+                                  borderRadius: const BorderRadius.all(
+                                    Radius.circular(6.0),
+                                  ),
+                                  color: kLightestGray,
+                                  shape: BoxShape.rectangle
+                              ),
+                              alignment: Alignment.topLeft,
+                              margin: const EdgeInsets.only(top:5, bottom: 5, left: 5, right: 10),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    alignment: Alignment.center,
+                                    margin: const EdgeInsets.only(top:6, bottom: 6, left: 10),
+                                    child: Image.asset("assets/images/ic_reports.png", height: 42, width: 45,)
+                                  ),
+                                  Container(
+                                    alignment: Alignment.center,
+                                    margin: const EdgeInsets.only(top:5, bottom: 5, left: 10),
+                                    child: const Text("Reports",
+                                        style: TextStyle(fontWeight: FontWeight.w400, color: black,fontSize: 14)
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              // Navigator.push(context, MaterialPageRoute(builder: (context) => ProductListPage()));
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => ProductListPageOld()));
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  border: Border.all(width: 1, color: kLightPurple),
+                                  borderRadius: const BorderRadius.all(
+                                    Radius.circular(8.0),
+                                  ),
+                                  color: kLightestPurple,
+                                  shape: BoxShape.rectangle
+                              ),
+                              alignment: Alignment.topLeft,
+                              margin: const EdgeInsets.only(top:5, bottom: 5, left: 5, right: 10),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    alignment: Alignment.center,
+                                    margin: const EdgeInsets.only(top:6, bottom: 6, left: 10),
+                                    child: Image.asset("assets/images/ic_products.png", height: 42, width: 45,)
+                                  ),
+                                  Container(
+                                    alignment: Alignment.center,
+                                    margin: const EdgeInsets.only(top:5, bottom: 5, left: 5, right: 10),
+                                    child: const Text("Products",
+                                        style: TextStyle(fontWeight:FontWeight.w400, color: black,fontSize: 14)),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      margin: const EdgeInsets.only(top:30, bottom: 5, left: 10),
+                      child: const Text("Daily Plans", style: TextStyle(fontWeight: FontWeight.w600, color: black,fontSize: 20)),
+                    ),
+                    GestureDetector(
                       onTap: () {
-                        _redirectToAddCustomer(context, CustomerList(), false);
+                        _redirectToPlanList(context);
                       },
                       child: Container(
                         decoration: BoxDecoration(
+                          color: kLightestPurple,
                             border: Border.all(width: 1, color: kLightPurple),
                             borderRadius: const BorderRadius.all(Radius.circular(6.0)),
-                            color: kLightestPurple,
                             shape: BoxShape.rectangle
                         ),
-                        alignment: Alignment.topLeft,
-                        margin: const EdgeInsets.only(bottom: 5, left: 10, right: 10),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            const Icon(Icons.add, color: kBlue, size: 18,),
-                            Container(
+                        alignment: Alignment.centerRight,
+                        margin: const EdgeInsets.only(top:30, bottom: 5, left: 10, right: 10),
+                        child: const Padding(
+                          padding: EdgeInsets.all(6.0),
+                          child: Text("View All", style: TextStyle(fontWeight: FontWeight.w400, color: kBlue, fontSize: 14)
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Container(
+                  alignment: Alignment.centerLeft,
+                  margin: const EdgeInsets.only(left: 5, right: 5, top: 10, bottom: 10),
+                  child: SizedBox(
+                      height: 110,
+                      child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      shrinkWrap: true,
+                      itemCount: listDailyPlan.length,
+                      itemBuilder: (ctx, index) => (InkWell(
+                        hoverColor: Colors.white.withOpacity(0.0),
+                        onTap: () async {
+                          _redirectToPlanDetail(context, listDailyPlan[index].id.toString());
+                          setState(() {
+                          });
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                              border: Border.all(color: kLightPurple, width: 1.0),
+                              color: kLightestPurple,
+                              borderRadius: const BorderRadius.all(Radius.circular(12))),
+                          padding: const EdgeInsets.all(5),
+                          margin: const EdgeInsets.only(right: 10),
+                          width: 115,
+                          height: 110,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Container(
+                                margin: const EdgeInsets.only(top: 10),
+                                decoration: BoxDecoration(
+                                    color: kBlue,
+                                    borderRadius: BorderRadius.all(Radius.circular(kTextFieldCornerRadius))),
+                                  width: 40,
+                                  height: 40,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      margin: const EdgeInsets.only(right: 3, left: 3, top: 3),
+                                      child: Text(universalDateConverter("dd-MM-yyyy","dd",checkValidString(listDailyPlan[index].planDate).toString()),
+                                        maxLines: 1,
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(fontSize: 13, color: white, fontWeight: FontWeight.w600),
+                                      ),
+                                    ),
+                                    Container(
+                                      margin: const EdgeInsets.only(right: 3, left: 3, bottom: 3),
+                                      child: Text(universalDateConverter("dd-MM-yyyy","MMM",checkValidString(listDailyPlan[index].planDate).toString()),// planDate.toString().split('-')[1].trim()
+                                        maxLines: 1,
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(fontSize: 11, color: white, fontWeight: FontWeight.w400),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+                              Container(
+                                margin: const EdgeInsets.only(top: 10, bottom: 4),
+                                child: Text(listDailyPlan[index].customer!.customerName.toString().isNotEmpty ?
+                                checkValidString(listDailyPlan[index].customer!.customerName.toString().trim()) : "-",
+                                  maxLines: 1,
+                                  overflow: TextOverflow.clip,
+                                  textAlign: TextAlign.start,
+                                  style: const TextStyle(fontSize: 14, color: kBlue, fontWeight: FontWeight.w600),
+                                ),
+                              ),
+                              Text(checkValidString(listDailyPlan[index].planDate.toString().trim()),
+                                textAlign: TextAlign.start,
+                                style: const TextStyle(fontSize: 12, color: kGray, fontWeight: FontWeight.w400),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )))),
+                ),
+                /*Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Flexible(
+                      child: GestureDetector(
+                        onTap: () {
+                          _redirectToAddCustomer(context, CustomerList(), false);
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                              border: Border.all(width: 1, color: kLightPurple),
+                              borderRadius: const BorderRadius.all(Radius.circular(6.0)),
+                              color: kLightestPurple,
+                              shape: BoxShape.rectangle
+                          ),
+                          alignment: Alignment.topLeft,
+                          margin: const EdgeInsets.only(bottom: 5, left: 10, right: 10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              const Icon(Icons.add, color: kBlue, size: 18,),
+                              Container(
+                                alignment: Alignment.center,
+                                margin: const EdgeInsets.only(top:15, bottom:15, left: 8),
+                                child: const Text("Add Customer", style: TextStyle(fontWeight: FontWeight.w400, color: kBlue, fontSize: 14)
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    Flexible(
+                      child: GestureDetector(
+                        onTap: () {
+                          // _redirectToAddProduct(context, ItemData(), false); //ItemData()
+                          _redirectToAddProduct(context, Products(), false);
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                              border: Border.all(width: 1, color: kLightPurple),
+                              borderRadius: const BorderRadius.all(Radius.circular(6.0),),
+                              color: kLightestPurple,
+                              shape: BoxShape.rectangle
+                          ),
+                          alignment: Alignment.topLeft,
+                          margin: const EdgeInsets.only(bottom: 5, right: 10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              const Icon(Icons.add, color: kBlue, size: 18,),
+                              Container(
+                                margin: const EdgeInsets.only(top:15, bottom: 15, left: 8),
+                                child: const Text("Add Product", style: TextStyle(fontWeight: FontWeight.w400, color: kBlue, fontSize: 14)
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  */
+                /*  Flexible(
+                      child: Column(
+                        children: [
+                          *//**/
+                /*GestureDetector(
+                            onTap: () {
+                              _redirectToAddEmployee(context,EmployeeList(), false);
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  border: Border.all(width: 1, color: kLightPurple),
+                                  borderRadius: const BorderRadius.all(
+                                    Radius.circular(6.0),
+                                  ),
+                                  color: kLightestPurple,
+                                  shape: BoxShape.rectangle
+                              ),
+                              alignment: Alignment.topLeft,
+                              margin: const EdgeInsets.only(top:5, bottom: 5, left: 10, right: 5),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  const Icon(Icons.add, color: kBlue, size: 18,),
+                                  Container(
+                                    margin: const EdgeInsets.only(top:15, bottom: 15),
+                                    child: const Text("Add Employee",
+                                        style: TextStyle(fontWeight: FontWeight.w400, color: kBlue, fontSize: 14)
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),*//**/
+                /*
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => const AddPaymentDetailPage()));
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  border: Border.all(width: 1, color: kLightPurple),
+                                  borderRadius: const BorderRadius.all(Radius.circular(6.0),),
+                                  color: kLightestPurple,
+                                  shape: BoxShape.rectangle
+                              ),
                               alignment: Alignment.center,
-                              margin: const EdgeInsets.only(top:15, bottom:15, left: 8),
-                              child: const Text("Add Customer", style: TextStyle(fontWeight: FontWeight.w400, color: kBlue, fontSize: 14)
+                              margin: const EdgeInsets.only(top:5, bottom: 5, left: 5, right: 10),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  const Icon(Icons.add, color: kBlue, size:18,),
+                                  Container(
+                                    margin: const EdgeInsets.only(top:15, bottom: 15, left: 8),
+                                    child: const Text("Add Payments", style: TextStyle(fontWeight: FontWeight.w400, color: kBlue, fontSize: 14)
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  Flexible(
-                    child: GestureDetector(
-                      onTap: () {
-                        // _redirectToAddProduct(context, ItemData(), false); //ItemData()
-                        _redirectToAddProduct(context, Products(), false);
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                            border: Border.all(width: 1, color: kLightPurple),
-                            borderRadius: const BorderRadius.all(Radius.circular(6.0),),
-                            color: kLightestPurple,
-                            shape: BoxShape.rectangle
-                        ),
-                        alignment: Alignment.topLeft,
-                        margin: const EdgeInsets.only(bottom: 5, right: 10),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            const Icon(Icons.add, color: kBlue, size: 18,),
-                            Container(
-                              margin: const EdgeInsets.only(top:15, bottom: 15, left: 8),
-                              child: const Text("Add Product", style: TextStyle(fontWeight: FontWeight.w400, color: kBlue, fontSize: 14)
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                */
-              /*  Flexible(
-                    child: Column(
-                      children: [
-                        *//**/
-              /*GestureDetector(
-                          onTap: () {
-                            _redirectToAddEmployee(context,EmployeeList(), false);
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                                border: Border.all(width: 1, color: kLightPurple),
-                                borderRadius: const BorderRadius.all(
-                                  Radius.circular(6.0),
-                                ),
-                                color: kLightestPurple,
-                                shape: BoxShape.rectangle
-                            ),
-                            alignment: Alignment.topLeft,
-                            margin: const EdgeInsets.only(top:5, bottom: 5, left: 10, right: 5),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                const Icon(Icons.add, color: kBlue, size: 18,),
-                                Container(
-                                  margin: const EdgeInsets.only(top:15, bottom: 15),
-                                  child: const Text("Add Employee",
-                                      style: TextStyle(fontWeight: FontWeight.w400, color: kBlue, fontSize: 14)
-                                  ),
-                                ),
-                              ],
-                            ),
                           ),
-                        ),*//**/
-              /*
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => const AddPaymentDetailPage()));
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                                border: Border.all(width: 1, color: kLightPurple),
-                                borderRadius: const BorderRadius.all(Radius.circular(6.0),),
-                                color: kLightestPurple,
-                                shape: BoxShape.rectangle
-                            ),
-                            alignment: Alignment.center,
-                            margin: const EdgeInsets.only(top:5, bottom: 5, left: 5, right: 10),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                const Icon(Icons.add, color: kBlue, size:18,),
-                                Container(
-                                  margin: const EdgeInsets.only(top:15, bottom: 15, left: 8),
-                                  child: const Text("Add Payments", style: TextStyle(fontWeight: FontWeight.w400, color: kBlue, fontSize: 14)
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  )*/
-              /*
-                ],
-              ),*/
-              const SizedBox(
-                height: 80,
-              ),
-            ],
+                        ],
+                      ),
+                    )*/
+                /*
+                  ],
+                ),*/
+                const SizedBox(
+                  height: 80,
+                ),
+              ],
+            ),
           ),
         )
     );
   }
 
   Future<void> _redirectToAddEmployee(BuildContext context, EmployeeList getSet, bool isFromList) async {
-    // Navigator.push returns a Future that completes after calling
-    // Navigator.pop on the Selection Screen.
     final result = await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => AddEmployeePage(getSet, isFromList)),
@@ -832,7 +852,7 @@ class _DashboardPageState extends BaseState<DashboardPage> {
   Future<void> _redirectToPlanList(BuildContext context) async {
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => DailyPlansPage()),
+      MaterialPageRoute(builder: (context) => const DailyPlansPage()),
     );
 
     print("result ===== $result");
@@ -1050,7 +1070,7 @@ class _DashboardPageState extends BaseState<DashboardPage> {
 
   }
 
-  _getDailyPlansList() async {
+  void _getDailyPlansList() async {
     var currentDate = DateTime.now().toString();
 
     var dateParse = DateTime.parse(currentDate);
@@ -1067,8 +1087,9 @@ class _DashboardPageState extends BaseState<DashboardPage> {
       'limit' : "10",
       'page' : "0",
       'search' : "",
-      // 'fromDate' : todaysDate,
-      // 'toDate': todaysDate
+      'fromDate' : todaysDate,
+      'toDate': todaysDate,
+      'emp_id' : sessionManager.getEmpId().toString().trim()
     };
 
     final response = await http.post(url, body: jsonBody);

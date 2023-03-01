@@ -88,6 +88,26 @@ class _OrderListPageState extends BaseState<OrderListPage> {
 
   }
 
+  Future<bool> _refresh() {
+    if (isInternetConnected) {
+      _getOrderListData(true);
+
+    } else {
+      setState(() {
+        _isLoading = false;
+      });
+      noInterNet(context);
+    }
+
+    return Future.value(true);
+  }
+
+  @override
+  void dispose() {
+    _scrollViewController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -375,123 +395,126 @@ class _OrderListPageState extends BaseState<OrderListPage> {
             child: Stack(
               children: [
                 listOrder.isNotEmpty ?
-                ListView.builder(
-                    scrollDirection: Axis.vertical,
-                    controller: _scrollViewController,
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    primary: false,
-                    shrinkWrap: true,
-                    itemCount: listOrder.length,
-                    itemBuilder: (ctx, index) => Container(
-                      color: white,
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10, top: 8, bottom: 5),
-                        child: GestureDetector(
-                          behavior: HitTestBehavior.opaque,
-                          onTap: () {
-                            _redirectToOrderDetail(context, checkValidString(listOrder[index].customerId).toString(), checkValidString(listOrder[index].orderId).toString());
-                          },
-                          child: Column(
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(
-                                    child:
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        const Gap(10),
-                                        Text(checkValidString(listOrder[index].orderId),
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
-                                          textAlign: TextAlign.start,
-                                          style: const TextStyle(fontSize: 15, color: black, fontWeight: FontWeight.w700),
-                                        ),
-                                        const Gap(5),
-                                        Container(width: 2, height: 15, color: black),
-                                        const Gap(5),
-                                        Expanded(
-                                          child: Text(checkValidString(listOrder[index].customerName),
+                RefreshIndicator(
+                  onRefresh: _refresh,
+                  child: ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      controller: _scrollViewController,
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      primary: false,
+                      shrinkWrap: true,
+                      itemCount: listOrder.length,
+                      itemBuilder: (ctx, index) => Container(
+                        color: white,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 10, right: 10, top: 8, bottom: 5),
+                          child: GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: () {
+                              _redirectToOrderDetail(context, checkValidString(listOrder[index].customerId).toString(), checkValidString(listOrder[index].orderId).toString());
+                            },
+                            child: Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded(
+                                      child:
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          const Gap(10),
+                                          Text(checkValidString(listOrder[index].orderId),
                                             maxLines: 2,
-                                            overflow: TextOverflow.clip,
+                                            overflow: TextOverflow.ellipsis,
                                             textAlign: TextAlign.start,
                                             style: const TextStyle(fontSize: 15, color: black, fontWeight: FontWeight.w700),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Container(
-                                    margin: const EdgeInsets.only(right: 10),
-                                    alignment: Alignment.bottomLeft,
-                                    child: RichText(
-                                      textAlign: TextAlign.center,
-                                      text: TextSpan(
-                                        text: '₹ ',
-                                        style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: kBlue),
-                                        children: <TextSpan>[
-                                          TextSpan(text: checkValidString(convertToComaSeparated(listOrder[index].grandTotal.toString())),
-                                              style: const TextStyle(fontSize: 18, color: kBlue, fontWeight: FontWeight.w700),
-                                              recognizer: TapGestureRecognizer()..onTap = () => {
-                                              }),
+                                          const Gap(5),
+                                          Container(width: 2, height: 15, color: black),
+                                          const Gap(5),
+                                          Expanded(
+                                            child: Text(checkValidString(listOrder[index].customerName),
+                                              maxLines: 2,
+                                              overflow: TextOverflow.clip,
+                                              textAlign: TextAlign.start,
+                                              style: const TextStyle(fontSize: 15, color: black, fontWeight: FontWeight.w700),
+                                            ),
+                                          ),
                                         ],
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                              const Gap(5),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Container(
-                                    margin: const EdgeInsets.only(left: 10, bottom: 5),
-                                    child: Text(
-                                      checkValidString(listOrder[index].createdAt),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      textAlign: TextAlign.start,
-                                      style: const TextStyle(fontSize: 13, color: kGray, fontWeight: FontWeight.w400),
-                                    ),
-                                  ),
-                                  Visibility(
-                                    visible: checkValidString(listOrder[index].pendingAmount).toString() == "0" ? false : true,
-                                    child: Container(
-                                      height: 32,
-                                        margin: const EdgeInsets.only(left: 10, bottom: 5, top: 5, right: 10),
-                                        decoration: BoxDecoration(
-                                            color: kLightestPurple,
-                                            border: Border.all(width: 1, color: kLightPurple),
-                                            borderRadius: const BorderRadius.all(
-                                              Radius.circular(12.0),
-                                            ),
-                                            shape: BoxShape.rectangle
+                                    Container(
+                                      margin: const EdgeInsets.only(right: 10),
+                                      alignment: Alignment.bottomLeft,
+                                      child: RichText(
+                                        textAlign: TextAlign.center,
+                                        text: TextSpan(
+                                          text: '₹ ',
+                                          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: kBlue),
+                                          children: <TextSpan>[
+                                            TextSpan(text: checkValidString(convertToComaSeparated(listOrder[index].grandTotal.toString())),
+                                                style: const TextStyle(fontSize: 18, color: kBlue, fontWeight: FontWeight.w700),
+                                                recognizer: TapGestureRecognizer()..onTap = () => {
+                                                }),
+                                          ],
                                         ),
-                                        child: TextButton(
-                                          child:const Text("Receive Payment",
-                                            textAlign: TextAlign.start,
-                                            style: TextStyle(fontSize: 13, color: black, fontWeight: FontWeight.w500),
-                                          ),
-                                          onPressed: () {
-                                            _redirectToTransaction(context, checkValidString(listOrder[index].orderId).toString(), checkValidString(listOrder[index].customerId).toString(),
-                                                checkValidString(listOrder[index].customerName).toString(), checkValidString(listOrder[index].pendingAmount).toString());
-                                          },
-                                        )
-                                      //
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                              Container(
-                                  margin: const EdgeInsets.only(top: 10, left: 10, right: 10),
-                                  height: index == listOrder.length-1 ? 0 : 0.8, color: kLightPurple),
-                            ],
+                                  ],
+                                ),
+                                const Gap(5),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Container(
+                                      margin: const EdgeInsets.only(left: 10, bottom: 5),
+                                      child: Text(
+                                        checkValidString(listOrder[index].createdAt),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        textAlign: TextAlign.start,
+                                        style: const TextStyle(fontSize: 13, color: kGray, fontWeight: FontWeight.w400),
+                                      ),
+                                    ),
+                                    Visibility(
+                                      visible: checkValidString(listOrder[index].pendingAmount).toString() == "0" ? false : true,
+                                      child: Container(
+                                        height: 32,
+                                          margin: const EdgeInsets.only(left: 10, bottom: 5, top: 5, right: 10),
+                                          decoration: BoxDecoration(
+                                              color: kLightestPurple,
+                                              border: Border.all(width: 1, color: kLightPurple),
+                                              borderRadius: const BorderRadius.all(
+                                                Radius.circular(12.0),
+                                              ),
+                                              shape: BoxShape.rectangle
+                                          ),
+                                          child: TextButton(
+                                            child:const Text("Receive Payment",
+                                              textAlign: TextAlign.start,
+                                              style: TextStyle(fontSize: 13, color: black, fontWeight: FontWeight.w500),
+                                            ),
+                                            onPressed: () {
+                                              _redirectToTransaction(context, checkValidString(listOrder[index].orderId).toString(), checkValidString(listOrder[index].customerId).toString(),
+                                                  checkValidString(listOrder[index].customerName).toString(), checkValidString(listOrder[index].pendingAmount).toString());
+                                            },
+                                          )
+                                        //
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Container(
+                                    margin: const EdgeInsets.only(top: 10, left: 10, right: 10),
+                                    height: index == listOrder.length-1 ? 0 : 0.8, color: kLightPurple),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    ))
+                      )),
+                )
                 : const MyNoDataWidget(msg: "", subMsg: "No orders found"),
                 Visibility(
                     visible: _isLoadingMore,

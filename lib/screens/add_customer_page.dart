@@ -742,7 +742,7 @@ class _AddCustomerPageState extends BaseState<AddCustomerPage> {
                             if (name.trim().isEmpty) {
                               showSnackBar("Please enter a name", context);
                             } else if (ledgerEmail.isNotEmpty && !isValidEmail(ledgerEmail.trim())) {
-                              showSnackBar("Please enter valid email", context);
+                              showSnackBar("Please enter valid email address", context);
                             } else if (ledgerPhone.trim().isNotEmpty && ledgerPhone.trim().length != 8) {
                               showSnackBar('Please enter valid phone number',context);
                             } else if (ledgerMobile.trim().isNotEmpty && ledgerMobile.trim().length != 10) {

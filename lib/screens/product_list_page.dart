@@ -562,11 +562,12 @@ ListView.builder(
                       shape: BoxShape.rectangle
                   ),
                   width: 40,
+                  height: 40,
                   alignment: Alignment.center,
                   margin: const EdgeInsets.only(top:5, bottom: 5, left: 8),
                   child: Container(
-                    margin: const EdgeInsets.all(10),
-                    child: Text(checkValidString(listData?[index].inStock),
+                    margin: const EdgeInsets.all(5),
+                    child: Text(checkValidString(listData?[index].stockQuantity),
                         style: const TextStyle(fontWeight: FontWeight.w500, color: kBlue, fontSize: 12)
                     ),
                   ),
@@ -579,10 +580,11 @@ ListView.builder(
                       shape: BoxShape.rectangle
                   ),
                   width: 40,
+                  height: 40,
                   alignment: Alignment.center,
                   margin: const EdgeInsets.only(top:5, bottom: 5, right: 8, left:30),
                   child: Container(
-                    margin: const EdgeInsets.all(10),
+                    margin: const EdgeInsets.all(5),
                     child: Text(checkValidString(listData?[index].orderCount),
                         style: const TextStyle(fontWeight: FontWeight.w500, color: kBlue, fontSize: 12)
                     ),

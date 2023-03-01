@@ -466,7 +466,7 @@ class _OrderDetailPageState extends BaseState<OrderDetailPage> {
 
     Map<String, String> jsonBody = {
       'from_app': FROM_APP,
-      'emp_id': "1"//sessionManager.getEmpId().toString().trim(),
+      'emp_id': sessionManager.getEmpId().toString().trim(),
     };
 
     final response = await http.post(url, body: jsonBody);

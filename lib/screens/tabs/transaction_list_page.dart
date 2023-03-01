@@ -88,6 +88,26 @@ class _TransactionListPageState extends BaseState<TransactionListPage> {
 
   }
 
+  Future<bool> _refresh() {
+    if (isInternetConnected) {
+      _getTransactionListData(true);
+
+    } else {
+      setState(() {
+        _isLoading = false;
+      });
+      noInterNet(context);
+    }
+
+    return Future.value(true);
+  }
+
+  @override
+  void dispose() {
+    _scrollViewController.dispose();
+    super.dispose();
+  }
+
   void pagination() {
     if(!_isLastPage && !_isLoadingMore)
     {
@@ -389,90 +409,95 @@ class _TransactionListPageState extends BaseState<TransactionListPage> {
               ],
             ),
             Expanded(
-              child: _isSearchLoading ? const LoadingWidget() : listTransactions.isNotEmpty ? ListView.builder(
-                  controller: _scrollViewController,
-                  scrollDirection: Axis.vertical,
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  primary: false,
-                  shrinkWrap: true,
-                  itemCount: listTransactions.length,
-                  itemBuilder: (ctx, index) => Container(
-                    color: white,
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 3),
-                      child: GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onTap: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => TransactionDetailPage(checkValidString(listTransactions[index].id).toString())));
-                        },
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              margin: const EdgeInsets.only(left: 8, top: 6),
-                              alignment: Alignment.topLeft,
-                              child: Text(checkValidString(listTransactions[index].customerDetails!.customerName).toString(),
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(fontSize: 15, color: black, fontWeight: FontWeight.w700),
+              child: _isSearchLoading ? const LoadingWidget()
+                  : listTransactions.isNotEmpty
+                  ? RefreshIndicator(
+                onRefresh: _refresh,
+                child: ListView.builder(
+                    controller: _scrollViewController,
+                    scrollDirection: Axis.vertical,
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    primary: false,
+                    shrinkWrap: true,
+                    itemCount: listTransactions.length,
+                    itemBuilder: (ctx, index) => Container(
+                      color: white,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 3),
+                        child: GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => TransactionDetailPage(checkValidString(listTransactions[index].id).toString())));
+                          },
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                margin: const EdgeInsets.only(left: 8, top: 6),
+                                alignment: Alignment.topLeft,
+                                child: Text(checkValidString(listTransactions[index].customerDetails!.customerName).toString(),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(fontSize: 15, color: black, fontWeight: FontWeight.w700),
+                                ),
                               ),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Container(
-                                  margin: const EdgeInsets.only(left: 8, top: 6),
-                                  alignment: Alignment.center,
-                                  child: RichText(
-                                    textAlign: TextAlign.center,
-                                    text: TextSpan(
-                                      text: 'Transaction Mode : ',
-                                      style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w400, color: kTextLightGray),
-                                      children: <TextSpan>[
-                                        TextSpan(text: checkValidString(listTransactions[index].transectionMode).toString(),
-                                            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: black),
-                                            recognizer: TapGestureRecognizer()..onTap = () => {
-                                            }),
-                                      ],
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Container(
+                                    margin: const EdgeInsets.only(left: 8, top: 6),
+                                    alignment: Alignment.center,
+                                    child: RichText(
+                                      textAlign: TextAlign.center,
+                                      text: TextSpan(
+                                        text: 'Transaction Mode : ',
+                                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w400, color: kTextLightGray),
+                                        children: <TextSpan>[
+                                          TextSpan(text: checkValidString(listTransactions[index].transectionMode).toString(),
+                                              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: black),
+                                              recognizer: TapGestureRecognizer()..onTap = () => {
+                                              }),
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                                Container(
-                                  margin: const EdgeInsets.only(right: 8, top: 6),
-                                  child: RichText(
-                                    textAlign: TextAlign.center,
-                                    text: TextSpan(
-                                      text: '₹ ',
-                                      style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: black),
-                                      children: <TextSpan>[
-                                        TextSpan(text: checkValidString(convertToComaSeparated(listTransactions[index].transectionAmount.toString())),
-                                            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: black),
-                                            recognizer: TapGestureRecognizer()..onTap = () => {
-                                            }),
-                                      ],
+                                  Container(
+                                    margin: const EdgeInsets.only(right: 8, top: 6),
+                                    child: RichText(
+                                      textAlign: TextAlign.center,
+                                      text: TextSpan(
+                                        text: '₹ ',
+                                        style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: black),
+                                        children: <TextSpan>[
+                                          TextSpan(text: checkValidString(convertToComaSeparated(listTransactions[index].transectionAmount.toString())),
+                                              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: black),
+                                              recognizer: TapGestureRecognizer()..onTap = () => {
+                                              }),
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
-                            ),
-                            Container(
-                              alignment: Alignment.bottomLeft,
-                              margin: const EdgeInsets.only(left: 10, top: 6),
-                              child: Text(checkValidString(listTransactions[index].transectionDate).toString(),
-                                textAlign: TextAlign.start,
-                                style: const TextStyle(fontSize: 13, color: kGray, fontWeight: FontWeight.w400),
+                                ],
                               ),
-                            ),
-                            Container(
-                                margin: const EdgeInsets.only(top: 20, left: 10, right: 10),
-                                height: index == listTransactions.length-1 ? 0 : 0.8, color: kLightPurple),
-                          ],
+                              Container(
+                                alignment: Alignment.bottomLeft,
+                                margin: const EdgeInsets.only(left: 10, top: 6),
+                                child: Text(checkValidString(listTransactions[index].transectionDate).toString(),
+                                  textAlign: TextAlign.start,
+                                  style: const TextStyle(fontSize: 13, color: kGray, fontWeight: FontWeight.w400),
+                                ),
+                              ),
+                              Container(
+                                  margin: const EdgeInsets.only(top: 20, left: 10, right: 10),
+                                  height: index == listTransactions.length-1 ? 0 : 0.8, color: kLightPurple),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  )) : const MyNoDataWidget(msg: "", subMsg: "No transactions found"),
+                    )),
+                  ) : const MyNoDataWidget(msg: "", subMsg: "No transactions found"),
             ),
             Visibility(
                 visible: _isLoadingMore,
@@ -798,7 +823,7 @@ class _TransactionListPageState extends BaseState<TransactionListPage> {
 
     Map<String, String> jsonBody = {
       'from_app': FROM_APP,
-      'emp_id': "1"//sessionManager.getEmpId().toString().trim(),
+      'emp_id': sessionManager.getEmpId().toString().trim(),
     };
 
     final response = await http.post(url, body: jsonBody);

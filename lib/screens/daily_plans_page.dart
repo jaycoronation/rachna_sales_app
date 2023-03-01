@@ -769,7 +769,8 @@ class _DailyPlansPageState extends BaseState<DailyPlansPage> {
       'page' : _pageIndex.toString(),
       'search' : searchText,
       'fromDate' : dateStartSelectionChanged,
-      'toDate': dateEndSelectionChanged
+      'toDate': dateEndSelectionChanged,
+      'emp_id' : sessionManager.getEmpId().toString().trim()
     };
 
     final response = await http.post(url, body: jsonBody);

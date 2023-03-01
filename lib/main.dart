@@ -132,7 +132,12 @@ class _MyHomePageState extends State<MyHomePage> {
               Container(
                   alignment: Alignment.center,
                   margin: const EdgeInsets.only(bottom: 50),
-                  child: const Text('Rachna Sales App')
+                  child: const Text('Rachna Sales App',
+                    style: TextStyle(
+                      color: black,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w700,),
+                  )
                   //Image.asset("assets/images/ic_logo.png",width: 300, height: 300, alignment: Alignment.center)
               ),
             ],

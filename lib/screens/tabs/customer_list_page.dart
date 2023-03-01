@@ -88,6 +88,26 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
 
   }
 
+  Future<bool> _refresh() {
+    if (isInternetConnected) {
+      _getCustomerListData(true);
+
+    } else {
+      setState(() {
+        _isLoading = false;
+      });
+      noInterNet(context);
+    }
+
+    return Future.value(true);
+  }
+
+  @override
+  void dispose() {
+    _scrollViewController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -438,82 +458,85 @@ class _CustomerListPageState extends BaseState<CustomerListPage> {
               children: [
                 // _isSearchLoading ? const LoadingWidget() :
                 listCustomer.isNotEmpty ?
-                ListView.builder(
-                    scrollDirection: Axis.vertical,
-                    controller: _scrollViewController,
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    primary: false,
-                    shrinkWrap: true,
-                    itemCount: listCustomer.length,
-                    itemBuilder: (ctx, index) => Container(
-                      color: white,
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10, top: 8, bottom: 5),
-                        child: GestureDetector(
-                          behavior: HitTestBehavior.opaque,
-                          onTap: () {
-                            CustomerList getSet = listCustomer[index];
-                            _redirectToCustomerDetail(context, getSet, true);
-                            // _redirectToAddCustomer(context, getSet, true);
-                          },
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                margin: const EdgeInsets.only(left: 10, right: 5, bottom: 8),
-                                child: Text(checkValidString(toDisplayUpperCase1(listCustomer[index].customerName.toString().trim())),
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 3,
-                                  textAlign: TextAlign.start,
-                                  style: const TextStyle(fontSize: 15, color: black, fontWeight: FontWeight.w700),
+                RefreshIndicator(
+                  onRefresh: _refresh,
+                  child: ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      controller: _scrollViewController,
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      primary: false,
+                      shrinkWrap: true,
+                      itemCount: listCustomer.length,
+                      itemBuilder: (ctx, index) => Container(
+                        color: white,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 10, right: 10, top: 8, bottom: 5),
+                          child: GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: () {
+                              CustomerList getSet = listCustomer[index];
+                              _redirectToCustomerDetail(context, getSet, true);
+                              // _redirectToAddCustomer(context, getSet, true);
+                            },
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  margin: const EdgeInsets.only(left: 10, right: 5, bottom: 8),
+                                  child: Text(checkValidString(toDisplayUpperCase1(listCustomer[index].customerName.toString().trim())),
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 3,
+                                    textAlign: TextAlign.start,
+                                    style: const TextStyle(fontSize: 15, color: black, fontWeight: FontWeight.w700),
+                                  ),
                                 ),
-                              ),
-                              /*                            Container(
-                                margin: const EdgeInsets.only(left: 10, right: 5),
-                                child: const Text("Pending amount : ",
-                                  overflow: TextOverflow.ellipsis,
-                                  textAlign: TextAlign.start,
-                                  style: TextStyle(fontSize: 14, color: black, fontWeight: FontWeight.w400),
-                                ),
-                              ),*/
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Container(
-                                    margin: const EdgeInsets.only(left: 10,),
-                                    child: RichText(
-                                      textAlign: TextAlign.center,
-                                      text: TextSpan(
-                                        text: 'Total Sale : ',
-                                        style:  const TextStyle(fontSize: 13, fontWeight: FontWeight.w400, color: kGray),
-                                        children: <TextSpan>[
-                                          TextSpan(text:checkValidString(getPrice(listCustomer[index].customerTotalSale.toString())),
-                                              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: black),
-                                              recognizer: TapGestureRecognizer()..onTap = () => {
-                                              }),
-                                        ],
+                                /*                            Container(
+                                  margin: const EdgeInsets.only(left: 10, right: 5),
+                                  child: const Text("Pending amount : ",
+                                    overflow: TextOverflow.ellipsis,
+                                    textAlign: TextAlign.start,
+                                    style: TextStyle(fontSize: 14, color: black, fontWeight: FontWeight.w400),
+                                  ),
+                                ),*/
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Container(
+                                      margin: const EdgeInsets.only(left: 10,),
+                                      child: RichText(
+                                        textAlign: TextAlign.center,
+                                        text: TextSpan(
+                                          text: 'Total Sale : ',
+                                          style:  const TextStyle(fontSize: 13, fontWeight: FontWeight.w400, color: kGray),
+                                          children: <TextSpan>[
+                                            TextSpan(text:checkValidString(getPrice(listCustomer[index].customerTotalSale.toString())),
+                                                style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: black),
+                                                recognizer: TapGestureRecognizer()..onTap = () => {
+                                                }),
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  /*IconButton(
-                                    icon: const Icon(Icons.delete_outline_outlined, color: black, size: 24,),
-                                    iconSize: 24,
-                                    alignment: Alignment.center,
-                                    onPressed: () async {
-                                      _deleteCustomer(listCustomer[index], index);
-                                    },
-                                  ),*/
-                                ],
-                              ),
-                              Container(
-                                  margin: const EdgeInsets.only(top: 5, left: 10, right: 10),
-                                  height: index == listCustomer.length-1 ? 0 : 0.8, color: kLightPurple),
-                            ],
+                                    /*IconButton(
+                                      icon: const Icon(Icons.delete_outline_outlined, color: black, size: 24,),
+                                      iconSize: 24,
+                                      alignment: Alignment.center,
+                                      onPressed: () async {
+                                        _deleteCustomer(listCustomer[index], index);
+                                      },
+                                    ),*/
+                                  ],
+                                ),
+                                Container(
+                                    margin: const EdgeInsets.only(top: 5, left: 10, right: 10),
+                                    height: index == listCustomer.length-1 ? 0 : 0.8, color: kLightPurple),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    ))
+                      )),
+                )
                     : const MyNoDataWidget(msg: "", subMsg: "No customer found"),
                 Visibility(
                     visible: _isLoadingMore,

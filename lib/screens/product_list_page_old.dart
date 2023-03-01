@@ -121,12 +121,6 @@ class _ProductListPageState extends BaseState<ProductListPageOld> {
         body: _isLoading ? const LoadingWidget()
             : Column(
           children: [
-           /* Container(
-              color: kBlue,
-              alignment: Alignment.topLeft,
-              padding: const EdgeInsets.only(left: 22, top: 10, bottom: 20),
-              child: const Text("Product List", style: TextStyle(fontWeight: FontWeight.w700, color: white,fontSize: 20)),
-            ),*/
             Stack(
               children: [
                 Container(
@@ -370,11 +364,12 @@ class _ProductListPageState extends BaseState<ProductListPageOld> {
                       shape: BoxShape.rectangle
                   ),
                   width: 40,
+                  height: 40,
                   alignment: Alignment.center,
                   margin: const EdgeInsets.only(top:5, bottom: 5, left: 8),
                   child: Container(
-                    margin: const EdgeInsets.all(10),
-                    child: Text(checkValidString(listData[index].inStock),
+                    margin: const EdgeInsets.all(5),
+                    child: Text(checkValidString(listData[index].stockQuantity),
                         style: const TextStyle(fontWeight: FontWeight.w500, color: kBlue, fontSize: 12)
                     ),
                   ),
@@ -387,10 +382,11 @@ class _ProductListPageState extends BaseState<ProductListPageOld> {
                       shape: BoxShape.rectangle
                   ),
                   width: 40,
+                  height: 40,
                   alignment: Alignment.center,
                   margin: const EdgeInsets.only(top:5, bottom: 5, right: 8, left:30),
                   child: Container(
-                    margin: const EdgeInsets.all(10),
+                    margin: const EdgeInsets.all(5),
                     child: Text(checkValidString(listData[index].orderCount),
                         style: const TextStyle(fontWeight: FontWeight.w500, color: kBlue, fontSize: 12)
                     ),
@@ -414,7 +410,7 @@ class _ProductListPageState extends BaseState<ProductListPageOld> {
           ],
         ),
         Container(
-            margin: const EdgeInsets.only(top: 20, left: 10, right: 10),
+            margin: const EdgeInsets.only(top: 20, left: 5, right: 5),
             height: index == listData.length-1 ? 0 : 0.8, color: kLightPurple),
       ],
     );

@@ -318,45 +318,47 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                margin: const EdgeInsets.only(left:10, bottom: 6, top: 5),
-                                child: Text(checkValidString(listProduct[index].stockName),
-                                    maxLines: 2,
-                                    overflow: TextOverflow.clip,
-                                    textAlign: TextAlign.start,
-                                    style: const TextStyle(fontWeight: FontWeight.w400, color: black, fontSize: 13)
+                          Expanded(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  margin: const EdgeInsets.only(left:10, bottom: 6, top: 5, right: 5),
+                                  child: Text(checkValidString(listProduct[index].stockName),
+                                      maxLines: 3,
+                                      overflow: TextOverflow.ellipsis,
+                                      textAlign: TextAlign.start,
+                                      style: const TextStyle(fontWeight: FontWeight.w400, color: black, fontSize: 13)
+                                  ),
                                 ),
-                              ),
-                              Container(
-                                margin: const EdgeInsets.only(left: 10),
-                                child: Text("MRP ${checkValidString(listProduct[index].stockPrice)}",
-                                    textAlign: TextAlign.start,
-                                    style: const TextStyle(fontWeight: FontWeight.w400, color: black, fontSize: 13)
+                                Container(
+                                  margin: const EdgeInsets.only(left: 10),
+                                  child: Text("MRP ${checkValidString(listProduct[index].stockPrice)}",
+                                      textAlign: TextAlign.start,
+                                      style: const TextStyle(fontWeight: FontWeight.w400, color: black, fontSize: 13)
+                                  ),
                                 ),
-                              ),
-                              Container(
-                                  margin: const EdgeInsets.only( top: 5),
-                                  child: TextButton(onPressed: () {
-                                    _removeProduct(index);
+                                Container(
+                                    margin: const EdgeInsets.only( top: 5),
+                                    child: TextButton(onPressed: () {
+                                      _removeProduct(index);
 
-                                    getPriceCalculated();
-                                    getItemCalculation(listProduct[index], index);
-                                    setState(() {
-                                      // listProduct.remove(listProduct[index]);
-                                      if(listProduct.isEmpty) {
-                                        isValidProduct = false;
-                                      }
-                                    });
-                                  },
-                                    child: const Text("Remove",
-                                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400, color: kBlue),),
-                                  )
-                              ),
-                            ],
+                                      getPriceCalculated();
+                                      getItemCalculation(listProduct[index], index);
+                                      setState(() {
+                                        // listProduct.remove(listProduct[index]);
+                                        if(listProduct.isEmpty) {
+                                          isValidProduct = false;
+                                        }
+                                      });
+                                    },
+                                      child: const Text("Remove",
+                                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400, color: kBlue),),
+                                    )
+                                ),
+                              ],
+                            ),
                           ),
                           Column(
                             mainAxisAlignment: MainAxisAlignment.end,
@@ -400,7 +402,7 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
                               ),
                               Container(
                                 alignment: Alignment.center,
-                                margin: const EdgeInsets.only(right: 10, bottom: 20),
+                                margin: const EdgeInsets.only(right: 10, bottom: 10),
                                 child: Text("${checkValidString(getPrice(listProduct[index].itemPrice.toString()))}",
                                     maxLines: 2,
                                     style: const TextStyle(fontWeight: FontWeight.w600, color: black, fontSize: 13)
@@ -421,7 +423,7 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
             visible: listProduct.isNotEmpty,
               child: Container(
               alignment: Alignment.topLeft,
-              margin: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 10),
+              margin: const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
               child: Text("Sub Total : ${getPrice(subTotal.toString())}",
                   style: const TextStyle(fontWeight: FontWeight.w700, color: black, fontSize: 16)))),
           Container(
@@ -586,7 +588,7 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
             ),
           ),
           Container(
-            margin: const EdgeInsets.only(top: 30, bottom: 20, left: 20, right: 20),
+            margin: const EdgeInsets.only(top: 20, bottom: 30, left: 20, right: 20),
             width: double.infinity,
             decoration: BoxDecoration(
                 gradient: const LinearGradient(
@@ -600,7 +602,6 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
               onPressed: () {
                 FocusScope.of(context).requestFocus(FocusNode());
 
-                print("listProduct--->" + listProduct.length.toString());
                 if(listProduct.isEmpty) {
                   isValidProduct = false;
                 }
@@ -622,8 +623,7 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
             ),
           ),
         ],
-      ),
-          ),
+      )),
     );
   }
 
@@ -653,7 +653,6 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
           subTotal = subTotal + total;
         }
       }
-
 
       if (discountController.value.text.isNotEmpty) {
         var value = discountController.value.text;
@@ -781,6 +780,7 @@ class _AddOrderPageState extends BaseState<AddOrderPage> {
 
   }
 */
+
   void _makeJsonData() async {
     List<Products> listProductsTemp = List<Products>.empty(growable: true);
     for (int i = 0; i < listProduct.length; i++) {

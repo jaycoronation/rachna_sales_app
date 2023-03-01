@@ -88,7 +88,8 @@ class ItemData {
       String? stockId, 
       String? tallyId, 
       String? stockName = "",
-      String? stockPrice, 
+      String? stockPrice,
+    String? stockQuantity,
       String? categoryId, 
       String? parent, 
       String? gstApplicable, 
@@ -121,6 +122,7 @@ class ItemData {
     _tallyId = tallyId;
     _stockName = stockName;
     _stockPrice = stockPrice;
+    _stockQuantity = stockQuantity;
     _categoryId = categoryId;
     _parent = parent;
     _gstApplicable = gstApplicable;
@@ -164,6 +166,7 @@ class ItemData {
     _tallyId = json['tally_id'];
     _stockName = json['stock_name'];
     _stockPrice = json['stock_price'];
+    _stockQuantity = json['stock_quantity'];
     _categoryId = json['category_id'];
     _parent = json['parent'];
     _gstApplicable = json['gst_applicable'];
@@ -196,6 +199,8 @@ class ItemData {
   String? _tallyId;
   String? _stockName= "";
   String? _stockPrice;
+  String? _stockQuantity;
+
   String? _categoryId;
   String? _parent;
   String? _gstApplicable;
@@ -228,7 +233,9 @@ class ItemData {
   String? tallyId,
   String? stockName,
   String? stockPrice,
-  String? categoryId,
+    String? stockQuantity,
+
+    String? categoryId,
   String? parent,
   String? gstApplicable,
   String? tcsApplicable,
@@ -260,7 +267,8 @@ class ItemData {
   tallyId: tallyId ?? _tallyId,
   stockName: stockName ?? _stockName,
   stockPrice: stockPrice ?? _stockPrice,
-  categoryId: categoryId ?? _categoryId,
+    stockQuantity: stockQuantity ?? _stockQuantity,
+    categoryId: categoryId ?? _categoryId,
   parent: parent ?? _parent,
   gstApplicable: gstApplicable ?? _gstApplicable,
   tcsApplicable: tcsApplicable ?? _tcsApplicable,
@@ -292,6 +300,7 @@ class ItemData {
   String? get tallyId => _tallyId;
   String? get stockName => _stockName;
   String? get stockPrice => _stockPrice;
+  String? get stockQuantity => _stockQuantity;
   String? get categoryId => _categoryId;
   String? get parent => _parent;
   String? get gstApplicable => _gstApplicable;

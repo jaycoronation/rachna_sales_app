@@ -119,12 +119,6 @@ class _SelectProductPageState extends BaseState<SelectProductPageOld> {
         body: _isLoading ? const LoadingWidget()
             : Column(
           children: [
-            Container(
-              color: kBlue,
-              alignment: Alignment.topLeft,
-              padding: const EdgeInsets.only(left: 22, top: 10, bottom: 20),
-              child: const Text("Select Item", style: TextStyle(fontWeight: FontWeight.w700, color: white,fontSize: 20)),
-            ),
             Stack(
               children: [
                 Container(
@@ -321,7 +315,7 @@ class _SelectProductPageState extends BaseState<SelectProductPageOld> {
                   ),
                 ))),
             Container(
-              margin: const EdgeInsets.only(top: 30, bottom: 20, left: 20, right: 20),
+              margin: const EdgeInsets.only( bottom: 30, left: 20, right: 20),
               width: double.infinity,
               decoration: BoxDecoration(
                   gradient: const LinearGradient(
@@ -435,11 +429,12 @@ class _SelectProductPageState extends BaseState<SelectProductPageOld> {
                       shape: BoxShape.rectangle
                   ),
                   width: 40,
+                  height: 40,
                   alignment: Alignment.center,
                   margin: const EdgeInsets.only(top:5, bottom: 5, left: 8,),
                   child: Container(
-                    margin: const EdgeInsets.all(10),
-                    child: Text(checkValidString(listData[index].inStock),
+                    margin: const EdgeInsets.all(5),
+                    child: Text(checkValidString(listData[index].stockQuantity),
                         style: const TextStyle(fontWeight: FontWeight.w500, color: kBlue, fontSize: 12)
                     ),
                   ),
@@ -452,10 +447,11 @@ class _SelectProductPageState extends BaseState<SelectProductPageOld> {
                       shape: BoxShape.rectangle
                   ),
                   width: 40,
+                  height: 40,
                   alignment: Alignment.center,
                   margin: const EdgeInsets.only(top:5, bottom: 5, right: 8, left: 25),
                   child: Container(
-                    margin: const EdgeInsets.all(10),
+                    margin: const EdgeInsets.all(5),
                     child: Text(checkValidString(listData[index].orderCount),
                         style: const TextStyle(fontWeight: FontWeight.w500, color: kBlue, fontSize: 12)
                     ),
