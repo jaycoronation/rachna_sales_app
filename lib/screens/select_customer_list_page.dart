@@ -234,22 +234,46 @@ class _SelectCustomerListPageState extends BaseState<SelectCustomerListPage> {
                         ),
                       )
                   ),
+                  /*Visibility(
+                      visible: _isLoadingMore,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            alignment: Alignment.bottomCenter,
+                              // margin: const EdgeInsets.only(bottom: 10),
+                              width: 30,
+                              height: 30,
+                              child: Lottie.asset('assets/images/loader_new.json', repeat: true, animate: true, frameRate: FrameRate.max)),
+                          Container(
+                            alignment: Alignment.bottomCenter,
+                            // margin: const EdgeInsets.only(bottom: 10),
+                            child: const Text(' Loading more...',
+                                style: TextStyle(color: black, fontWeight: FontWeight.w400, fontSize: 16)
+                            ),
+                          )
+                        ],
+                      )),*/
                   Visibility(
                       visible: _isLoadingMore,
                       child: Positioned(
                         bottom: Platform.isAndroid ? 0 : 20,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                                width: 30,
-                                height: 30,
-                                child: Lottie.asset('assets/images/loader_new.json', repeat: true, animate: true, frameRate: FrameRate.max)),
-                            const Text(' Loading more...',
-                                style: TextStyle(color: black, fontWeight: FontWeight.w400, fontSize: 16)
-                            )
-                          ],
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                  width: 30,
+                                  height: 30,
+                                  child: Lottie.asset('assets/images/loader_new.json', repeat: true, animate: true, frameRate: FrameRate.max)),
+                              const Text(' Loading more...',
+                                  style: TextStyle(color: black, fontWeight: FontWeight.w400, fontSize: 16)
+                              )
+                            ],
+                          ),
                         ),
                       )
                   ),

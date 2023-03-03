@@ -47,13 +47,31 @@ class _CustomerDetailPageState extends BaseState<CustomerDetailPage> with Ticker
   late String? totalSale;
 
   late TabController _tabController;
-  var listFilter = ["Month to date", "Year to date", "Custom Range"];
+  var listFilter = [];
 
   String dateStartSelectionChanged = "";
   String dateEndSelectionChanged = "";
 
+  var strMonthToDate;
+  var strMonthFromDate;
+
+  var strYearToDate;
+  var strYearFromDate;
+
+  var strCustomToDate;
+  var strCustomFromDate;
+
   @override
   void initState() {
+
+    getMonthToDate();
+    getYearDate();
+
+    listFilter.add("Month to date " + "(" + strMonthFromDate + " - " + strMonthToDate +")");
+    listFilter.add("Year to date "+ "(" + strYearFromDate + " - " + strYearToDate +")");
+    listFilter.add("Custom Range");
+
+
     _tabController = TabController(length: 2, vsync: this);
 
     if(isInternetConnected) {
@@ -117,6 +135,33 @@ class _CustomerDetailPageState extends BaseState<CustomerDetailPage> with Ticker
             : setData()
             : const NoInternetWidget()
     );
+  }
+
+  void getMonthToDate() {
+    var monthTillDate = "";
+    monthTillDate = DateTime.now().toString();
+
+    var dateParse = DateTime.parse(monthTillDate);
+    String currentDate = DateFormat('dd-MM-yyyy').format(dateParse);
+    String fromDateTillMonth = "01-${DateFormat('MM-yyyy').format(dateParse)}";
+
+    strMonthToDate = currentDate;
+    strMonthFromDate = fromDateTillMonth;
+
+  }
+
+  void getYearDate() {
+    var yearTillDate = DateTime.now().toString();
+    var dateParse = DateTime.parse(yearTillDate);
+
+    String currentYear = DateFormat('yyyy').format(dateParse);
+    String fromDateTillYear = "01-04-${DateFormat('yyyy').format(dateParse)}";
+
+    var result = int.parse(currentYear) + 1;
+    String toDateTillYear = "31-03-$result";
+
+    strYearToDate = toDateTillYear;
+    strYearFromDate = fromDateTillYear;
   }
 
   Widget setData() {
@@ -480,9 +525,9 @@ class _CustomerDetailPageState extends BaseState<CustomerDetailPage> with Ticker
           return StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {
                 return SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.25,
+                  height: MediaQuery.of(context).size.height * 0.26,
                   child: Padding(
-                    padding: const EdgeInsets.only(left: 12,right: 12,top: 15),
+                    padding: const EdgeInsets.only(left: 12,right: 12,top: 12),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -604,6 +649,14 @@ class _CustomerDetailPageState extends BaseState<CustomerDetailPage> with Ticker
                                                 dateStartSelectionChanged = startDateFormat;
                                                 dateEndSelectionChanged = endDateFormat;
 
+                                                strCustomFromDate = dateStartSelectionChanged;
+                                                strCustomToDate = dateEndSelectionChanged;
+
+                                                if(strCustomFromDate.isNotEmpty && strCustomToDate.isNotEmpty) {
+                                                  listFilter.removeAt(2);
+                                                  listFilter.add("Custom Range "+ "(" + checkValidString(strCustomFromDate) + " - " + checkValidString(strCustomToDate) +")");
+                                                }
+
                                                 if(isInternetConnected) {
                                                   _makeCallCustomerDetail();
                                                 }else {
@@ -624,12 +677,9 @@ class _CustomerDetailPageState extends BaseState<CustomerDetailPage> with Ticker
                                             ),
                                           ),
                                         ),
-                                        const Divider(
-                                          thickness: 0.5,
-                                          color: kTextLightGray,
-                                          endIndent: 16,
-                                          indent: 16,
-                                        ),
+                                        Container(
+                                            margin: const EdgeInsets.only(top: 8, bottom: 8, left: 10, right: 10),
+                                            height: index == listFilter.length-1 ? 0 : 0.5, color: kTextLightGray),
                                       ],
                                     );
                                   })

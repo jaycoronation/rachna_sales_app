@@ -1099,9 +1099,14 @@ class _DashboardPageState extends BaseState<DashboardPage> {
     Map<String, dynamic> dailyPlan = jsonDecode(body);
     var dataResponse = DailyPlanResponseModel.fromJson(dailyPlan);
 
+    listDailyPlan = [];
+
     if (statusCode == 200 && dataResponse.success == 1) {
       if (dataResponse.dailyPlanList != null) {
-        listDailyPlan = dataResponse.dailyPlanList!;
+        List<DailyPlanList>? _tempList = [];
+        _tempList = dataResponse.dailyPlanList;
+        listDailyPlan.addAll(_tempList!.reversed);
+        // listDailyPlan = dataResponse.dailyPlanList!;
       }
 
       setState(() {

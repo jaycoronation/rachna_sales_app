@@ -185,7 +185,7 @@ class _VerifyOTPPageState extends BaseState<VerifyOTPPage> {
                                   }
                                 }
                               },
-                              child: const Text("Verify & Create Account",
+                              child: const Text("Verify & Continue",
                                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: white),),
                             ),
                           ),

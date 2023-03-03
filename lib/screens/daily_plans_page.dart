@@ -45,11 +45,27 @@ class _DailyPlansPageState extends BaseState<DailyPlansPage> {
 
   String dateStartSelectionChanged = "";
   String dateEndSelectionChanged = "";
-  var listFilter = ["Month to date", "Year to date", "Custom Range"];
+  var listFilter = [];
+
+  var strMonthToDate;
+  var strMonthFromDate;
+
+  var strYearToDate;
+  var strYearFromDate;
+
+  var strCustomToDate;
+  var strCustomFromDate;
 
   @override
   void initState() {
     super.initState();
+
+    getMonthToDate();
+    getYearDate();
+
+    listFilter.add("Month to date " + "(" + strMonthFromDate + " - " + strMonthToDate +")");
+    listFilter.add("Year to date "+ "(" + strYearFromDate + " - " + strYearToDate +")");
+    listFilter.add("Custom Range");
 
     _scrollViewController = ScrollController();
     _scrollViewController.addListener(() {
@@ -77,6 +93,33 @@ class _DailyPlansPageState extends BaseState<DailyPlansPage> {
       noInterNet(context);
     }
 
+  }
+
+  void getMonthToDate() {
+    var monthTillDate = "";
+    monthTillDate = DateTime.now().toString();
+
+    var dateParse = DateTime.parse(monthTillDate);
+    String currentDate = DateFormat('dd-MM-yyyy').format(dateParse);
+    String fromDateTillMonth = "01-${DateFormat('MM-yyyy').format(dateParse)}";
+
+    strMonthToDate = currentDate;
+    strMonthFromDate = fromDateTillMonth;
+
+  }
+
+  void getYearDate() {
+    var yearTillDate = DateTime.now().toString();
+    var dateParse = DateTime.parse(yearTillDate);
+
+    String currentYear = DateFormat('yyyy').format(dateParse);
+    String fromDateTillYear = "01-04-${DateFormat('yyyy').format(dateParse)}";
+
+    var result = int.parse(currentYear) + 1;
+    String toDateTillYear = "31-03-$result";
+
+    strYearToDate = toDateTillYear;
+    strYearFromDate = fromDateTillYear;
   }
 
   void pagination() {
@@ -124,6 +167,7 @@ class _DailyPlansPageState extends BaseState<DailyPlansPage> {
               Container(
                 margin: const EdgeInsets.only(top: 12, bottom: 12, right: 10),
                 child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
                   onTap: () {
                     _redirectToAddPlan(context, DailyPlanList(), false);
                   },
@@ -556,29 +600,22 @@ class _DailyPlansPageState extends BaseState<DailyPlansPage> {
           return StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {
                 return SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.25,
+                  height: MediaQuery.of(context).size.height * 0.26,
                   child: Padding(
-                    padding: const EdgeInsets.only(left: 12,right: 12,top: 15),
+                    padding: const EdgeInsets.only(left: 12,right: 12,top: 12),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         Container(
                             width: 60,
-                            margin: const EdgeInsets.only(top: 12),
-                            child: const Divider(
-                              height: 1.5,
-                              thickness: 1.5,
-                              color: kBlue,
-                            )),
+                            child: const Divider(height: 1.5, thickness: 1.5, color: kBlue)
+                        ),
                         Container(
-                          margin: const EdgeInsets.only(top: 12),
-                          padding: const EdgeInsets.fromLTRB(14, 8, 14, 8),
+                          margin: const EdgeInsets.fromLTRB(14, 10, 14, 8),
                           child: const Text("Select Date", style: TextStyle(color: black, fontWeight: FontWeight.bold, fontSize: 15)),
                         ),
-                        Container(height: 6),
-                        Expanded(child:
-                        SingleChildScrollView(
+                        Expanded(child: SingleChildScrollView(
                           child: Column(
                             children: [
                               ListView.builder(
@@ -596,7 +633,8 @@ class _DailyPlansPageState extends BaseState<DailyPlansPage> {
                                             });
                                             Navigator.of(context).pop();
 
-                                            if (index == 0) {
+                                            if (index == 0)
+                                            {
                                               var monthTillDate = "";
                                               monthTillDate = DateTime.now().toString();
 
@@ -620,8 +658,9 @@ class _DailyPlansPageState extends BaseState<DailyPlansPage> {
                                                 noInterNet(context);
                                               }
 
-                                            }else if (index == 1) {
-
+                                            }
+                                            else if (index == 1)
+                                            {
                                               var yearTillDate = DateTime.now().toString();
                                               var dateParse = DateTime.parse(yearTillDate);
 
@@ -645,8 +684,9 @@ class _DailyPlansPageState extends BaseState<DailyPlansPage> {
                                                 noInterNet(context);
                                               }
 
-                                            }else if (index == 2) {
-
+                                            }
+                                            else if (index == 2)
+                                            {
                                               DateTimeRange? result = await showDateRangePicker(
                                                   context: context,
                                                   firstDate: DateTime(2022, 1, 1), // the earliest allowable
@@ -681,6 +721,15 @@ class _DailyPlansPageState extends BaseState<DailyPlansPage> {
                                                 dateStartSelectionChanged = startDateFormat;
                                                 dateEndSelectionChanged = endDateFormat;
 
+
+                                                strCustomFromDate = dateStartSelectionChanged;
+                                                strCustomToDate = dateEndSelectionChanged;
+
+                                                if(strCustomFromDate.isNotEmpty && strCustomToDate.isNotEmpty) {
+                                                  listFilter.removeAt(2);
+                                                  listFilter.add("Custom Range "+ "(" + checkValidString(strCustomFromDate) + " - " + checkValidString(strCustomToDate) +")");
+                                                }
+
                                                 if(isInternetConnected) {
                                                   _getDailyPlansList(true);
                                                 }else {
@@ -689,35 +738,33 @@ class _DailyPlansPageState extends BaseState<DailyPlansPage> {
                                               }
 
                                             }else {
+
                                             }
                                           },
                                           child: Container(
-                                            padding: const EdgeInsets.only(left: 20.0, right: 20, top: 8, bottom: 8),
+                                            margin: const EdgeInsets.only(left: 20.0, right: 20, top: 8, bottom: 8),
                                             alignment: Alignment.centerLeft,
-                                            child: Text(
-                                              checkValidString(listFilter[index]),
+                                            child: Text(checkValidString(listFilter[index]),
                                               style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: black),
                                             ),
                                           ),
                                         ),
-                                        const Divider(
-                                          thickness: 0.5,
-                                          color: kTextLightGray,
-                                          endIndent: 16,
-                                          indent: 16,
-                                        ),
+                                        Container(
+                                            margin: const EdgeInsets.only(top: 8, bottom: 8, left: 10, right: 10),
+                                            height: index == listFilter.length-1 ? 0 : 0.5, color: kTextLightGray),
                                       ],
                                     );
-                                  })
+                                  }),
                             ],
                           ),
-                        ))
+                        )),
                       ],
                     ),
                   ),
                 );
               });
         });
+
   }
 
   Future<void> _redirectToPlanDetail(BuildContext context, String planId) async {
@@ -790,7 +837,7 @@ class _DailyPlansPageState extends BaseState<DailyPlansPage> {
       if (dataResponse.dailyPlanList != null) {
         List<DailyPlanList>? _tempList = [];
         _tempList = dataResponse.dailyPlanList;
-        listDailyPlan.addAll(_tempList!);
+        listDailyPlan.addAll(_tempList!.reversed);
 
         if (_tempList.isNotEmpty) {
           _pageIndex += 1;
